@@ -21,9 +21,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   async handleConnection(@ConnectedSocket() client: any) {
+    console.log(client);
     client['id'] = String(Number(new Date()));
     client['nickname'] = String(Number(new Date()));
     this.users[client['id']] = client;
+    console.log(this.users);
   }
 
   handleDisconnect(@ConnectedSocket() client: any) {
@@ -32,15 +34,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('chat')
   handleMessage(client: any, data: string) {
+    console.log(data);
     for (const [key, value] of Object.entries(this.users)) {
-      if (value.nickname != client['nickname']) {
-        value.send(
-          JSON.stringify({
-            event: 'events',
-            msg: { nickname: client['nickname'], message: data },
-          }),
-        );
-      }
+      // if (value.nickname != client['nickname']) {
+      value.send(
+        JSON.stringify({
+          event: 'events',
+          msg: { nickname: client['nickname'], message: data },
+        }),
+      );
+      // }
     }
   }
 }
