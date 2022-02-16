@@ -9,6 +9,10 @@ export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
+  async finAll(): Promise<Array<User>> {
+    const users = await this.userRepository.find();
+    return users;
+  }
 
   async findOrCreate(joinFacebookDto: JoinFacebookDto) {
     const exUser = await this.userRepository.findOne({

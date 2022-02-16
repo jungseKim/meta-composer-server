@@ -69,7 +69,6 @@ export class AuthController {
     return user;
   }
 
-
   @Get('/test')
   @Redirect('http://localhost:3000')
   async findAll(@Res({ passthrough: true }) response: Response) {
@@ -82,6 +81,4 @@ export class AuthController {
     });
     return '1';
   }
-
-  
 }
