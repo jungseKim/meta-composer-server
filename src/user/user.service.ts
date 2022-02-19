@@ -25,6 +25,7 @@ export class UserService {
         provider: joinFacebookDto.provider,
         username: joinFacebookDto.username,
         email: joinFacebookDto.email,
+        password: joinFacebookDto.password,
       },
       { reload: false },
     );

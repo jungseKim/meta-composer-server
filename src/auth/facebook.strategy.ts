@@ -3,6 +3,8 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy } from 'passport-facebook';
 import { JoinFacebookDto } from 'src/user/dto/join-facebook-user.dto';
 import { UserService } from 'src/user/user.service';
+import * as bcrypt from 'bcryptjs';
+import { v1 } from 'uuid';
 
 @Injectable()
 export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
@@ -28,6 +30,7 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
       email: emails[0].value,
       provider: profile.provider,
       provider_id: +profile.id,
+      password: 'abcs',
     };
     const user = this.usersService.findOrCreate(joinFacebookDto);
 
