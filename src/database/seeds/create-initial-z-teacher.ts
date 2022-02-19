@@ -4,7 +4,7 @@ import { User } from '../../entities/user.entity';
 import { faker } from '@faker-js/faker';
 import { Teacher } from '../../entities/teacher.entity';
 import { Lesson } from '../../entities/lesson.entity';
-import { Logger } from '@nestjs/common';
+
 export class CreateInitialZTeacherData implements Seeder {
   public async run(factory: Factory, connection: Connection): Promise<void> {
     //  const checkStart = await connection
@@ -28,24 +28,27 @@ export class CreateInitialZTeacherData implements Seeder {
       ])
       .execute();
 
-    const allUserId = await connection
+    const allUsers = await connection
       .getRepository(User)
       .createQueryBuilder('user')
-
       .getMany();
 
-    const allUserIds = allUserId.map((x) => x.id);
+    // allUsers에서 랜덤으로 하나 선택
+    // const randomUser = allUsers[Math.floor(Math.random() * allUsers.length)];
 
-    const alreadyUserId = await connection
+    const allUsersIds = allUsers.map((x) => x.id);
+
+    const alreadyTeacherUserId = await connection
       .getRepository(Teacher)
       .createQueryBuilder('teacher')
-
       .getMany();
 
-    const alreadyUserIds = alreadyUserId.map((x) => x.id);
+    const alreadyTeacherUserIds = alreadyTeacherUserId.map((x) => x.id);
 
-    const difference = allUserIds.filter((x) => !alreadyUserIds.includes(x));
-    //difference  에 trueNum이 포함된 값이 맞을때까지
+    const difference = allUsersIds.filter(
+      (x) => !alreadyTeacherUserIds.includes(x),
+    );
+
     let trueNum = Math.floor(Math.random() * difference.length);
     try {
       if (!difference.includes(trueNum)) {
