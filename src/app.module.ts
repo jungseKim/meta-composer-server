@@ -6,10 +6,11 @@ import { FacebookStrategy } from './auth/facebook.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import ormconfig from './config/ormconfig';
 import { UserModule } from './user/user.module';
+import { LessonModule } from './lesson/lesson.module';
 
 @Module({
   controllers: [AppController],
   providers: [AppService],
-  imports: [AuthModule, TypeOrmModule.forRoot(ormconfig), UserModule],
+  imports: [AuthModule, TypeOrmModule.forRoot(ormconfig), UserModule, LessonModule],
 })
 export class AppModule {}
