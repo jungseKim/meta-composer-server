@@ -35,8 +35,8 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(
   }
 
   async validate(payload: TokenPayload, done: VerifiedCallback): Promise<void> {
-    // console.log('payload', payload);
     const user = await this.userRepository.findOne(payload['userId']);
+
     done(null, user);
   }
 }

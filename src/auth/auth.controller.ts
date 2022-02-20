@@ -1,3 +1,5 @@
+import { UserService } from './../user/user.service';
+import { find } from 'rxjs';
 import { JwtRefreshGuard } from './jwt-refresh.guard';
 import {
   Body,
@@ -10,15 +12,21 @@ import {
   Request,
   Res,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { Request as Re, Response } from 'express';
 import { UserDecorator } from 'src/decorators/user.decorator';
 import { User } from 'src/entities/user.entity';
+import { JwtGuard } from './jwt.guard';
+import { TransformResponseInterceptor } from 'src/common/interceptors/transformResponse.interceptor';
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private userService: UserService,
+  ) {}
 
   @Post('/signUp')
   signUp(@Body('user') user) {
@@ -54,31 +62,46 @@ export class AuthController {
     });
     return;
   }
+
   @UseGuards(JwtRefreshGuard)
   @Get('/refresh')
   accessGet(
-    @Request() req: Re,
-    @UserDecorator() user: User,
-    @Res() res: Response,
+    @UserDecorator()
+    user: User,
+    @Res({ passthrough: true })
+    res: Response,
   ) {
-    const accessToken = this.authService.getJwtAccessToken(user.id);
+    const accessToken = this.authService.getJwtAccessToken(1);
 
     res.setHeader('Authorization', `Bearer ${accessToken}`);
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    return user;
+
+    return '1';
   }
 
-  @Get('/test')
-  @Redirect('http://localhost:3000')
-  async findAll(@Res({ passthrough: true }) response: Response) {
-    const refreshToken = await this.authService.getJwtRefreshToken(1);
+  //다른 라이브 러리 쓰면 nestjs 기능 과의 호한성이 사라져서
+  //passthrough 를 로 명시해줘야함
+  @Get('/login')
+  async login(@Res({ passthrough: true }) response: Response) {
+    const refreshToken = this.authService.getJwtRefreshToken(1);
     response.cookie('Refresh', refreshToken, {
       httpOnly: true,
       path: '/',
       sameSite: 'lax',
       maxAge: 36000000,
     });
-    return '1';
+    return;
+  }
+
+  @Get('/')
+  @UseGuards(JwtGuard)
+  @UseInterceptors(TransformResponseInterceptor)
+  async auth(
+    @Res({ passthrough: true }) res: Response,
+    @UserDecorator() user: User,
+  ) {
+    const userData = await this.userService.findOne(user.id);
+
+    return userData;
+    // return res;
   }
 }

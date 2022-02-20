@@ -10,7 +10,8 @@ import {
 
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway(4444, {
+@WebSocketGateway(4400, {
+  namespace: 'chat',
   cors: {
     origin: 'http://localhost:3000',
   },

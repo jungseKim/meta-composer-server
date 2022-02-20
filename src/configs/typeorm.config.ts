@@ -10,7 +10,7 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   password: 'bi700523',
   database: 'nest',
   entities: [User, Teacher],
-  synchronize: true, // false 기본값
+  synchronize: false, // false 기본값
   autoLoadEntities: true,
   logging: true,
   keepConnectionAlive: true,

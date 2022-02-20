@@ -14,6 +14,12 @@ export class UserService {
     return users;
   }
 
+  async findOne(userId: number): Promise<User> {
+    const user = this.userRepository.findOne(userId);
+
+    return user;
+  }
+
   async findOrCreate(joinFacebookDto: JoinFacebookDto) {
     const exUser = await this.userRepository.findOne({
       where: {
