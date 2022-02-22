@@ -7,7 +7,7 @@ import {
 import { customAlphabet } from 'nanoid';
 import EnterPayload from 'src/types/EnterPayload';
 
-@WebSocketGateway(4400, {
+@WebSocketGateway({
   namespace: 'room',
   cors: {
     origin: 'http://localhost:3000',

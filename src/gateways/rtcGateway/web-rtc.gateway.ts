@@ -8,6 +8,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
+import { type } from 'os';
 import { find } from 'rxjs';
 
 import { Server, Socket } from 'socket.io';
@@ -15,7 +16,7 @@ import Clients from 'src/types/Clients';
 import IPayload from 'src/types/InitPayload';
 import InitPayload from 'src/types/InitPayload';
 import OfferPayload from 'src/types/OfferPayload';
-@WebSocketGateway(4400, {
+@WebSocketGateway({
   namespace: 'webRtc',
   cors: {
     origin: 'http://localhost:3000',
@@ -37,14 +38,14 @@ export class WebRtcGateway implements OnGatewayConnection, OnGatewayDisconnect {
   setInit(client: Socket, payload: IPayload) {
     console.log(client.id);
     client.data.roomid = payload.userId;
-    client.join(payload.userId);
-    client.to(payload.userId).emit('sendOffer');
+    client.join(payload.userId.toString());
+    client.to(payload.userId.toString()).emit('sendOffer');
   }
 
   @SubscribeMessage('getOffer')
   sendMessage(client: Socket, payload: OfferPayload) {
     console.log(payload.data);
-    client.to(payload.userId).emit('getOffer', payload.data);
+    client.to(payload.userId.toString()).emit('getOffer', payload.data);
 
     // console.log(this.clients[payload.userId], '겟오퍼');
     //index 기반 interface 으로해서 index=client.id 로하고 value를 client와 user.id 로 하자
