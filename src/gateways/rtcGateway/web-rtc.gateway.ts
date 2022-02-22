@@ -35,7 +35,7 @@ export class WebRtcGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('setInit')
   setInit(client: Socket, payload: IPayload) {
-    console.log('emf');
+    console.log(client.id);
     client.data.roomid = payload.userId;
     client.join(payload.userId);
     client.to(payload.userId).emit('sendOffer');
@@ -43,6 +43,7 @@ export class WebRtcGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('getOffer')
   sendMessage(client: Socket, payload: OfferPayload) {
+    console.log(payload.data);
     client.to(payload.userId).emit('getOffer', payload.data);
 
     // console.log(this.clients[payload.userId], '겟오퍼');

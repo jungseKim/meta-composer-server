@@ -63,11 +63,11 @@ export class AuthController {
     return;
   }
 
-  @UseGuards(JwtRefreshGuard)
+  // @UseGuards(JwtRefreshGuard)
   @Get('/refresh')
   accessGet(
-    @UserDecorator()
-    user: User,
+    // @UserDecorator()
+    // user: User,
     @Res({ passthrough: true })
     res: Response,
   ) {
@@ -93,14 +93,24 @@ export class AuthController {
   }
 
   @Get('/')
-  @UseGuards(JwtGuard)
+  // @UseGuards(JwtGuard)
   @UseInterceptors(TransformResponseInterceptor)
   async auth(
     @Res({ passthrough: true }) res: Response,
     @UserDecorator() user: User,
   ) {
-    const userData = await this.userService.findOne(user.id);
-
+    // const userData = await this.userService.findOne(user.id);
+    const userData = {
+      id: '1',
+      email: 'test@test.com',
+      username: 'test',
+      image: 'https://via.placeholder.com/256',
+      provider: 'facebook',
+      socialId: '123456789',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      deletedAt: null,
+    };
     return userData;
     // return res;
   }
