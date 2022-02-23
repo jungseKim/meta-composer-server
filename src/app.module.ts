@@ -6,11 +6,21 @@ import { FacebookStrategy } from './auth/facebook.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import ormconfig from './config/ormconfig';
 import { UserModule } from './user/user.module';
-import { LessonModule } from './lesson/lesson.module';
+import { LessonsModule } from './lessons/lessons.module';
+import { SignupsController } from './signups/signups.controller';
+import { SignupsService } from './signups/signups.service';
+
+import { SignupsModule } from './signups/signups.module';
 
 @Module({
   controllers: [AppController],
-  providers: [AppService],
-  imports: [AuthModule, TypeOrmModule.forRoot(ormconfig), UserModule, LessonModule],
+  providers: [AppService ],
+  imports: [
+    AuthModule,
+    TypeOrmModule.forRoot(ormconfig),
+    UserModule,
+    LessonsModule,
+    SignupsModule,
+  ],
 })
 export class AppModule {}
