@@ -22,6 +22,16 @@ export class Signup extends BaseEntity {
   @ManyToOne((type) => Lesson, (lesson) => lesson.wishlist)
   lesson: Lesson;
 
+  @Column()
+  merchant_uid:string;
+  
+  @Column()
+  lessonId:number;
+
+
+  @Column()
+  userId:number;
+
   @OneToMany(
     (type) => Signupschedule,
     (signupschedule) => signupschedule.signup,
