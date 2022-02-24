@@ -1,3 +1,4 @@
+import * as dotenv from 'dotenv'
 import { Teacher } from '../entities/teacher.entity';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
@@ -18,13 +19,16 @@ import { Wishlist } from '../entities/wishlist.entity';
 import { Notification } from '../entities/notification.entity';
 import { Category } from '../entities/category.entity';
 
+
+
+dotenv.config();
 const config: TypeOrmModuleOptions = {
-  type: 'mysql',
+  type:'mysql',
   host: 'localhost',
   port: 3306,
-  username: 'root',
-  password: '1111',
-  database: 'nest',
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
 
   entities: [
     User,

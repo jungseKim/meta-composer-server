@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
+    "@nestjs/config": "^1.2.0",
     "@nestjs/core": "^8.0.0",
     "@nestjs/jwt": "^8.0.0",
     "@nestjs/passport": "^8.2.1",
@@ -50,6 +51,7 @@
     "local-web-server": "^5.1.1",
     "localtunnel": "^2.0.2",
     "mysql2": "^2.3.3",
+    "nestjs-joi": "^1.7.0",
     "nestjs-seeder": "^0.2.0",
     "passport": "^0.5.2",
     "passport-facebook": "^3.0.0",

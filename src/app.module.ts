@@ -11,6 +11,7 @@ import { SignupsController } from './signups/signups.controller';
 import { SignupsService } from './signups/signups.service';
 
 import { SignupsModule } from './signups/signups.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   controllers: [AppController],
@@ -21,6 +22,7 @@ import { SignupsModule } from './signups/signups.module';
     UserModule,
     LessonsModule,
     SignupsModule,
+    ConfigModule.forRoot({ isGlobal: true,}),
   ],
 })
 export class AppModule {}
