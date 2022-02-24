@@ -37,4 +37,35 @@ export class UserService {
       },
     });
   }
+
+
+  async findById(user : User) {
+
+
+    return user;
+    const exUser = await this.userRepository.findOne({
+      where: {
+        email: user.email,
+      },
+    });
+    if (exUser) return exUser;
+
+    await this.userRepository.save(
+      {
+        provider_id: user.provider_id,
+        provider: user.provider,
+        username: user.username,
+        email: user.email,
+        password: user.password,
+      },
+      { reload: false },
+    );
+
+    // return this.userRepository.findOne({
+    //   where: {
+    //     provider: joinFacebookDto.provider,
+    //     provider_id: joinFacebookDto.provider_id,
+    //   },
+    // });
+  }
 }

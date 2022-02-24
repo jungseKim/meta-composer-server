@@ -7,6 +7,7 @@ import { UserService } from 'src/user/user.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { FacebookStrategy } from './facebook.strategy';
+import { GoogleStrategy } from './Google.strategy';
 import { JwtRefreshTokenStrategy } from './jwt-refresh-token.strategy';
 import { JwtStrategy } from './jwt.strategy';
 @Module({
@@ -26,6 +27,7 @@ import { JwtStrategy } from './jwt.strategy';
     FacebookStrategy,
     UserService,
     JwtStrategy,
+    GoogleStrategy
   ],
 })
 export class AuthModule {}

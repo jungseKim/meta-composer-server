@@ -3,8 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy } from 'passport-facebook';
 import { JoinFacebookDto } from 'src/user/dto/join-facebook-user.dto';
 import { UserService } from 'src/user/user.service';
-import * as bcrypt from 'bcryptjs';
-import { v1 } from 'uuid';
+
 
 @Injectable()
 export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
