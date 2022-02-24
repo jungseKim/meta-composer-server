@@ -60,7 +60,7 @@ export class CreateInitialUserData implements Seeder {
     //     .execute();
     // }
 
-
+//asdasd
     //asdasdasdasasdad
     await connection
       .createQueryBuilder()
