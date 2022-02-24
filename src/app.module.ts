@@ -1,4 +1,3 @@
-import { RoomGateway } from './gateways/roomGateway/room.gateway';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -13,7 +12,7 @@ import { RoomModule } from './room/room.module';
 
 @Module({
   controllers: [AppController],
-  providers: [AppService, ChatGateway, WebRtcGateway, RoomGateway],
+  providers: [AppService, ChatGateway, WebRtcGateway],
   imports: [
     AuthModule,
     TypeOrmModule.forRoot(typeOrmConfig),

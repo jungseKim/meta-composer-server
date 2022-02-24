@@ -46,7 +46,9 @@ export class AuthController {
   }
 
   @Get('/facebook/redirect')
-  @Redirect('http://localhost:3000')
+  @Redirect(
+    process.env.NODE_ENV === 'dev' ? 'localhost:3000' : 'https://jungse.shop',
+  )
   @UseGuards(AuthGuard('facebook'))
   async facebookLoginRedirect(
     @UserDecorator() user: User,
@@ -63,19 +65,20 @@ export class AuthController {
     return;
   }
 
-  // @UseGuards(JwtRefreshGuard)
+  @UseGuards(JwtRefreshGuard)
   @Get('/refresh')
+  @UseInterceptors(TransformResponseInterceptor)
   accessGet(
-    // @UserDecorator()
-    // user: User,
+    @UserDecorator()
+    user: User,
     @Res({ passthrough: true })
     res: Response,
   ) {
-    const accessToken = this.authService.getJwtAccessToken(1);
+    const accessToken = this.authService.getJwtAccessToken(user.id);
 
     res.setHeader('Authorization', `Bearer ${accessToken}`);
 
-    return '1';
+    return;
   }
 
   //다른 라이브 러리 쓰면 nestjs 기능 과의 호한성이 사라져서
@@ -102,5 +105,10 @@ export class AuthController {
     const userData = await this.userService.findOne(user.id);
 
     return userData;
+  }
+
+  @Get('/test')
+  tec() {
+    return process.env.NODE_ENV;
   }
 }

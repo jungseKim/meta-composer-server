@@ -6,8 +6,8 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   type: 'mysql',
   host: 'localhost',
   port: 3306,
-  username: 'root',
-  password: 'bi700523',
+  username: 'jungse',
+  password: 'jungse123',
   database: 'nest',
   entities: [User, Teacher],
   synchronize: false, // false 기본값
