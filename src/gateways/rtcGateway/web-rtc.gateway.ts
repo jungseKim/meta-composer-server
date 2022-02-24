@@ -19,7 +19,10 @@ import OfferPayload from 'src/types/OfferPayload';
 @WebSocketGateway({
   namespace: 'webRtc',
   cors: {
-    origin: 'http://localhost:3000',
+    origin:
+      process.env.NODE_ENV === 'dev'
+        ? 'http://localhost:3000'
+        : process.env.CORS_ORING,
   },
 })
 export class WebRtcGateway implements OnGatewayConnection, OnGatewayDisconnect {
