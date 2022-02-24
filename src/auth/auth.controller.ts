@@ -129,18 +129,11 @@ export class AuthController {
         return '1';
     }
 
-    // @Get('/profile')
-    // async findMyOrders(@UserDecorator()user : User): Promise<User> {
-    //     return this
-    //         .userService
-    //         .findById(user);
-    // }
-
-    // @Get('profile')
-    // @UseGuards(@AuthGuard('jwt'))
-    // getUserId(@Request() req: any) {
-    //   return req.user.id;
-    // }
+    @UseGuards(AuthGuard('jwt'))
+	@Get('/profile')
+	 getProfile(@Request() req) {
+		return req.user;
+	}
     
 
 }
