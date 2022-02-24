@@ -8,7 +8,7 @@ export class Wishlist extends BaseEntity {
 
   @ManyToOne((type) => User, (user) => user.wishlist)
   user: User;
-
+//ddtest
   @ManyToOne((type) => Lesson, (lesson) => lesson.wishlist)
   lesson: Lesson;
 }
