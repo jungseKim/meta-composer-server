@@ -1,5 +1,5 @@
 import { UserService } from './../user/user.service';
-import { find } from 'rxjs';
+import { find, retry } from 'rxjs';
 import { JwtRefreshGuard } from './jwt-refresh.guard';
 import {
   Body,
@@ -21,6 +21,7 @@ import { UserDecorator } from 'src/decorators/user.decorator';
 import { User } from 'src/entities/user.entity';
 import { JwtGuard } from './jwt.guard';
 import { TransformResponseInterceptor } from 'src/common/interceptors/transformResponse.interceptor';
+import { SetCookieInterceptor } from 'src/common/interceptors/set-cookie.interceptor';
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -44,25 +45,28 @@ export class AuthController {
   async facebookLogin(): Promise<any> {
     // return HttpStatus.OK;
   }
-
+  @UseInterceptors(SetCookieInterceptor)
   @Get('/facebook/redirect')
   @Redirect(
-    process.env.NODE_ENV === 'dev' ? 'localhost:3000' : 'https://jungse.shop',
+    process.env.NODE_ENV === 'dev'
+      ? 'localhost:3000'
+      : 'https://meta-composer-client.vercel.app',
   )
   @UseGuards(AuthGuard('facebook'))
   async facebookLoginRedirect(
     @UserDecorator() user: User,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const refreshToken = this.authService.getJwtRefreshToken(user.id);
+    return this.authService.getJwtRefreshToken(user.id);
+    // const refreshToken = this.authService.getJwtRefreshToken(user.id);
 
-    response.cookie('Refresh', refreshToken, {
-      httpOnly: true,
-      path: '/',
-      sameSite: 'lax',
-      maxAge: 3600000,
-    });
-    return;
+    // response.cookie('Refresh', refreshToken, {
+    //   httpOnly: true,
+    //   path: '/',
+    //   sameSite: 'lax',
+    //   maxAge: 3600000,
+    // });
+    // return;
   }
 
   @UseGuards(JwtRefreshGuard)
