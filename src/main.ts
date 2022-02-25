@@ -18,7 +18,7 @@ dotenv.config({
   ),
 });
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule);
   app.useWebSocketAdapter(new SocketIoAdapter(app));
   setupSwagger(app);
   app.enableCors({

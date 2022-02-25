@@ -21,7 +21,8 @@ import { UAParser } from 'ua-parser-js';
 @WebSocketGateway({
   namespace: 'webRtc',
   cors: {
-    origin: 'https://meta-composer-client.vercel.app/',
+    origin: 'https://meta-composer-client.vercel.app',
+    credentials: true,
     // process.env.NODE_ENV === 'dev'
     //   ? 'http://localhost:3000'
     //   : process.env.CORS_ORING,
