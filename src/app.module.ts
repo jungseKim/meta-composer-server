@@ -1,3 +1,4 @@
+import { LessonGateway } from './gateways/real-time-lesson/lesson.gateway';
 import { SetupModule } from './gateways/setup/setup.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
@@ -13,7 +14,7 @@ import { RoomModule } from './room/room.module';
 
 @Module({
   controllers: [AppController],
-  providers: [AppService, ChatGateway, WebRtcGateway],
+  providers: [LessonGateway, AppService, ChatGateway, WebRtcGateway],
   imports: [
     AuthModule,
     TypeOrmModule.forRoot(typeOrmConfig),
