@@ -10,4 +10,3 @@ import { LessonsRepository } from './lessons.repository';
   controllers: [LessonsController],
 })
 export class LessonsModule {}
-//

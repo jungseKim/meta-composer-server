@@ -16,4 +16,3 @@ describe('ChatGateway', () => {
     expect(gateway).toBeDefined();
   });
 });
-//

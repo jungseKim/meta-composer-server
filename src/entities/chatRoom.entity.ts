@@ -24,4 +24,3 @@ export class ChatRoom extends BaseEntity {
   @OneToMany((type) => Message, (message) => message.chatRoom)
   message: Message;
 }
-//

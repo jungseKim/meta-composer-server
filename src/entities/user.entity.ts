@@ -89,4 +89,3 @@ export class User extends BaseEntity {
   @OneToMany((type) => Assignment, (assignment) => assignment.user)
   assignment: Assignment;
 }
-//

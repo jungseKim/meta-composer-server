@@ -12,4 +12,3 @@ export class Wishlist extends BaseEntity {
   @ManyToOne((type) => Lesson, (lesson) => lesson.wishlist)
   lesson: Lesson;
 }
-//

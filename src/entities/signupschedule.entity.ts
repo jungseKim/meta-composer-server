@@ -30,4 +30,3 @@ export class Signupschedule extends BaseEntity {
   )
   signuptimetable: Signuptimetable;
 }
-//

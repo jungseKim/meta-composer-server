@@ -18,4 +18,3 @@ export class Notification extends BaseEntity {
   @Column()
   data: string;
 }
-//

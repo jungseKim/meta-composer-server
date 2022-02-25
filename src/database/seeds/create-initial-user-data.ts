@@ -76,4 +76,3 @@ export class CreateInitialUserData implements Seeder {
       .execute();
   }
 }
-//

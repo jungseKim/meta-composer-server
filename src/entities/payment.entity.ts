@@ -24,4 +24,3 @@ export class Payment extends BaseEntity {
   @Column()
   refund: string;
 }
-//

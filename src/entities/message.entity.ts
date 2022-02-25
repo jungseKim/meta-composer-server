@@ -20,4 +20,3 @@ export class Message extends BaseEntity {
   @Column()
   message: string;
 }
-//

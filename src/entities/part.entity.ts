@@ -27,4 +27,3 @@ export class Part extends BaseEntity {
   @Column()
   pianoEvent: string;
 }
-//

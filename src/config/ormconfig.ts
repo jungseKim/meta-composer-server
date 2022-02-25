@@ -64,4 +64,3 @@ const config: TypeOrmModuleOptions = {
   cli: { migrationsDir: './src/migrations' },
 };
 export default config;
-//

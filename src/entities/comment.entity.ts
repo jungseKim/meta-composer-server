@@ -37,4 +37,3 @@ export class Comment extends BaseEntity {
   @Column({ type: 'enum', enum: Rating })
   rating: Rating;
 }
-//

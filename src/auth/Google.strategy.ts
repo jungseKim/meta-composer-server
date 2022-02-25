@@ -37,4 +37,4 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     const user = this.usersService.findOrCreate(joinFacebookDto);
     done(null, user);
   }
-}//
+}

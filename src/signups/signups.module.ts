@@ -9,4 +9,4 @@ import { SignupsService } from './signups.service';
     providers: [SignupsService],
     controllers: [SignupsController],
   })
-  export class SignupsModule {}//
+  export class SignupsModule {}

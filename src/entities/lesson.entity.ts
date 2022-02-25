@@ -106,4 +106,3 @@ export class Lesson extends BaseEntity {
   teacherId: number;
 }
 // number will be converted into integer, string into varchar, boolean into bool, etc. But you can use any column type your database supports by explicitly specifying a column type into the @Column decorator.  from typeorm.io
-//

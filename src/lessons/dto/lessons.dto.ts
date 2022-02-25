@@ -20,4 +20,3 @@ export class LessonsDto {
 
   teacherId: number;
 }
-//
