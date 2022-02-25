@@ -40,3 +40,4 @@ export class Teacher extends BaseEntity {
   @Column()
   userId: number;
 }
+//asd

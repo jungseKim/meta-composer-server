@@ -22,3 +22,4 @@ export class Category extends BaseEntity {
   @ManyToOne((type) => Category, (category) => category.id)
   pid: number;
 }
+//asd
