@@ -5,4 +5,4 @@ export class JoinGoogleDto {
     provider: string;
     provider_id: number;
 
-}
+}//

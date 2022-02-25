@@ -47,3 +47,4 @@ export class Signup extends BaseEntity {
   // @Column({ type: 'date' })
   // date: string;
 }
+//

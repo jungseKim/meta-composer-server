@@ -14,3 +14,4 @@ export class SignupsController {
       return this.signupsService.signup(id,merchant_uid);
     }
 }
+//

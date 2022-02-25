@@ -1,5 +1,6 @@
 import {JwtRefreshGuard} from './jwt-refresh.guard';
 import {
+    BadRequestException,
     Body,
     Controller,
     Get,
@@ -17,6 +18,7 @@ import {UserDecorator} from 'src/decorators/user.decorator';
 import {User} from 'src/entities/user.entity';
 import {ApiOperation, ApiTags} from '@nestjs/swagger';
 import {UserService} from 'src/user/user.service';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
 @ApiTags('인증 API')
@@ -25,6 +27,14 @@ export class AuthController {
         private authService : AuthService,
         private userService : UserService
     ) {}
+
+
+
+    @UseGuards(JwtAuthGuard)
+    @Get('profile')
+    getProfile(@UserDecorator() user: User) {
+        return user;
+      }
 
 
     @Get('/google')
@@ -129,11 +139,6 @@ export class AuthController {
         return '1';
     }
 
-    @UseGuards(AuthGuard('jwt'))
-	@Get('/profile')
-	 getProfile(@Request() req) {
-		return req.user;
-	}
-    
 
 }
+//

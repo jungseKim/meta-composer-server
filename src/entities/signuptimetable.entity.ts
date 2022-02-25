@@ -26,3 +26,4 @@ export class Signuptimetable extends BaseEntity {
   @Column({ type: 'datetime' })
   time: number;
 }
+//

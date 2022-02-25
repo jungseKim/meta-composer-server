@@ -32,3 +32,4 @@ export class TimeTable extends BaseEntity {
   @Column({ type: 'time' })
   time: number;
 }
+//

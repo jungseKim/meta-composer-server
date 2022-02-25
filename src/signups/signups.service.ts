@@ -16,3 +16,4 @@ export class SignupsService {
     return this.signupsRepository.signup(id,merchant_uid);
   }
 }
+//

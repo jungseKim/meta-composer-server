@@ -26,3 +26,4 @@ export class Attendance extends BaseEntity {
   @Column({ type: 'date' })
   date: number;
 }
+//
