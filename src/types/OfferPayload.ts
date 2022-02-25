@@ -1,5 +1,6 @@
 export default interface OfferPayload {
-  userId: string;
+  userId?: number;
+  roomId?: string;
   data: RtcData;
 }
 interface RtcData {

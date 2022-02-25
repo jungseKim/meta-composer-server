@@ -1,3 +1,4 @@
+import { Req } from '@nestjs/common';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import {
   ConnectedSocket,
@@ -16,6 +17,7 @@ import Clients from 'src/types/Clients';
 import IPayload from 'src/types/InitPayload';
 import InitPayload from 'src/types/InitPayload';
 import OfferPayload from 'src/types/OfferPayload';
+import { UAParser } from 'ua-parser-js';
 @WebSocketGateway({
   namespace: 'webRtc',
   cors: {
@@ -39,8 +41,9 @@ export class WebRtcGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('setInit')
   setInit(client: Socket, payload: IPayload) {
-    console.log(client.id);
-    client.data.roomid = payload.userId;
+    // console.log(client.handshake.headers['user-agent']);
+    // console.log(new UAParser(client.handshake.headers['user-agent']));
+
     client.join(payload.userId.toString());
     client.to(payload.userId.toString()).emit('sendOffer');
   }

@@ -1,18 +1,23 @@
+import { JwtRefreshGuard } from './../../auth/jwt-refresh.guard';
 import { SetupService } from './setup.service';
 import { UseGuards } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import {
+  ConnectedSocket,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { customAlphabet } from 'nanoid';
+import { customAlphabet, nanoid } from 'nanoid';
 import EnterPayload from 'src/types/EnterPayload';
 import { JwtGuard } from 'src/auth/jwt.guard';
 import OfferPayload from 'src/types/OfferPayload';
+import IPayload from 'src/types/InitPayload';
 
 @WebSocketGateway({
-  namespace: 'setup',
+  namespace: 'selfSetup',
   cors: {
     origin:
       process.env.NODE_ENV === 'dev'
@@ -20,41 +25,65 @@ import OfferPayload from 'src/types/OfferPayload';
         : process.env.CORS_ORING,
   },
 })
-@UseGuards(JwtGuard)
-export class SetupGateway {
-  EnterCode: Record<string, string>;
-
-  constructor(private setupService:SetupService){}
-
+export class SetupGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  sockets: Socket[];
+  constructor(private setupService: SetupService) {
+    this.sockets = [];
+  }
   @WebSocketServer()
   sever: Server;
-  //오큘러스 고려 없이 만들었을때
-  @SubscribeMessage('setInit')
-  handleMessage(client: Socket, payload: EnterPayload) {
-    if (this.EnterCode[payload.url]) {
-      if (this.EnterCode[payload.url] === payload.code) {
-        client.join(payload.url);
-        client.to(payload.url).emit('sendOffer');
-       delete this.EnterCode[payload.url];
-      } else {
-        client.emit('CodeError');
-      }
-    } else {
-      client.join(payload.url);
 
-      const code=  this.setupService.createEnterCode()
-     
-      this.EnterCode[payload.url] = code;
-      
-      client.emit('EnterCode', code);
+  async handleConnection(@ConnectedSocket() client: Socket) {}
+  handleDisconnect(@ConnectedSocket() client: Socket) {
+    this.sockets = this.sockets.filter((socket) => {
+      return socket.id !== client.id;
+    });
+    console.log(this.sockets);
+  }
+
+  @SubscribeMessage('setInit')
+  handleMessage(client: Socket, payload: IPayload) {
+    console.log(client.handshake.headers.authorization, 'Ss');
+    // const user = await this.usersService.findOne(payload.userId);
+    const checkAgent = this.setupService.agentSortation(
+      client.handshake.headers['user-agent'],
+    );
+    console.log(checkAgent);
+    for (let socket of this.sockets) {
+      console.log(socket.data.userId);
+      if (
+        socket.data.userId === payload.userId &&
+        socket.data.userAgent === checkAgent
+      ) {
+        client.disconnect();
+        return;
+      }
     }
+
+    client.data.userId = payload.userId;
+    client.data.userAgent = checkAgent;
+
+    this.sockets.push(client);
+    client.join(payload.userId.toString());
+
+    client.to(payload.userId.toString()).emit('sendOffer');
   }
   @SubscribeMessage('getOffer')
   sendMessage(client: Socket, payload: OfferPayload) {
-    console.log(payload.data);
     client.to(payload.userId.toString()).emit('getOffer', payload.data);
+  }
 
-    // console.log(this.clients[payload.userId], '겟오퍼');
-    //index 기반 interface 으로해서 index=client.id 로하고 value를 client와 user.id 로 하자
+  @SubscribeMessage('peerConnectComplete')
+  sendRoomId(client: Socket, payload: IPayload) {
+    this.sockets.map((socket) => {
+      if (payload.userId === socket.data.userId) {
+        if (socket.data.userAgent === 'VR') {
+          const id = nanoid(10);
+          return id;
+        } else {
+          socket.disconnect();
+        }
+      }
+    });
   }
 }

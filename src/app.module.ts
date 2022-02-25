@@ -1,3 +1,4 @@
+import { SetupModule } from './gateways/setup/setup.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -18,6 +19,7 @@ import { RoomModule } from './room/room.module';
     TypeOrmModule.forRoot(typeOrmConfig),
     UserModule,
     RoomModule,
+    SetupModule,
   ],
 })
 export class AppModule {}

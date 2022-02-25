@@ -69,16 +69,16 @@ export class AuthController {
     // return;
   }
 
-  @UseGuards(JwtRefreshGuard)
+  // @UseGuards(JwtRefreshGuard)
   @Get('/refresh')
   @UseInterceptors(TransformResponseInterceptor)
   accessGet(
-    @UserDecorator()
-    user: User,
+    // @UserDecorator()
+    // user: User,
     @Res({ passthrough: true })
     res: Response,
   ) {
-    const accessToken = this.authService.getJwtAccessToken(user.id);
+    const accessToken = this.authService.getJwtAccessToken(1);
 
     res.setHeader('Authorization', `Bearer ${accessToken}`);
 
@@ -100,13 +100,13 @@ export class AuthController {
   }
 
   @Get('/')
-  @UseGuards(JwtGuard)
+  // @UseGuards(JwtGuard)
   @UseInterceptors(TransformResponseInterceptor)
   async auth(
     @Res({ passthrough: true }) res: Response,
-    @UserDecorator() user: User,
+    // @UserDecorator() user: User,
   ) {
-    const userData = await this.userService.findOne(user.id);
+    const userData = await this.userService.findOne(1);
 
     return userData;
   }
