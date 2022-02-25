@@ -21,10 +21,10 @@ import { UAParser } from 'ua-parser-js';
 @WebSocketGateway({
   namespace: 'webRtc',
   cors: {
-    origin:
-      process.env.NODE_ENV === 'dev'
-        ? 'http://localhost:3000'
-        : process.env.CORS_ORING,
+    origin: 'https://meta-composer-client.vercel.app/',
+    // process.env.NODE_ENV === 'dev'
+    //   ? 'http://localhost:3000'
+    //   : process.env.CORS_ORING,
   },
 })
 export class WebRtcGateway implements OnGatewayConnection, OnGatewayDisconnect {
