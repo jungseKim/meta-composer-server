@@ -10,7 +10,7 @@ import {
 
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway(4400, {
+@WebSocketGateway({
   namespace: 'chat',
   cors: {
     origin: 'http://localhost:3000',
@@ -31,29 +31,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     return 'aart';
   }
 
-  handleDisconnect(@ConnectedSocket() client: any) {
-    delete this.client[client['id']];
-  }
+  handleDisconnect(@ConnectedSocket() client: any) {}
 
   @SubscribeMessage('setInit')
-  setInit(client: Socket, payload: any) {
-    if (client.data.isInit) {
-      return;
-    }
-    client.data.nickname = payload.nickname
-      ? payload.nickname
-      : '낯선사람' + client.id;
-    client.data.isInit = true;
-    return {
-      nickname: client.data.nickname,
-    };
-  }
-  @SubscribeMessage('test')
-  test(client: Socket, payload: any) {
-    if (client.data.isInit) {
-      console.log(client.data.isInit, client.data.nickname);
-    }
-  }
+  async setInit(client: Socket, payload: any) {}
 
   @SubscribeMessage('sendMessage')
   sendMessage(client: Socket, message: string): void {

@@ -18,6 +18,7 @@ import IPayload from 'src/types/InitPayload';
 import InitPayload from 'src/types/InitPayload';
 import OfferPayload from 'src/types/OfferPayload';
 import { UAParser } from 'ua-parser-js';
+import { parse } from 'cookie';
 @WebSocketGateway({
   namespace: 'webRtc',
   cors: {
@@ -42,7 +43,7 @@ export class WebRtcGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('setInit')
   setInit(client: Socket, payload: IPayload) {
     // console.log(client.handshake.headers['user-agent']);
-    // console.log(new UAParser(client.handshake.headers['user-agent']));
+    console.log(new UAParser(client.handshake.headers));
 
     client.join(payload.userId.toString());
     client.to(payload.userId.toString()).emit('sendOffer');
