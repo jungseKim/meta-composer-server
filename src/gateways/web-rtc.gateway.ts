@@ -1,4 +1,7 @@
-import { Req } from '@nestjs/common';
+import { SetupService } from './setup/setup.service';
+import { User } from 'src/entities/user.entity';
+import { JwtGuard } from 'src/auth/jwt.guard';
+import { Req, UseGuards } from '@nestjs/common';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import {
   ConnectedSocket,
@@ -17,8 +20,10 @@ import Clients from 'src/types/Clients';
 import IPayload from 'src/types/InitPayload';
 import InitPayload from 'src/types/InitPayload';
 import OfferPayload from 'src/types/OfferPayload';
-import { UAParser } from 'ua-parser-js';
 import { parse } from 'cookie';
+import { TestGuard } from './test.guard';
+import { UserDecorator } from 'src/decorators/user.decorator';
+import { UserSocketDecorator } from 'src/decorators/userSocket.decorator';
 @WebSocketGateway({
   namespace: 'webRtc',
   cors: {
@@ -28,22 +33,29 @@ import { parse } from 'cookie';
         : process.env.CORS_ORING,
   },
 })
+// @UseGuards(JwtGuard)
+@UseGuards(TestGuard)
 export class WebRtcGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // client: Record<string, Client>;
 
   @WebSocketServer()
   server: Server;
 
-  constructor() {}
+  constructor(private setupService: SetupService) {}
 
-  async handleConnection(@ConnectedSocket() client: Socket) {}
+  async handleConnection(@ConnectedSocket() client: Socket) {
+    const user = await this.setupService.whoami(client);
+    console.log('you are');
+    console.log(user);
+  }
 
   handleDisconnect(@ConnectedSocket() client: Socket) {}
 
   @SubscribeMessage('setInit')
   setInit(client: Socket, payload: IPayload) {
-    // console.log(client.handshake.headers['user-agent']);
-    console.log(new UAParser(client.handshake.headers));
+    // console.log(client.handshake.auth.token.split(' ')[1]);
+
+    // console.log(client.handshake.headers);
 
     client.join(payload.userId.toString());
     client.to(payload.userId.toString()).emit('sendOffer');

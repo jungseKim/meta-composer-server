@@ -14,7 +14,7 @@ export class UserService {
     return users;
   }
 
-  async findOne(userId: number): Promise<User> {
+  async findOne(userId: number): Promise<User | Boolean> {
     const user = await this.userRepository.findOne(userId);
 
     return user;

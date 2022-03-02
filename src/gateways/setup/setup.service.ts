@@ -1,20 +1,34 @@
+import { Socket } from 'socket.io';
 import { retry } from 'rxjs';
 import { customAlphabet } from 'nanoid';
+import * as jwt from 'jsonwebtoken';
 /*
 https://docs.nestjs.com/providers#services
 */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { TokenPayload } from 'src/auth/token-payload.interface';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/entities/user.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class SetupService {
-  public createEnterCode() {
-    const char = customAlphabet('ABCDEFG', 2)();
-    const num = Math.random().toString().slice(2, 4);
-    const codeArr = char.split('').concat(num.split(''));
-    const code = codeArr.sort(() => Math.random() - 0.5).join('');
+  constructor(
+    @InjectRepository(User) private userRepository: Repository<User>,
+  ) {}
 
-    return code;
+  public async whoami(client: Socket) {
+    const authToken = client.handshake.auth.token.split(' ')[1];
+    const jwtPayload: TokenPayload = <TokenPayload>(
+      jwt.verify(authToken, 'jungse')
+    );
+    const user = await this.userRepository.findOne(jwtPayload['userId']);
+    if (user) {
+      return user;
+    } else {
+      throw new UnauthorizedException();
+    }
   }
   public agentSortation(agent: string) {
     if (agent.indexOf('VR') !== -1) return 'VR';

@@ -85,8 +85,7 @@ export class AuthController {
     return;
   }
 
-  //다른 라이브 러리 쓰면 nestjs 기능 과의 호한성이 사라져서
-  //passthrough 를 로 명시해줘야함
+  //테스트용 로그인
   @Get('/login')
   async login(@Res({ passthrough: true }) response: Response) {
     const refreshToken = this.authService.getJwtRefreshToken(1);
@@ -109,10 +108,5 @@ export class AuthController {
     const userData = await this.userService.findOne(user.id);
 
     return userData;
-  }
-
-  @Get('/test')
-  tec() {
-    return process.env.NODE_ENV;
   }
 }
