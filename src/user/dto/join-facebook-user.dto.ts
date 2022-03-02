@@ -6,4 +6,6 @@ export class JoinFacebookDto {
   provider: string;
 
   provider_id: number;
+
+  password: string;
 }

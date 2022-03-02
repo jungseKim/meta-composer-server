@@ -28,7 +28,7 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(
           return request?.cookies?.Refresh;
         },
       ]),
-      secretOrKey: 'jungse',
+      secretOrKey: process.env.JWT_ACCESS_TOKEN_SECRET,
       // passReqToCallback: true,
       // true로 할 시에 validate 함수의 인자로 request 객체가 전달됨
     });

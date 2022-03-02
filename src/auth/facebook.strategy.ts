@@ -28,9 +28,13 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
       email: emails[0].value,
       provider: profile.provider,
       provider_id: +profile.id,
+      password: 'facebook',
     };
     const user = this.usersService.findOrCreate(joinFacebookDto);
 
     done(null, user);
   }
 }
+
+
+//DB연결하기부터
