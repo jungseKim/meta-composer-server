@@ -86,7 +86,8 @@ export class AuthController {
     return;
   }
 
-  //테스트용 로그인
+  //다른 라이브 러리 쓰면 nestjs 기능 과의 호한성이 사라져서
+  //passthrough 를 로 명시해줘야함
   @Get('/login')
   async login(@Res({ passthrough: true }) response: Response,@UserDecorator()
   user: User,) {

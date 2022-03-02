@@ -1,5 +1,3 @@
-import { GatewayModule } from './gateways/gateway.module';
-import { TestModule } from './gateways/test.module';
 import { LessonGateway } from './gateways/real-time-lesson/lesson.gateway';
 import { SetupModule } from './gateways/setup/setup.module';
 import { Module } from '@nestjs/common';
@@ -11,7 +9,7 @@ import { FacebookStrategy } from './auth/facebook.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { UserModule } from './user/user.module';
-import { WebRtcGateway } from './gateways/web-rtc.gateway';
+import { WebRtcGateway } from './gateways/rtcGateway/web-rtc.gateway';
 import { RoomModule } from './room/room.module';
 
 
@@ -27,9 +25,8 @@ import ORMConfig from './config/ormconfig';
 
 @Module({
   controllers: [AppController],
-  providers: [LessonGateway, AppService, ChatGateway],
+  providers: [LessonGateway, AppService, ChatGateway, WebRtcGateway],
   imports: [
-    GatewayModule,
     AuthModule,
     RoomModule,
     SetupModule,
