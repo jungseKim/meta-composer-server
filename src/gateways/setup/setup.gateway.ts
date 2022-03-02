@@ -1,4 +1,4 @@
-import { JwtRefreshGuard } from './../../auth/jwt-refresh.guard';
+import { JwtRefreshGuard } from '../../auth/jwt-refresh.guard';
 import { SetupService } from './setup.service';
 import { UseGuards } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
