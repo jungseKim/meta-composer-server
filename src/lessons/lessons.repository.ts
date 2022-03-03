@@ -11,6 +11,12 @@ export class LessonsRepository extends Repository<Lesson> {
   // const teacherId = Repository<Teacher>.find(user.id);
   async createLesson(updateData,user): Promise<Lesson> {
 
+    this.find({
+      where: {
+          project: { name: "TypeORM", initials: "TORM" },
+      },
+      relations: ["project"],
+   });
 
     const lesson = this.create({
       introduce: updateData.introduce,

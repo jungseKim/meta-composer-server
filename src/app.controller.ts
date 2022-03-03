@@ -2,14 +2,16 @@ import { Controller, Get, Res } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Response } from 'express';
 import { ApiOperation } from '@nestjs/swagger';
+import { UserDecorator } from './decorators/user.decorator';
+import { User } from './entities/user.entity';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  getHello(@UserDecorator() user:User){
+    return user;
   }
 
   @Get('abc')
