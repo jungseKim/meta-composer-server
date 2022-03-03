@@ -26,9 +26,10 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
     const joinFacebookDto: JoinFacebookDto = {
       username: name.givenName + name.familyName,
       email: emails[0].value,
+            password: "facebook",
       provider: profile.provider,
       provider_id: +profile.id,
-      password: 'facebook',
+
     };
     const user = this.usersService.findOrCreate(joinFacebookDto);
 

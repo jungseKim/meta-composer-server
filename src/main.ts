@@ -13,6 +13,7 @@ dotenv.config({
     path: path.resolve('.env',
     // process.env.NODE_ENV === 'dev'   ? '.env'   : process.env.NODE_ENV ===
     // 'stage'   ? '.stage.env'   : '.development.env',)
+    )
 });
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -25,7 +26,6 @@ async function bootstrap() {
 
     app.use(cookieParser());
 
-    app.useGlobalInterceptors(new TransformResponseInterceptor());
 
     await app.listen(4000);
 }

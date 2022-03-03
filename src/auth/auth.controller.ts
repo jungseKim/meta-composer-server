@@ -116,6 +116,7 @@ export class AuthController {
     return userData;
   }
 
+
   @Get('/test')
   tec() {
     return process.env.NODE_ENV;
@@ -127,8 +128,13 @@ export class AuthController {
 
 
   @Get('profile')
-  @UseGuards(AuthGuard('jwt'))
-  getProfile(@UserDecorator()user : User) {
+  @UseGuards(JwtGuard)
+  @UseInterceptors(TransformResponseInterceptor)
+  getProfile(  
+     @Res({ passthrough: true }) res: Response,
+  @UserDecorator()user : User) {
+
+    console.log(user);
       console.log(user.email + "   from controller")
       return user;
   }
@@ -143,6 +149,7 @@ export class AuthController {
 
 @UseInterceptors(SetCookieInterceptor)
 @Get('/google/redirect')
+// @Redirect('http://localhost:4000/')
 @UseGuards(AuthGuard('google'))
 // @Redirect('http://localhost:4000/api/auth/profile')
 async googleAuthRedirect(
@@ -151,15 +158,17 @@ async googleAuthRedirect(
 ) {
     console.log(user + "data from user decorator");
     // const accessToken = this.authService.getJwtAccessToken(user.id);
-    const refreshToken = this
+    const refreshToken =this
         .authService
         .getJwtRefreshToken(user.id);
 
     // response.cookie('token', refreshToken, {     httpOnly: true,     path: '/',
     // sameSite: 'lax',     maxAge: 3600000 });
     response.setHeader('Authorization', `Bearer ${refreshToken}`);
-    response.setHeader('Access-Control-Allow-Origin', 'http://localhost:4000');
-    response.setHeader('Access-Control-Allow-Credentials', 'true');
+
+    // return refreshToken;
+    // response.setHeader('Access-Control-Allow-Origin', 'http://localhost:4000');
+    // response.setHeader('Access-Control-Allow-Credentials', 'true');
     return {user, refreshToken};
 
 }
