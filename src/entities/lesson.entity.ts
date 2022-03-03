@@ -32,7 +32,7 @@ export class Lesson extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne((type) => Teacher, (teacher) => teacher.lesson)
+  @ManyToOne((type) => Teacher, (teacher) => teacher.lesson,{  onDelete: 'CASCADE',  })
   teacher: Teacher;
 
   @Column()
@@ -88,7 +88,7 @@ export class Lesson extends BaseEntity {
   @OneToMany((type) => Wishlist, (wishlist) => wishlist.lesson)
   wishlist: Wishlist;
 
-  @OneToMany((type) => Signup, (signup) => signup.lesson,{  onDelete: 'CASCADE',})
+  @OneToMany((type) => Signup, (signup) => signup.lesson,{  cascade: true})
   signup: Signup;
 
   @OneToMany((type) => Sheet, (sheet) => sheet.lesson)
@@ -98,7 +98,6 @@ export class Lesson extends BaseEntity {
   assignment: Assignment;
 
   @Column()
-  
   @ApiProperty({
     example:'1',
     description:'레슨을 생성할 강사의 ID값 입니다.'

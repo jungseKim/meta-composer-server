@@ -8,6 +8,7 @@ import * as path from 'path';
 import { TransformResponseInterceptor } from './common/interceptors/transformResponse.interceptor';
 import session from 'express-session';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { JwtGuard } from './auth/jwt.guard';
 dotenv.config({
   path: path.resolve(
     '.env',
