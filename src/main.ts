@@ -10,11 +10,7 @@ import session from 'express-session';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { JwtGuard } from './auth/jwt.guard';
 dotenv.config({
-  path: path.resolve(
-    '.env',
-    // process.env.NODE_ENV === 'dev'   ? '.env'   : process.env.NODE_ENV ===
-    // 'stage'   ? '.stage.env'   : '.development.env',)
-  ),
+  path: path.resolve('.env'),
 });
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -28,8 +24,6 @@ async function bootstrap() {
   });
 
   app.use(cookieParser());
-
-  app.useGlobalInterceptors(new TransformResponseInterceptor());
 
   await app.listen(4000);
 }
