@@ -21,15 +21,15 @@ import { Notification } from '../entities/notification.entity';
 
 dotenv.config();
 
- const ORMConfig: TypeOrmModuleOptions = {
+const ORMConfig: TypeOrmModuleOptions = {
   type: 'mysql',
   host: 'localhost',
   port: 3306,
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: 'nest',
-  entities: [ 
-     User,
+  entities: [
+    User,
     Teacher,
     Lesson,
     TimeTable,
@@ -59,7 +59,6 @@ dotenv.config();
   keepConnectionAlive: true,
   migrations: [__dirname + '/./src/migrations/*.ts'],
   cli: { migrationsDir: './src/migrations' },
-
 };
 
 export default ORMConfig;

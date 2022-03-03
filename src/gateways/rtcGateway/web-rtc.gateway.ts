@@ -1,4 +1,4 @@
-import { Req } from '@nestjs/common';
+import { Req, UseGuards } from '@nestjs/common';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import {
   ConnectedSocket,
@@ -19,6 +19,7 @@ import InitPayload from 'src/types/InitPayload';
 import OfferPayload from 'src/types/OfferPayload';
 import { UAParser } from 'ua-parser-js';
 import { parse } from 'cookie';
+import { JwtSocketGouard } from '../jwt-socket.guard';
 @WebSocketGateway({
   namespace: 'webRtc',
   cors: {
@@ -42,9 +43,10 @@ export class WebRtcGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('setInit')
   setInit(client: Socket, payload: IPayload) {
-    // console.log(client.handshake.headers['user-agent']);
-    console.log(new UAParser(client.handshake.headers));
-
+    // console.log(
+    //   new UAParser(client.handshake.headers['user-agent']).getBrowser(),
+    //   new UAParser(client.handshake.headers['user-agent']).getDevice(),
+    // );
     client.join(payload.userId.toString());
     client.to(payload.userId.toString()).emit('sendOffer');
   }
