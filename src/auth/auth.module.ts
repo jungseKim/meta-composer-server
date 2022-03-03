@@ -10,14 +10,15 @@ import { AuthService } from './auth.service';
 import { FacebookStrategy } from './facebook.strategy';
 import { JwtRefreshTokenStrategy } from './jwt-refresh-token.strategy';
 import { JwtStrategy } from './jwt.strategy';
+import { GoogleStrategy } from './Google.strategy';
 @Module({
   imports: [
     ConfigModule,
     TypeOrmModule.forFeature([User]),
     JwtModule.register({
-      secret: 'jungse',
+      secret: process.env.JWT_ACCESS_TOKEN_SECRET,
       signOptions: {
-        expiresIn: 60 * 60, //얼마나 지속할껀지 지금은 1시간
+        expiresIn: '1 day', 
       },
     }),
   ],
@@ -28,6 +29,7 @@ import { JwtStrategy } from './jwt.strategy';
     FacebookStrategy,
     UserService,
     JwtStrategy,
+    GoogleStrategy
   ],
 })
 export class AuthModule {}

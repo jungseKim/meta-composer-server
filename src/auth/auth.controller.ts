@@ -22,7 +22,8 @@ import { User } from 'src/entities/user.entity';
 import { JwtGuard } from './jwt.guard';
 import { TransformResponseInterceptor } from 'src/common/interceptors/transformResponse.interceptor';
 import { SetCookieInterceptor } from 'src/common/interceptors/set-cookie.interceptor';
-@Controller('auth')
+import { ApiOperation } from '@nestjs/swagger';
+@Controller('api/auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
@@ -85,10 +86,12 @@ export class AuthController {
     return;
   }
 
-  //테스트용 로그인
+  //다른 라이브 러리 쓰면 nestjs 기능 과의 호한성이 사라져서
+  //passthrough 를 로 명시해줘야함
   @Get('/login')
-  async login(@Res({ passthrough: true }) response: Response) {
-    const refreshToken = this.authService.getJwtRefreshToken(1);
+  async login(@Res({ passthrough: true }) response: Response,@UserDecorator()
+  user: User,) {
+    const refreshToken = this.authService.getJwtRefreshToken(user.id);
     response.cookie('Refresh', refreshToken, {
       httpOnly: true,
       path: '/',
@@ -109,4 +112,65 @@ export class AuthController {
 
     return userData;
   }
+
+  @Get('/test')
+  tec() {
+    return process.env.NODE_ENV;
+  }
+
+
+
+
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('profile')
+  getProfile(@UserDecorator()user : User) {
+      console.log(user.email + "   from controller")
+      return user;
+  }
+
+
+  @Get('/google')
+  @ApiOperation({summary: '구글 로그인', description: '구글 로그인하기'})
+  @UseGuards(AuthGuard('google'))
+  async googleAuth(@Req()req) {
+      console.log(req)
+  }
+
+  // @UseInterceptors(SetCookieInterceptor)
+  @Get('/google/redirect')
+  @UseGuards(AuthGuard('google'))
+  // @Redirect('http://localhost:4000/api/auth/profile')
+  async googleAuthRedirect(
+      @UserDecorator()user : User,
+      @Res({passthrough: true})response : Response,
+  ) {
+      console.log(user + "data from user decorator");
+      // const accessToken = this.authService.getJwtAccessToken(user.id);
+      const refreshToken = this
+          .authService
+          .getJwtRefreshToken(user.id);
+
+      response.cookie('token', refreshToken, {
+          httpOnly: true,
+          path: '/',
+          sameSite: 'lax',
+          maxAge: 3600000
+      });
+      response.setHeader('Authorization', `Bearer ${refreshToken}`);
+      response.setHeader('Access-Control-Allow-Origin', 'http://localhost:4000');
+      response.setHeader('Access-Control-Allow-Credentials', 'true');
+      return {user,refreshToken};
+  
+     
+
+  }
+
+  @Get('/logout')
+  async logout(@Res({passthrough: true})res : Response) {
+      res.clearCookie('Refresh');
+
+      return true;
+  }
+  
 }
