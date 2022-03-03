@@ -1,6 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { WsAdapter } from '@nestjs/platform-ws';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import { SocketIoAdapter } from './adapters/socket-io.adapters';
@@ -29,29 +28,11 @@ async function bootstrap() {
     exposedHeaders: ['Authorization'],
     // allowedHeaders: 'http://localhost:3000/*',
   });
-  app.use(
-    session({
-      secret: process.env.JWT_ACCESS_TOKEN_SECRET,
-      resave: false,
-      saveUninitialized: false,
-    }));
-
 
   app.use(cookieParser());
-  app.useGlobalGuards();
- 
-  const config = new DocumentBuilder()
-    .setTitle('Meta-Composer Api')
-    .setDescription('Meta-Composer Api')
-    .setVersion('1.0')
-    .addTag('api')
-    .build();
-    const document = SwaggerModule.createDocument(app, config);
-    
-    SwaggerModule.setup('api-docs', app, document);
 
   app.useGlobalInterceptors(new TransformResponseInterceptor());
- 
+
   await app.listen(4000);
 }
 bootstrap();

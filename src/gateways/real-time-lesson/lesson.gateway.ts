@@ -22,7 +22,7 @@ import OfferPayload from 'src/types/OfferPayload';
     origin:
       process.env.NODE_ENV === 'dev'
         ? 'http://localhost:3000'
-        : process.env.CORS_ORING,
+        : process.env.CORS_ORIGIN,
   },
 })
 export class LessonGateway {

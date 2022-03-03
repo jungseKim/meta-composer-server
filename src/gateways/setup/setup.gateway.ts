@@ -22,7 +22,7 @@ import IPayload from 'src/types/InitPayload';
     origin:
       process.env.NODE_ENV === 'dev'
         ? 'http://localhost:3000'
-        : process.env.CORS_ORING,
+        : process.env.CORS_ORIGIN,
   },
 })
 export class SetupGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -34,6 +34,7 @@ export class SetupGateway implements OnGatewayConnection, OnGatewayDisconnect {
   sever: Server;
 
   async handleConnection(@ConnectedSocket() client: Socket) {}
+  
   handleDisconnect(@ConnectedSocket() client: Socket) {
     this.sockets = this.sockets.filter((socket) => {
       return socket.id !== client.id;
