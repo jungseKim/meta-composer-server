@@ -9,6 +9,7 @@ import * as path from 'path';
 import { TransformResponseInterceptor } from './common/interceptors/transformResponse.interceptor';
 import session from 'express-session';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { JwtGuard } from './auth/jwt.guard';
 dotenv.config({
   path: path.resolve(
     '.env',
@@ -38,14 +39,18 @@ async function bootstrap() {
 
 
   app.use(cookieParser());
-  app.useGlobalGuards();
+  app.useGlobalGuards(
+    // new JwtGuard
+    );
  
   const config = new DocumentBuilder()
     .setTitle('Meta-Composer Api')
     .setDescription('Meta-Composer Api')
     .setVersion('1.0')
     .addTag('api')
+    // .addBearerAuth()
     .build();
+    
     const document = SwaggerModule.createDocument(app, config);
     
     SwaggerModule.setup('api-docs', app, document);

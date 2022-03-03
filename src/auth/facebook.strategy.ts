@@ -37,4 +37,3 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
 }
 
 
-//DB연결하기부터

@@ -16,10 +16,10 @@ export class Signup extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne((type) => User, (user) => user.wishlist)
+  @ManyToOne((type) => User, (user) => user.signup)
   user: User;
 
-  @ManyToOne((type) => Lesson, (lesson) => lesson.wishlist,{  onDelete: 'CASCADE',})
+  @ManyToOne((type) => Lesson, (lesson) => lesson.signup,{  onDelete: 'CASCADE',})
   lesson: Lesson;
 
   @Column()
