@@ -1,3 +1,4 @@
+import { Socket } from 'socket.io';
 import { PassportStrategy } from '@nestjs/passport';
 import { OnGatewayDisconnect } from '@nestjs/websockets';
 import { UserService } from '../user/user.service';
@@ -20,7 +21,7 @@ export class JwtSocketGouard implements CanActivate {
     @InjectRepository(User) private userRepository: Repository<User>, // private userRepository: Repository<User>,
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const client = context.switchToWs().getClient();
+    const client = context.switchToWs().getClient() as Socket;
     // console.log(client.handshake.auth.token);
     const authToken = client.handshake.auth.token.split(' ')[1];
     const jwtPayload: TokenPayload = <TokenPayload>(
@@ -30,9 +31,10 @@ export class JwtSocketGouard implements CanActivate {
     const user = await this.userRepository.findOne(jwtPayload['userId']);
 
     if (user) {
+      client.data.temp = '그냥 넣어봄';
       return true;
     }
-    client.disconnect();
+    // client.disconnect(); 여기도 됨
     return false;
   }
 }

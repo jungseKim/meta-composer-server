@@ -1,6 +1,6 @@
 import { JwtRefreshGuard } from './../../auth/jwt-refresh.guard';
 import { SetupService } from './setup.service';
-import { UseGuards } from '@nestjs/common';
+import { UseGuards, UseInterceptors } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import {
   ConnectedSocket,
@@ -15,6 +15,8 @@ import EnterPayload from 'src/types/EnterPayload';
 import { JwtGuard } from 'src/auth/jwt.guard';
 import OfferPayload from 'src/types/OfferPayload';
 import IPayload from 'src/types/InitPayload';
+import { JwtSocketGouard } from '../jwt-socket.guard';
+import { SocketUserData } from 'src/common/interceptors/socketUserData.interceptor';
 
 @WebSocketGateway({
   namespace: 'selfSetup',
@@ -25,6 +27,8 @@ import IPayload from 'src/types/InitPayload';
         : process.env.CORS_ORIGIN,
   },
 })
+@UseInterceptors(SocketUserData)
+@UseGuards(JwtSocketGouard)
 export class SetupGateway implements OnGatewayConnection, OnGatewayDisconnect {
   sockets: Socket[];
   constructor(private setupService: SetupService) {
@@ -33,8 +37,10 @@ export class SetupGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   sever: Server;
 
-  async handleConnection(@ConnectedSocket() client: Socket) {}
-  
+  async handleConnection(@ConnectedSocket() client: Socket) {
+    console.log(client.data.tmep, '@232');
+  }
+
   handleDisconnect(@ConnectedSocket() client: Socket) {
     this.sockets = this.sockets.filter((socket) => {
       return socket.id !== client.id;
@@ -44,17 +50,14 @@ export class SetupGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('setInit')
   handleMessage(client: Socket, payload: IPayload) {
-    console.log(client.handshake.headers.authorization, 'Ss');
     // const user = await this.usersService.findOne(payload.userId);
-    const checkAgent = this.setupService.agentSortation(
-      client.handshake.headers['user-agent'],
-    );
-    console.log(checkAgent);
+
     for (let socket of this.sockets) {
       console.log(socket.data.userId);
       if (
-        socket.data.userId === payload.userId &&
-        socket.data.userAgent === checkAgent
+        socket.data.userId === payload.userId
+        //  &&
+        // socket.data.userAgent === checkAgent
       ) {
         client.disconnect();
         return;
@@ -62,7 +65,7 @@ export class SetupGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     client.data.userId = payload.userId;
-    client.data.userAgent = checkAgent;
+    // client.data.userAgent = checkAgent;
 
     this.sockets.push(client);
     client.join(payload.userId.toString());

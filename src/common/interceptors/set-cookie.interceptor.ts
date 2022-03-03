@@ -23,8 +23,9 @@ export class SetCookieInterceptor implements NestInterceptor {
       tap((refreshToken: string) => {
         response.cookie('Refresh', refreshToken, {
           httpOnly: true,
-          secure: true,
-          sameSite: 'none',
+          secure: process.env.NODE_ENV === 'dev' ? false : true,
+          sameSite: process.env.NODE_ENV === 'dev' ? 'lax' : 'none',
+          //samesite none은 secure 강제로 ture
           maxAge: 60 * 60 * 1000,
           // this.configService.get<number>(
           //   'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
