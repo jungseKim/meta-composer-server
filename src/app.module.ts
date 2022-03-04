@@ -18,7 +18,9 @@ import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TeachersModule } from './teachers/teachers.module';
+
 import ORMConfig from './config/ormconfig';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   controllers: [AppController],
@@ -39,6 +41,9 @@ import ORMConfig from './config/ormconfig';
       signOptions: { expiresIn: '6000s' },
     }),
     TeachersModule,
+
+    CommentsModule
+
   ],
 })
 export class AppModule {}

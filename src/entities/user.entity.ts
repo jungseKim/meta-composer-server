@@ -18,6 +18,7 @@ import { Signup } from './signup.entity';
 import { Attendance } from './attendance.entity';
 import { Sheet } from './sheet.entity';
 import { Assignment } from './assignment.entity';
+import { isNullableType } from 'graphql';
 
 export enum ProviderType {
   FACEBOOK = 'Facebook',
@@ -35,7 +36,8 @@ export class User extends BaseEntity {
   @Column({ unique: true })
   email: string;
 
-  @Column()
+  
+  @Column( {nullable: true})
   password: string;
 
   @Column({ unique: true })
