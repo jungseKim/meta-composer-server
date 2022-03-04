@@ -10,8 +10,8 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  getHello(@UserDecorator() user:User){
-    return user;
+  getHello(){
+    return "1234";
   }
 
   @Get('abc')
