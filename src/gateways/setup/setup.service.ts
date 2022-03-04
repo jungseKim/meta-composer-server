@@ -1,24 +1,37 @@
+import { Repository } from 'typeorm';
+import { LessonRoom } from './../../entities/lessonRoom.entity';
+import { type } from 'os';
+import { Socket } from 'socket.io';
 import { retry } from 'rxjs';
-import { customAlphabet } from 'nanoid';
+import { customAlphabet, nanoid } from 'nanoid';
 /*
 https://docs.nestjs.com/providers#services
 */
 
 import { Injectable } from '@nestjs/common';
+import { UAParser } from 'ua-parser-js';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class SetupService {
-  public createEnterCode() {
-    const char = customAlphabet('ABCDEFG', 2)();
-    const num = Math.random().toString().slice(2, 4);
-    const codeArr = char.split('').concat(num.split(''));
-    const code = codeArr.sort(() => Math.random() - 0.5).join('');
+  constructor(
+    @InjectRepository(LessonRoom)
+    private lessonRepository: Repository<LessonRoom>,
+  ) {}
+  public agentSortation(client: Socket): string | boolean {
+    const agent = new UAParser(client.handshake.headers['user-agent']);
+    const type = agent.getDevice().type;
+    if (type === 'mobile') {
+      return false;
+    }
+    return agent.getBrowser().name === 'Oculus Browser' ? 'vr' : 'pc';
+  }
 
-    return code;
-  }
-  public agentSortation(agent: string) {
-    if (agent.indexOf('VR') !== -1) return 'VR';
-    if (agent.indexOf('OculusBrowser') !== -1) return 'VR';
-    return 'PC';
-  }
+  // public async createRoom(client:Socket){
+  //   const id = nanoid(10);
+  //   this.lessonRepository.create({
+  //     roomid:id
+  //     user
+  //   })
+  // }
 }

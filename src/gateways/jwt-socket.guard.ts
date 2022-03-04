@@ -1,13 +1,19 @@
 import { Socket } from 'socket.io';
 import { PassportStrategy } from '@nestjs/passport';
-import { OnGatewayDisconnect } from '@nestjs/websockets';
+import { OnGatewayDisconnect, WsException } from '@nestjs/websockets';
 import { UserService } from '../user/user.service';
 import { AuthService } from '../auth/auth.service';
 /*
 https://docs.nestjs.com/guards#guards
 */
 
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { TokenPayload } from 'src/auth/token-payload.interface';
 import * as jwt from 'jsonwebtoken';
@@ -15,6 +21,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from 'src/entities/user.entity';
 import { VerifiedCallback } from 'passport-jwt';
+import { UAParser } from 'ua-parser-js';
 @Injectable()
 export class JwtSocketGouard implements CanActivate {
   constructor(
@@ -30,11 +37,15 @@ export class JwtSocketGouard implements CanActivate {
 
     const user = await this.userRepository.findOne(jwtPayload['userId']);
 
-    if (user) {
-      client.data.temp = '그냥 넣어봄';
+    const type = new UAParser(
+      client.handshake.headers['user-agent'],
+    ).getDevice().type;
+
+    if (user && type !== 'mobile') {
       return true;
     }
-    // client.disconnect(); 여기도 됨
+
+    client.disconnect();
     return false;
   }
 }

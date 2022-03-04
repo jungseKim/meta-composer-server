@@ -15,6 +15,11 @@ import {
 } from '@nestjs/websockets';
 import IPayload from 'src/types/InitPayload';
 import OfferPayload from 'src/types/OfferPayload';
+import { UseGuards } from '@nestjs/common';
+import { JwtSocketGouard } from '../jwt-socket.guard';
+import { throws } from 'assert';
+import { json } from 'stream/consumers';
+import RtcData from 'src/types/OfferPayload';
 
 @WebSocketGateway({
   namespace: 'lesson',
@@ -25,23 +30,52 @@ import OfferPayload from 'src/types/OfferPayload';
         : process.env.CORS_ORIGIN,
   },
 })
-export class LessonGateway {
+// @UseGuards(JwtSocketGouard)
+export class LessonGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
+  rooms: string[];
+  constructor() {
+    this.rooms = [];
+  }
+  handleConnection(@ConnectedSocket() client: Socket) {}
+
+  handleDisconnect(@ConnectedSocket() client: Socket) {
+    this.removeRoom(client);
+  }
+
   @SubscribeMessage('setInit')
   setInit(client: Socket, roomId: string) {
-    // console.log(client.handshake.headers['user-agent']);
-    // console.log(new UAParser(client.handshake.headers['user-agent']));
+    this.rooms.push(roomId);
+    client.leave(client.id);
+    client.join(roomId);
+    client.data.roomId = roomId;
+    const OtherRooms = this.rooms.filter((id) => {
+      return id !== roomId;
+    });
+
+    return OtherRooms;
+  }
+
+  @SubscribeMessage('roomJoin')
+  roomJoin(client: Socket, roomId: string) {
+    client.leave(client.data.roomId);
+    this.removeRoom(client);
+
+    client.data.roomId = roomId;
     client.join(roomId);
     client.to(roomId).emit('sendOffer');
   }
 
   @SubscribeMessage('getOffer')
-  sendMessage(client: Socket, payload: OfferPayload) {
-    client.to(payload.roomId).emit('getOffer', payload.data);
+  sendMessage(client: Socket, data: RtcData) {
+    client.to(client.data.roomId).emit('getOffer', data);
+  }
 
-    // console.log(this.clients[payload.userId], '겟오퍼');
-    //index 기반 interface 으로해서 index=client.id 로하고 value를 client와 user.id 로 하자
+  public removeRoom(client: Socket) {
+    this.rooms = this.rooms.filter((id) => {
+      return id !== client.data.roomId;
+    });
   }
 }
