@@ -10,7 +10,7 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
     super({
       clientID: process.env.APP_ID,
       clientSecret: process.env.APP_SECRET,
-      callbackURL: 'https://jungse.shop/auth/facebook/redirect',
+      callbackURL: 'https://jungse.shop/api/auth/facebook/redirect',
       scope: 'email',
       profileFields: ['emails', 'name'],
     });
@@ -35,5 +35,3 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
     done(null, user);
   }
 }
-
-

@@ -47,6 +47,7 @@ export class AuthController {
   async facebookLogin(): Promise<any> {
     // return HttpStatus.OK;
   }
+
   @UseInterceptors(SetCookieInterceptor)
   @Get('/facebook/redirect')
   @Redirect(

@@ -2,8 +2,10 @@ import {
   BaseEntity,
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Lesson } from './lesson.entity';
@@ -18,6 +20,10 @@ export class LessonRoom extends BaseEntity {
   @Column({ unique: true })
   roomid: string;
 
-  @OneToMany(() => User, (user) => user.id)
-  userId: User[];
+  @OneToOne(() => User, (user) => user.lessonRoom)
+  @JoinColumn()
+  user: User;
+
+  @Column()
+  userId: string;
 }

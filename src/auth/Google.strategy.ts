@@ -11,7 +11,6 @@ import { Faker } from '@faker-js/faker';
 config();
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
-
   constructor(private usersService: UserService) {
     super({
       clientID: process.env.GOOGLE_CLIENT_ID,
@@ -21,17 +20,18 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     });
   }
 
-  async validate (
+  async validate(
     accessToken: string,
-     refreshToken: string,
-      profile: Profile, done: VerifyCallback): Promise<any>
-       { 
-        console.log(profile);
-         const { name, emails } = profile;
-           const joinFacebookDto:JoinFacebookDto = {
+    refreshToken: string,
+    profile: Profile,
+    done: VerifyCallback,
+  ): Promise<any> {
+    console.log(profile);
+    const { name, emails } = profile;
+    const joinFacebookDto: JoinFacebookDto = {
       email: emails[0].value,
-      username: name.givenName+name.familyName,
-      password:'123',
+      username: name.givenName + name.familyName,
+      password: '123',
       provider: profile.provider,
       provider_id: +profile.id,
     };

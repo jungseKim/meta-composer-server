@@ -8,7 +8,7 @@ import { User } from 'src/entities/user.entity';
 import { LessonRoom } from 'src/entities/lessonRoom.entity';
 
 @Module({
-  providers: [SetupService, SetupGateway, SetupService, SocketUserData],
+  providers: [SetupService, SetupGateway, SetupService],
   imports: [TypeOrmModule.forFeature([User, LessonRoom])],
 })
 export class SetupModule {}
