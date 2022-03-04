@@ -20,7 +20,9 @@ import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TeachersModule } from './teachers/teachers.module';
+
 import ORMConfig from './config/ormconfig';
+import { CommentsModule } from './comments/comments.module';
 
 
 @Module({
@@ -40,7 +42,9 @@ import ORMConfig from './config/ormconfig';
       secret: process.env.JWT_ACCESS_TOKEN_SECRET,
       signOptions: {expiresIn: '6000s'}
     }),
-    TeachersModule
+    TeachersModule,
+    CommentsModule
+
   ],
 })
 export class AppModule {}
