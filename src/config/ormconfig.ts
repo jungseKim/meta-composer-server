@@ -1,3 +1,4 @@
+import { LessonRoom } from './../entities/lessonRoom.entity';
 import { Teacher } from '../entities/teacher.entity';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
@@ -50,6 +51,7 @@ const ORMConfig: TypeOrmModuleOptions = {
     Wishlist,
     Notification,
     Category,
+    LessonRoom,
   ],
 
   synchronize: false, // false 기본값

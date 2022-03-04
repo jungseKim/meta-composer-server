@@ -5,17 +5,12 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
-import { targetModulesByContainer } from '@nestjs/core/router/router-module';
 import { TokenPayload } from 'src/auth/token-payload.interface';
 import * as jwt from 'jsonwebtoken';
-import { UAParser } from 'ua-parser-js';
-import { timingSafeEqual } from 'crypto';
 @Injectable()
 export class SocketUserData implements NestInterceptor {
   constructor(
@@ -34,15 +29,11 @@ export class SocketUserData implements NestInterceptor {
       const jwtPayload: TokenPayload = <TokenPayload>(
         jwt.verify(authToken, process.env.JWT_SECRET)
       );
+      const data = await this.userRepository.findOne(jwtPayload['userId']);
 
-      client.data.userId = await this.userRepository.findOne(
-        jwtPayload['userId'],
-      );
+      client.data.userId = data.id;
     }
-    if (!client.data.agent) {
-      new UAParser(client.handshake.headers['user-agent']).getBrowser();
-    }
-    // client.disconnect();
+
     return next.handle();
   }
 }

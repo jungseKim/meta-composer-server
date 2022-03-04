@@ -12,8 +12,6 @@ import { UserModule } from './user/user.module';
 import { WebRtcGateway } from './gateways/rtcGateway/web-rtc.gateway';
 import { RoomModule } from './room/room.module';
 
-
-
 import { LessonsModule } from './lessons/lessons.module';
 import { SignupsModule } from './signups/signups.module';
 import { ConfigModule } from '@nestjs/config';
@@ -21,7 +19,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TeachersModule } from './teachers/teachers.module';
 import ORMConfig from './config/ormconfig';
-
 
 @Module({
   controllers: [AppController],
@@ -35,12 +32,12 @@ import ORMConfig from './config/ormconfig';
     UserModule,
     LessonsModule,
     SignupsModule,
-    ConfigModule.forRoot({ isGlobal: true,}),
+    ConfigModule.forRoot({ isGlobal: true }),
     JwtModule.register({
       secret: process.env.JWT_ACCESS_TOKEN_SECRET,
-      signOptions: {expiresIn: '6000s'}
+      signOptions: { expiresIn: '6000s' },
     }),
-    TeachersModule
+    TeachersModule,
   ],
 })
 export class AppModule {}
