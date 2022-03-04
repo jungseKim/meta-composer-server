@@ -12,7 +12,8 @@ export class SignupsService {
     private signupsRepository: SignupsRepository, //
   ) {}
 
-  async signup(id,merchant_uid): Promise<Signup> {
-    return this.signupsRepository.signup(id,merchant_uid);
+  async signup(id,merchant_uid,user): Promise<Signup> {
+    return this.signupsRepository.signup(id,merchant_uid,user);
   }
+
 }

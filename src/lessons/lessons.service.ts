@@ -6,7 +6,7 @@ import {LessonsRepository} from './lessons.repository';
 @Injectable()
 export class LessonsService {
     constructor(
-        @InjectRepository(LessonsRepository)private lessonsRepository : LessonsRepository,
+        @InjectRepository(LessonsRepository) private lessonsRepository : LessonsRepository,
         //
     ) {}
 
