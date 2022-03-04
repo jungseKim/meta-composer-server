@@ -131,21 +131,18 @@ export class AuthController {
   @UseInterceptors(SetCookieInterceptor)
   @Get('/google/redirect')
   @UseGuards(AuthGuard('google'))
-  // @Redirect('http://localhost:4000/api/auth/profile')
+  @Redirect(
+    process.env.NODE_ENV === 'dev'
+      ? 'localhost:3000'
+      : 'https://meta-composer-client.vercel.app',
+  )
   async googleAuthRedirect(
     @UserDecorator() user: User,
     @Res({ passthrough: true }) response: Response,
   ) {
     console.log(user + 'data from user decorator');
-    // const accessToken = this.authService.getJwtAccessToken(user.id);
     const refreshToken = this.authService.getJwtRefreshToken(user.id);
-
-    // response.cookie('token', refreshToken, {     httpOnly: true,     path: '/',
-    // sameSite: 'lax',     maxAge: 3600000 });
-    response.setHeader('Authorization', `Bearer ${refreshToken}`);
-    response.setHeader('Access-Control-Allow-Origin', 'http://localhost:4000');
-    response.setHeader('Access-Control-Allow-Credentials', 'true');
-    return { user, refreshToken };
+    // return refreshToken;
   }
 
   @Get('/logout')
