@@ -108,6 +108,7 @@ export class AuthController {
     return userData;
   }
 
+
   @Get('/test')
   tec() {
     return process.env.NODE_ENV;
