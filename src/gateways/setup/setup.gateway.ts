@@ -1,3 +1,5 @@
+import { User } from './../../entities/user.entity';
+import { LessonRoom } from './../../entities/lessonRoom.entity';
 import { JwtRefreshGuard } from './../../auth/jwt-refresh.guard';
 import { SetupService } from './setup.service';
 import { UseGuards, UseInterceptors } from '@nestjs/common';
@@ -19,6 +21,8 @@ import { JwtSocketGouard } from '../jwt-socket.guard';
 import { SocketUserData } from 'src/common/interceptors/socketUserData.interceptor';
 import { stringify } from 'querystring';
 import RtcData from 'src/types/OfferPayload';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @WebSocketGateway({
   namespace: 'selfSetup',
@@ -33,13 +37,22 @@ import RtcData from 'src/types/OfferPayload';
 @UseGuards(JwtSocketGouard)
 export class SetupGateway implements OnGatewayConnection, OnGatewayDisconnect {
   sockets: Socket[];
-  constructor(private setupService: SetupService) {
+  constructor(
+    private setupService: SetupService,
+    @InjectRepository(LessonRoom)
+    private lessonRepository: Repository<LessonRoom>,
+    @InjectRepository(User) private userRepository: Repository<User>,
+  ) {
     this.sockets = [];
   }
   @WebSocketServer()
   sever: Server;
 
-  async handleConnection(@ConnectedSocket() client: Socket) {}
+  async handleConnection(@ConnectedSocket() client: Socket) {
+    const authToken = client.handshake.auth;
+    console.log(authToken);
+    console.log('init');
+  }
 
   handleDisconnect(@ConnectedSocket() client: Socket) {
     this.sockets = this.sockets.filter((socket) => {
@@ -70,7 +83,7 @@ export class SetupGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const id: number = client.data.userId;
     client.join(id.toString());
     client.to(id.toString()).emit('sendOffer');
-    console.log(this.sever.sockets);
+    // console.log(this.sever.);
   }
 
   @SubscribeMessage('getOffer')
@@ -81,19 +94,22 @@ export class SetupGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('peerConnectComplete')
   sendRoomId(client: Socket) {
-    this.sockets.map((socket) => {
+    this.sockets.map(async (socket) => {
       if (client.data.userId === socket.data.userId) {
         if (socket.data.userAgent === 'vr') {
-          const id = nanoid(10);
-          return id;
+          const roomid = nanoid(10);
+          // const user = await this.userRepository.findOne(client.data.userId);
+          await this.lessonRepository
+            .create({
+              roomid,
+              userId: socket.data.userId,
+            })
+            .save();
+          return roomid;
         } else {
           socket.disconnect();
         }
       }
     });
-  }
-  @SubscribeMessage('test')
-  test(client: Socket) {
-    console.log(client.data.userId);
   }
 }
