@@ -21,17 +21,27 @@ export class LessonService {
     client: Socket,
     roomId: string,
   ): Promise<boolean | LessonRoom[]> {
-    const lesson = await this.lessonRepository.findOneOrFail(roomId);
-    if (!lesson) {
+    const lesson = await this.lessonRepository.findOneOrFail({
+      roomId: roomId,
+    });
+    if (!lesson || lesson.userId !== client.data.userId) {
       client.disconnect();
       return false;
     } else {
       client.leave(client.id);
-      client.join(roomId);
+      client.join(lesson.roomId);
       client.data.roomId = roomId;
       return await this.lessonRepository.find();
     }
   }
+
+  public async roomJoin(client: Socket, roomId: string) {
+    const currentRoom = await this.lessonRepository.findOne(client.data.roomId);
+    currentRoom.onAir = false;
+    const nextRoom = await this.lessonRepository.findOne(client.data.roomId);
+    nextRoom.onAir = false;
+  }
+
   public async removeRoom(client: Socket) {
     await this.lessonRepository.findOne({});
     client.data.userId;

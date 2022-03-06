@@ -18,7 +18,7 @@ export class LessonRoom extends BaseEntity {
   id: number;
 
   @Column({ unique: true })
-  roomid: string;
+  roomId: string;
 
   @OneToOne(() => User, (user) => user.lessonRoom)
   @JoinColumn()
@@ -26,4 +26,7 @@ export class LessonRoom extends BaseEntity {
 
   @Column()
   userId: string;
+
+  @Column({ default: true })
+  onAir: boolean;
 }

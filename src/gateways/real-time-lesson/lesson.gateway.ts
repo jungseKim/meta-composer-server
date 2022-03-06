@@ -47,13 +47,7 @@ export class LessonGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('setInit')
   setInit(client: Socket, roomId: string) {
-    const roomOrFalse = this.lessonService.init(client, roomId);
-
-    if (!roomOrFalse) {
-      return;
-    }
-
-    return roomOrFalse;
+    return this.lessonService.init(client, roomId);
   }
 
   @SubscribeMessage('roomJoin')
