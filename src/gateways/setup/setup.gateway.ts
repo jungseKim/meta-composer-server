@@ -97,15 +97,15 @@ export class SetupGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.sockets.map(async (socket) => {
       if (client.data.userId === socket.data.userId) {
         if (socket.data.userAgent === 'vr') {
-          const roomid = nanoid(10);
+          const roomId = nanoid(10);
           // const user = await this.userRepository.findOne(client.data.userId);
           await this.lessonRepository
             .create({
-              roomid,
+              roomId,
               userId: socket.data.userId,
             })
             .save();
-          return roomid;
+          return roomId;
         } else {
           socket.disconnect();
         }

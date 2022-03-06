@@ -54,7 +54,7 @@ const ORMConfig: TypeOrmModuleOptions = {
     LessonRoom,
   ],
 
-  synchronize: false, // false 기본값
+  synchronize: true, // false 기본값
   charset: 'utf8mb4',
   autoLoadEntities: true,
   logging: true,
