@@ -1,11 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
-import { Profile, Strategy } from 'passport-facebook';
-import { JoinFacebookDto } from 'src/user/dto/join-facebook-user.dto';
-import { UserService } from 'src/user/user.service';
+import {Injectable} from '@nestjs/common';
+import {PassportStrategy} from '@nestjs/passport';
+import {Profile, Strategy} from 'passport-facebook';
+import {JoinFacebookDto} from 'src/user/dto/join-facebook-user.dto';
+import {UserService} from 'src/user/user.service';
 
 @Injectable()
 export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
+
   constructor(private usersService: UserService) {
     super({
       clientID: process.env.APP_ID,
@@ -16,23 +17,29 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
     });
   }
 
-  async validate(
-    accessToken: string,
-    refreshToken: string,
-    profile: Profile,
-    done: (err: any, user: any, info?: any) => void,
-  ): Promise<any> {
-    const { name, emails } = profile;
-    const joinFacebookDto: JoinFacebookDto = {
-      username: name.givenName + name.familyName,
-      email: emails[0].value,
-            password: "facebook",
-      provider: profile.provider,
-      provider_id: +profile.id,
 
-    };
-    const user = this.usersService.findOrCreate(joinFacebookDto);
+    async validate(
+        accessToken : string,
+        refreshToken : string,
+        profile : Profile,
+        done : (err : any, user : any, info? : any) => void,
+    ): Promise<any> {
+        const {name, emails} = profile;
+        const joinFacebookDto: JoinFacebookDto = {
+            username: name.givenName + name.familyName,
+            email: emails[0].value,
+            password: "",
+            provider: profile.provider,
+            provider_id: profile.id,
+            profile_image: profile
+                .photos[0]
+                .value
+                .toString()
+        };
+        const user = this
+            .usersService
+            .findOrCreate(joinFacebookDto);
 
-    done(null, user);
-  }
+        done(null, user);
+    }
 }

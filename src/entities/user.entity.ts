@@ -18,7 +18,6 @@ import { Signup } from './signup.entity';
 import { Attendance } from './attendance.entity';
 import { Sheet } from './sheet.entity';
 import { Assignment } from './assignment.entity';
-import { isNullableType } from 'graphql';
 
 export enum ProviderType {
   FACEBOOK = 'Facebook',
@@ -30,31 +29,28 @@ export enum ProviderType {
 @Entity()
 @Unique(['id'])
 export class User extends BaseEntity {
+
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ unique: true })
   email: string;
 
-  
   @Column( {nullable: true})
   password: string;
 
-  @Column({ unique: true })
+  @Column()
   username: string;
 
   @Column({ nullable: true })
   profile_image: string;
-  //
+  
   @Column({ nullable: true })
   provider: string;
 
-  @Column('varchar', {
-    unique: true,
-    length: 100,
-    nullable: true,
-  })
-  provider_id: number;
+  @Column({ unique: true  })
+  provider_id: string;
+
   //
   // @Column({
   //   unique: true,
