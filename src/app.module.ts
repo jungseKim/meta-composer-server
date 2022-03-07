@@ -21,6 +21,7 @@ import { TeachersModule } from './teachers/teachers.module';
 
 import ORMConfig from './config/ormconfig';
 import { CommentsModule } from './comments/comments.module';
+import { AssignmentModule } from './assignment/assignment.module';
 
 @Module({
   controllers: [AppController],
@@ -41,7 +42,9 @@ import { CommentsModule } from './comments/comments.module';
     }),
     TeachersModule,
 
-    CommentsModule
+    CommentsModule,
+
+    AssignmentModule
 
   ],
 })

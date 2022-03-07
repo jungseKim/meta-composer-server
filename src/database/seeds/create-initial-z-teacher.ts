@@ -24,6 +24,7 @@ export class CreateInitialZTeacherData implements Seeder {
           email: faker.internet.email(),
           password: faker.animal.type(),
           username: faker.name.firstName(),
+          provider_id: "GENERATED_BY_SEEDER_RAMDOM ID="+faker.address.cityName()
         },
       ])
       .execute();

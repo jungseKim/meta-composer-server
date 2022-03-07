@@ -48,4 +48,11 @@ export class Assignment extends BaseEntity {
   //
   @OneToMany((type) => Sheet, (sheet) => sheet.assignment)
   sheet: Sheet;
+
+
+  @Column()
+  userId : number;
+  @Column()
+  lessonId : number;
+
 }
