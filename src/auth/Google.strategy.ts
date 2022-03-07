@@ -12,6 +12,7 @@ config();
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
 
+
     constructor(private usersService : UserService) {
         super({
             clientID: process.env.GOOGLE_CLIENT_ID,
@@ -47,3 +48,4 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         done(null, user);
     }
 }
+

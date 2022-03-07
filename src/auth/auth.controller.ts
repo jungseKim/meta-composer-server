@@ -26,6 +26,7 @@ import {ApiOperation} from '@nestjs/swagger';
 
 @Controller('api/auth')
 export class AuthController {
+
     constructor(
         private authService : AuthService,
         private userService : UserService,
@@ -152,4 +153,5 @@ export class AuthController {
 
         return true;
     }
+
 }

@@ -1,3 +1,4 @@
+import { LessonRoom } from 'src/entities/lessonRoom.entity';
 import { Teacher } from './teacher.entity';
 import {
   BaseEntity,
@@ -59,6 +60,9 @@ export class User extends BaseEntity {
 
   // @Column({ nullable: true, type: 'enum', enum: ProviderType })
   // provider: ProviderType;
+
+  @OneToOne(() => LessonRoom, (lessonRoom) => lessonRoom.user)
+  lessonRoom: LessonRoom;
 
   @Column({ nullable: true })
   self_introduce: string;

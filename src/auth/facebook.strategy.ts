@@ -6,15 +6,17 @@ import {UserService} from 'src/user/user.service';
 
 @Injectable()
 export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
-    constructor(private usersService : UserService) {
-        super({
-            clientID: process.env.APP_ID,
-            clientSecret: process.env.APP_SECRET,
-            callbackURL: 'https://jungse.shop/auth/facebook/redirect',
-            scope: 'email',
-            profileFields: ['emails', 'name']
-        });
-    }
+
+  constructor(private usersService: UserService) {
+    super({
+      clientID: process.env.APP_ID,
+      clientSecret: process.env.APP_SECRET,
+      callbackURL: 'https://jungse.shop/api/auth/facebook/redirect',
+      scope: 'email',
+      profileFields: ['emails', 'name'],
+    });
+  }
+
 
     async validate(
         accessToken : string,

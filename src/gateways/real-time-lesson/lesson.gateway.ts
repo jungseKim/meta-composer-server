@@ -15,11 +15,13 @@ import {
 } from '@nestjs/websockets';
 import IPayload from 'src/types/InitPayload';
 import OfferPayload from 'src/types/OfferPayload';
-import { UseGuards } from '@nestjs/common';
+import { UseGuards, UseInterceptors } from '@nestjs/common';
 import { JwtSocketGouard } from '../jwt-socket.guard';
 import { throws } from 'assert';
 import { json } from 'stream/consumers';
 import RtcData from 'src/types/OfferPayload';
+import { LessonService } from './lesson.service';
+import { SocketUserData } from 'src/common/interceptors/socketUserData.interceptor';
 
 @WebSocketGateway({
   namespace: 'lesson',
@@ -30,38 +32,34 @@ import RtcData from 'src/types/OfferPayload';
         : process.env.CORS_ORIGIN,
   },
 })
-// @UseGuards(JwtSocketGouard)
+@UseGuards(JwtSocketGouard)
+@UseInterceptors(SocketUserData)
 export class LessonGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  rooms: string[];
-  constructor() {
-    this.rooms = [];
-  }
+  constructor(private lessonService: LessonService) {}
   handleConnection(@ConnectedSocket() client: Socket) {}
 
   handleDisconnect(@ConnectedSocket() client: Socket) {
-    this.removeRoom(client);
+    // this.removeRoom(client);
   }
 
   @SubscribeMessage('setInit')
   setInit(client: Socket, roomId: string) {
-    this.rooms.push(roomId);
-    client.leave(client.id);
-    client.join(roomId);
-    client.data.roomId = roomId;
-    const OtherRooms = this.rooms.filter((id) => {
-      return id !== roomId;
-    });
+    const roomOrFalse = this.lessonService.init(client, roomId);
 
-    return OtherRooms;
+    if (!roomOrFalse) {
+      return;
+    }
+
+    return roomOrFalse;
   }
 
   @SubscribeMessage('roomJoin')
   roomJoin(client: Socket, roomId: string) {
     client.leave(client.data.roomId);
-    this.removeRoom(client);
+    // this.removeRoom(client);
 
     client.data.roomId = roomId;
     client.join(roomId);
@@ -73,9 +71,9 @@ export class LessonGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client.to(client.data.roomId).emit('getOffer', data);
   }
 
-  public removeRoom(client: Socket) {
-    this.rooms = this.rooms.filter((id) => {
-      return id !== client.data.roomId;
-    });
-  }
+  // public removeRoom(client: Socket) {
+  //   this.rooms = this.rooms.filter((id) => {
+  //     return id !== client.data.roomId;
+  //   });
+  // }
 }

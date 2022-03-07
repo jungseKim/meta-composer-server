@@ -31,6 +31,11 @@ export class JwtSocketGouard implements CanActivate {
     const client = context.switchToWs().getClient() as Socket;
     // console.log(client.handshake.auth.token);
     const authToken = client.handshake.auth.token.split(' ')[1];
+
+    if (authToken === '' || !authToken) {
+      client.disconnect();
+      return false;
+    }
     const jwtPayload: TokenPayload = <TokenPayload>(
       jwt.verify(authToken, process.env.JWT_SECRET)
     );
