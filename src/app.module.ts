@@ -1,3 +1,6 @@
+import { RedisCacheModule } from './cache/rediscache.module';
+import { PublicRoomModule } from './gateways/publcRoom/publicroom.module';
+import * as redisStore from 'cache-manager-ioredis';
 import { LessonSocketModule } from './gateways/real-time-lesson/lessonsocket.module';
 import { SetupModule } from './gateways/setup/setup.module';
 import { Module } from '@nestjs/common';
@@ -27,6 +30,8 @@ import { AssignmentModule } from './assignment/assignment.module';
   controllers: [AppController],
   providers: [AppService, ChatGateway, WebRtcGateway],
   imports: [
+    RedisCacheModule,
+    PublicRoomModule,
     LessonSocketModule,
     AuthModule,
     RoomModule,
@@ -42,11 +47,8 @@ import { AssignmentModule } from './assignment/assignment.module';
       signOptions: { expiresIn: '6000s' },
     }),
     TeachersModule,
-
     CommentsModule,
-
-    AssignmentModule
-
+    AssignmentModule,
   ],
 })
 export class AppModule {}

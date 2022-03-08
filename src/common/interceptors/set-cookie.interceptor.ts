@@ -26,7 +26,7 @@ export class SetCookieInterceptor implements NestInterceptor {
           secure: process.env.NODE_ENV === 'dev' ? false : true,
           sameSite: process.env.NODE_ENV === 'dev' ? 'lax' : 'none',
           //samesite none은 secure 강제로 ture
-          maxAge: 60 * 60 * 1000,
+          maxAge: 60 * 60 * 1000 * 24 * 60,
           // this.configService.get<number>(
           //   'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
           // ) * 1000,
