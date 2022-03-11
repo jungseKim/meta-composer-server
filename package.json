@@ -20,7 +20,10 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "seed:config": "ts-node ./node_modules/typeorm-seeding/dist/cli.js -n src/config/ormconfig.ts",
-    "seed:run": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed -n src/config/ormconfig.ts"
+    "seed:run": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed -n src/config/ormconfig.ts",
+    "schema:drop": "ts-node ./node_modules/typeorm/cli.js schema:drop -f src/config/ormconfig.ts",
+    "schema:sync": "ts-node ./node_modules/typeorm/cli.js schema:sync -f src/config/ormconfig.ts",
+    "seed:10":"npm run seed:run & npm run seed:run & npm run seed:run & npm run seed:run & npm run seed:run & npm run seed:run & npm run seed:run & npm run seed:run & npm run seed:run & npm run seed:run & npm run seed:run & "
   },
   "dependencies": {
     "@nestjs/apollo": "^10.0.5",
@@ -42,6 +45,7 @@
     "apollo-server-express": "^3.6.3",
     "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3",
+    "class-validator": "^0.13.2",
     "cookie-parser": "^1.4.6",
     "cross-env": "^7.0.3",
     "dotenv": "^14.3.2",
@@ -64,7 +68,6 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
-
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",

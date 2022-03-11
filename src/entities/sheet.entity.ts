@@ -21,14 +21,24 @@ export class Sheet extends BaseEntity {
   lesson: Lesson;
 
   @Column({ unique: true })
-  name: string;
+  sheetName: string;
 
   @Column({ type: 'boolean' })
   isOpen: boolean;
+  //0 => false   ,   1 => true
 
   @ManyToOne((type) => Assignment, (assignment) => assignment.sheet)
   assignment: Assignment;
 
   @Column()
   storedURL: string;
+
+  @Column()
+  userId: number
+
+  @Column()
+  lessonId: number
+
+  @Column()
+  assignmentId: number
 }

@@ -21,11 +21,19 @@ import { TeachersModule } from './teachers/teachers.module';
 
 import ORMConfig from './config/ormconfig';
 import { CommentsModule } from './comments/comments.module';
-import { AssignmentModule } from './assignment/assignment.module';
+import { AssignmentsModule } from './assignments/assignments.module';
+import { WishlistsModule } from './wishlists/wishlists.module';
+import { SheetsModule } from './sheets/sheets.module';
+import { PaymentsModule } from './payments/payments.module';
+import { ConcoursModule } from './concours/concours.module';
+import { ConcoursSignupsModule } from './concours-signups/concours-signups.module';
+
+
+
 
 @Module({
   controllers: [AppController],
-  providers: [AppService, ChatGateway, WebRtcGateway],
+  providers: [AppService, ChatGateway, WebRtcGateway, ],
   imports: [
     LessonSocketModule,
     AuthModule,
@@ -42,11 +50,14 @@ import { AssignmentModule } from './assignment/assignment.module';
       signOptions: { expiresIn: '6000s' },
     }),
     TeachersModule,
-
     CommentsModule,
-
-    AssignmentModule
-
+    AssignmentsModule,
+    WishlistsModule,
+    SheetsModule,
+    PaymentsModule,
+    ConcoursModule,
+    ConcoursSignupsModule,
+    
   ],
 })
 export class AppModule {}

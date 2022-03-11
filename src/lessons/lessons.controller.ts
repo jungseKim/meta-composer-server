@@ -12,7 +12,7 @@ import {ApiBody, ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags} from '@
 import {UserDecorator} from 'src/decorators/user.decorator';
 import {Lesson} from 'src/entities/lesson.entity';
 import { User } from 'src/entities/user.entity';
-import { LessonsDto } from './dto/lessons.dto';
+
 import {LessonsService} from './lessons.service';
 
 @Controller('api/lessons')
