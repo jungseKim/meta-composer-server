@@ -11,12 +11,16 @@ import { ChatRoom } from './chatRoom.entity';
 export class Message extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
-  @ManyToOne((type) => ChatRoom, (chatRoom) => chatRoom.message)
+
+  @ManyToOne((type) => ChatRoom, (chatRoom) => chatRoom.messages)
   chatRoom: ChatRoom;
 
   @Column()
-  fromWho: string;
+  fromWho: number;
 
   @Column()
   message: string;
+
+  @Column({ default: false })
+  read: boolean;
 }

@@ -1,3 +1,4 @@
+import { Message } from 'src/entities/message.entity';
 import { ChatService } from './chat.service';
 import {
   ConnectedSocket,
@@ -10,6 +11,7 @@ import {
 } from '@nestjs/websockets';
 
 import { Server, Socket } from 'socket.io';
+import { ChatRoom } from 'src/entities/chatRoom.entity';
 
 @WebSocketGateway({
   namespace: 'chat',
@@ -30,11 +32,26 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   handleDisconnect(@ConnectedSocket() client: any) {}
 
-  @SubscribeMessage('setInit')
-  async setInit(client: Socket, payload: any) {}
-
   @SubscribeMessage('sendMessage')
-  sendMessage(client: Socket, message: string): void {
-    this.server.emit('getMessage', message);
+  async sendMessage(
+    client: Socket,
+    payload: { roomId: number; message: string },
+  ) {
+    const room: ChatRoom = client.data.currentRoom;
+    if (room.id === payload.roomId) {
+      await this.chatService.saveMessage(
+        room,
+        payload.message,
+        client.data.userId,
+      );
+      client.to(payload.roomId.toString()).emit(payload.message);
+    }
+  }
+
+  @SubscribeMessage('chatJoin')
+  async chatJoin(client: Socket, roomId: string) {
+    const room: ChatRoom = client.data.currentRoom;
+    client.data.currentRoom = room; //다른 방이면 메세지 막음
+    this.chatService.chatJoin(client.data.userId, roomId);
   }
 }

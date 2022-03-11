@@ -52,6 +52,7 @@ const ORMConfig: TypeOrmModuleOptions = {
     Notification,
     Category,
     LessonRoom,
+    Message,
   ],
 
   synchronize: true, // false 기본값

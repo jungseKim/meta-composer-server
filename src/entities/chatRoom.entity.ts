@@ -21,6 +21,8 @@ export class ChatRoom extends BaseEntity {
   @ManyToOne((type) => Lesson, (lesson) => lesson.chatRoom)
   lesson: Lesson;
 
-  @OneToMany((type) => Message, (message) => message.chatRoom)
-  message: Message;
+  @OneToMany((type) => Message, (message) => message.chatRoom, {
+    eager: true,
+  })
+  messages: Promise<Message[]>;
 }
