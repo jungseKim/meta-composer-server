@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   BaseEntity,
   Column,
@@ -17,10 +18,28 @@ export class ChatRoom extends BaseEntity {
 
   @ManyToOne((type) => User, (user) => user.chatRoom)
   user: User;
+  //student
 
   @ManyToOne((type) => Lesson, (lesson) => lesson.chatRoom)
   lesson: Lesson;
 
   @OneToMany((type) => Message, (message) => message.chatRoom)
-  message: Message;
+  messages: Message[];
+
+
+  @Column({ unique: false })
+  @ApiProperty({
+    example:'1',
+    description:'참여한 유저의 ID'
+  }) 
+  userId:number;
+
+  @Column({ unique: false })
+  @ApiProperty({
+    example:'1',
+    description:'채팅방이 해당하는 레슨의 ID'
+  }) 
+  lessonId : number;
+
+
 }

@@ -1,4 +1,4 @@
-import { LessonRoom } from 'src/entities/lessonRoom.entity';
+
 import { Teacher } from './teacher.entity';
 import {
   BaseEntity,
@@ -18,6 +18,9 @@ import { Signup } from './signup.entity';
 import { Attendance } from './attendance.entity';
 import { Sheet } from './sheet.entity';
 import { Assignment } from './assignment.entity';
+import { ConcoursSignup } from './concoursSignup.entity';
+import { LessonRoom } from './lessonRoom.entity';
+import { Message } from './message.entity';
 
 export enum ProviderType {
   FACEBOOK = 'Facebook',
@@ -61,6 +64,8 @@ export class User extends BaseEntity {
   // @Column({ nullable: true, type: 'enum', enum: ProviderType })
   // provider: ProviderType;
 
+
+
   @OneToOne(() => LessonRoom, (lessonRoom) => lessonRoom.user)
   lessonRoom: LessonRoom;
 
@@ -70,8 +75,14 @@ export class User extends BaseEntity {
   @OneToOne((type) => Teacher, (teacher) => teacher.user)
   teacher: Teacher;
 
+  @ManyToOne((type) => Message, (message) => message.user)
+  message: Message;
+  // sender
+
+
   @OneToMany((type) => Comment, (comment) => comment.user)
   comment: Comment;
+
 
   @OneToMany((type) => ChatRoom, (chatRoom) => chatRoom.user)
   chatRoom: ChatRoom;
@@ -90,4 +101,8 @@ export class User extends BaseEntity {
 
   @OneToMany((type) => Assignment, (assignment) => assignment.user)
   assignment: Assignment;
+
+
+  @OneToMany((type) => ConcoursSignup, (concoursSignup) => concoursSignup.user,{  onDelete: 'CASCADE'  })
+  concoursSignup: ConcoursSignup;
 }
