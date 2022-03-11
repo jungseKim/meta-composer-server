@@ -38,8 +38,13 @@ export class PublicRoomnService {
     client: Socket,
     roomId: string,
     title: string,
-  ): Promise<void> {
-    await this.RedisCacheService.addRoom(id, roomId, client.data.userId, title);
+  ): Promise<Room | boolean> {
+    return await this.RedisCacheService.addRoom(
+      id,
+      roomId,
+      client.data.userId,
+      title,
+    );
   }
 
   public async leaveRoom(client: Socket, roomId: string): Promise<void> {

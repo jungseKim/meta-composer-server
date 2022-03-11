@@ -52,9 +52,14 @@ export class PublicRoomGateway
     const roomId = nanoid(10);
     const id = nanoid(5);
 
-    await this.publicRoomnService.create(id, client, roomId, title);
+    const room = await this.publicRoomnService.create(
+      id,
+      client,
+      roomId,
+      title,
+    );
     await this.roomListchange();
-    return roomId;
+    return room;
   }
 
   @SubscribeMessage('leaveRoom')
@@ -78,7 +83,7 @@ export class PublicRoomGateway
     }
   }
 
-  @SubscribeMessage('entranRoom')
+  @SubscribeMessage('enterRoom')
   entrance(client: Socket, roomId: string) {
     client.join(roomId);
     client.to(roomId).emit('sendOffer');

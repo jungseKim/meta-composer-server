@@ -40,11 +40,15 @@ export class RedisCacheService {
     roomId: string,
     userId: string,
     title: string,
-  ): Promise<void> {
+  ): Promise<Room | boolean> {
     const roomList: Room[] = await this.cache.get('roomList');
-    console.log(id, userId, roomId, title);
-    roomList.push({ id, userId, roomId, title, onAir: true });
-    await this.cache.set('roomList', roomList);
+    if (id && userId && roomId && title) {
+      const room: Room = { id, userId, roomId, title, onAir: true };
+      roomList.push(room);
+      await this.cache.set('roomList', roomList);
+      return room;
+    }
+    return false;
   }
 
   public async removeRoom(userId: string): Promise<void> {

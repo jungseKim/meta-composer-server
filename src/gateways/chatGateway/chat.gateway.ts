@@ -1,3 +1,4 @@
+import { ChatService } from './chat.service';
 import {
   ConnectedSocket,
   MessageBody,
@@ -21,14 +22,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  constructor() {
-    this.client = {};
-  }
+  constructor(private chatService: ChatService) {}
 
   async handleConnection(@ConnectedSocket() client: Socket) {
-    console.log('connected', client.id);
-    this.client[client.id] = client;
-    return 'aart';
+    return this.chatService.auth(client);
   }
 
   handleDisconnect(@ConnectedSocket() client: any) {}

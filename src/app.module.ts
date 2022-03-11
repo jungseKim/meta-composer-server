@@ -1,3 +1,4 @@
+import { ChatModule } from './gateways/chatGateway/chat.module';
 import { RedisCacheModule } from './cache/rediscache.module';
 import { PublicRoomModule } from './gateways/publcRoom/publicroom.module';
 import * as redisStore from 'cache-manager-ioredis';
@@ -6,7 +7,6 @@ import { SetupModule } from './gateways/setup/setup.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ChatGateway } from './gateways/chatGateway/chat.gateway';
 import { AuthModule } from './auth/auth.module';
 import { FacebookStrategy } from './auth/facebook.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -28,8 +28,9 @@ import { AssignmentModule } from './assignment/assignment.module';
 
 @Module({
   controllers: [AppController],
-  providers: [AppService, ChatGateway, WebRtcGateway],
+  providers: [AppService, WebRtcGateway],
   imports: [
+    ChatModule,
     RedisCacheModule,
     PublicRoomModule,
     LessonSocketModule,
