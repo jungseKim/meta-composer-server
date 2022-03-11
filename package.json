@@ -45,12 +45,9 @@
     "apollo-server-express": "^3.6.3",
     "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3",
-<<<<<<< HEAD
     "cache-manager": "^3.6.0",
     "cache-manager-ioredis": "^2.1.0",
     "class-transformer": "^0.5.1",
-=======
->>>>>>> apis
     "class-validator": "^0.13.2",
     "cookie-parser": "^1.4.6",
     "cross-env": "^7.0.3",

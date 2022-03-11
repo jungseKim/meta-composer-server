@@ -1,4 +1,4 @@
-import { LessonRoom } from './../entities/lessonRoom.entity';
+import { LessonRoom } from '../entities/lessonRoom.entity';
 import { Teacher } from '../entities/teacher.entity';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
@@ -19,6 +19,8 @@ import { Wishlist } from '../entities/wishlist.entity';
 import { Category } from '../entities/category.entity';
 import { Comment } from '../entities/comment.entity';
 import { Notification } from '../entities/notification.entity';
+import { ConcoursSignup } from '../entities/concoursSignup.entity';
+import { Concours } from '../entities/concours.entity';
 
 dotenv.config();
 
@@ -52,9 +54,12 @@ const ORMConfig: TypeOrmModuleOptions = {
     Notification,
     Category,
     LessonRoom,
+    ConcoursSignup,
+    Concours
+
   ],
 
-  synchronize: true, // false 기본값
+  synchronize: false, // false 기본값
   charset: 'utf8mb4',
   autoLoadEntities: true,
   logging: true,
@@ -62,5 +67,4 @@ const ORMConfig: TypeOrmModuleOptions = {
   migrations: [__dirname + '/./src/migrations/*.ts'],
   cli: { migrationsDir: './src/migrations' },
 };
-
 export default ORMConfig;

@@ -7,12 +7,9 @@ import {randomUUID} from 'crypto';
 import {Profile} from 'passport';
 import {UserService} from 'src/user/user.service';
 import {Faker} from '@faker-js/faker';
-
 config();
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
-
-
     constructor(private usersService : UserService) {
         super({
             clientID: process.env.GOOGLE_CLIENT_ID,
@@ -21,7 +18,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
             scope: ['email', 'profile']
         });
     }
-
     async validate(
         accessToken : string,
         refreshToken : string,
@@ -29,18 +25,15 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         done : VerifyCallback
     ): Promise<any> {
         console.log(profile);
-        const {name, emails} = profile;
+        const {name, emails,photos} = profile;
         const joinFacebookDto: JoinFacebookDto = {
             email: emails[0].value,
             username: profile.displayName,
             password: '',
             provider: profile.provider,
             provider_id: profile.id,
-            profile_image: profile
-                .photos[0]
-                .value
-                .toString()
-        };
+            profile_image: profile.photos[0].value
+                       };
 
         const user = this
             .usersService
@@ -48,4 +41,3 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         done(null, user);
     }
 }
-

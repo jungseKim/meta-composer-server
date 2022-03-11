@@ -3,12 +3,12 @@ import { Connection } from 'typeorm';
 import { Factory, Seeder } from 'typeorm-seeding';
 import { User } from '../../entities/user.entity';
 import { faker } from '@faker-js/faker';
-
 export class CreateInitialUserData implements Seeder {
   constructor(private userService: UserService) {}
   public async run(factory: Factory, connection: Connection): Promise<any> {
     await connection
-    .createQueryBuilder()
+    .getRepository(User)
+    .createQueryBuilder('user')
     .insert()
     .into(User)
     .values([

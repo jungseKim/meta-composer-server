@@ -3,30 +3,26 @@ import {
   Column,
   Entity,
   JoinColumn,
-  ManyToOne,
-  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  Unique,
 } from 'typeorm';
-import { Lesson } from './lesson.entity';
-import { Message } from './message.entity';
+
 import { User } from './user.entity';
 
 @Entity()
+@Unique(['id'])
 export class LessonRoom extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ unique: true })
-  roomId: string;
+  roomid: string;
 
-  @OneToOne(() => User, (user) => user.lessonRoom)
+  @OneToOne((type) => User, (user) => user.lessonRoom)
   @JoinColumn()
   user: User;
 
   @Column()
   userId: string;
-
-  @Column({ default: true })
-  onAir: boolean;
 }

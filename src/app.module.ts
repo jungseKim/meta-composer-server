@@ -36,11 +36,7 @@ import { ConcoursSignupsModule } from './concours-signups/concours-signups.modul
 
 @Module({
   controllers: [AppController],
-<<<<<<< HEAD
   providers: [AppService, WebRtcGateway],
-=======
-  providers: [AppService, ChatGateway, WebRtcGateway, ],
->>>>>>> apis
   imports: [
     ChatModule,
     RedisCacheModule,
@@ -61,17 +57,14 @@ import { ConcoursSignupsModule } from './concours-signups/concours-signups.modul
     }),
     TeachersModule,
     CommentsModule,
-<<<<<<< HEAD
-    AssignmentModule,
-=======
+
     AssignmentsModule,
     WishlistsModule,
     SheetsModule,
     PaymentsModule,
     ConcoursModule,
     ConcoursSignupsModule,
-    
->>>>>>> apis
+ 
   ],
 })
 export class AppModule {}

@@ -1,22 +1,15 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Lesson } from 'src/entities/lesson.entity';
+import { PickType } from "@nestjs/swagger";
+import { Lesson } from "src/entities/lesson.entity";
 
 
 
-export class LessonsDto {
- 
-  introduce: string;
 
-  length: number;
+export class LessonDTO extends PickType(Lesson, [
+'introduce',
+'length',
+'price',
+'name',
+'type',
+'teacherId'
 
-  
-  price: number;
-
-
-  name: string;
-
- 
-  type: string;
-
-  teacherId: number;
-}
+]as const){}

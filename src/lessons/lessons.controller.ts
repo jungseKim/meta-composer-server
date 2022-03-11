@@ -12,15 +12,13 @@ import {ApiBody, ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags} from '@
 import {UserDecorator} from 'src/decorators/user.decorator';
 import {Lesson} from 'src/entities/lesson.entity';
 import { User } from 'src/entities/user.entity';
-import { LessonsDto } from './dto/lessons.dto';
+
 import {LessonsService} from './lessons.service';
 
 @Controller('api/lessons')
 @ApiTags('레슨 API')
-
 export class LessonsController {
     constructor(private lessonsService : LessonsService) {}
-
     @UseGuards(AuthGuard('jwt'))
     @Get()
     @ApiOperation({summary: '레슨 조회', description: '전체 레슨 조회'})
@@ -29,7 +27,6 @@ export class LessonsController {
     showAllLesson(): Promise<Lesson[]> {
         return this.lessonsService.showAllLesson();
     } 
-
     @UseGuards(AuthGuard('jwt'))
     @Get('/:id')
     @ApiOperation({summary: '특정 레슨 조회', description: '레슨의 ID값으로 특정레슨을 조회한다'})
@@ -39,7 +36,6 @@ export class LessonsController {
             .lessonsService
             .getLessonById(id);     
     }
-
     @UseGuards(AuthGuard('jwt'))
     @Post()
     @ApiOperation({summary: '레슨 생성', description: '레슨을 생성한다'})
@@ -51,7 +47,6 @@ export class LessonsController {
             .lessonsService
             .createLesson(updateData,user);
     }
-
    
     @UseGuards(AuthGuard('jwt'))
     @Delete('/:id')
