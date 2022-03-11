@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Signup } from 'src/entities/signup.entity';
-import { User } from 'src/entities/user.entity';
 import { SignupsRepository } from './signups.repository';
 
 
@@ -13,8 +12,7 @@ export class SignupsService {
     private signupsRepository: SignupsRepository, //
   ) {}
 
-  async signup(id,merchant_uid,user:User): Promise<Signup> {
-    
+  async signup(id,merchant_uid,user): Promise<Signup> {
     return this.signupsRepository.signup(id,merchant_uid,user);
   }
 

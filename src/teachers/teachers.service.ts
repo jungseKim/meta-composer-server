@@ -4,7 +4,6 @@ import {Teacher} from 'src/entities/teacher.entity';
 import {User} from 'src/entities/user.entity';
 import {UserService} from 'src/user/user.service';
 import {getConnection} from 'typeorm';
-import { TeacherDTO } from './dto/teachers.dto';
 import {TeachersRepository} from './teachers.repository';
 
 @Injectable()
@@ -14,16 +13,14 @@ export class TeachersService {
         @InjectRepository(TeachersRepository)private teachersRepository : TeachersRepository
     ) {}
 
-    async registerTeacher(user : User, updateData:TeacherDTO): Promise<Teacher> {
+    async registerTeacher(user : User, updateData): Promise<Teacher> {
         
         return this
             .teachersRepository
             .registerTeacher(user, updateData);
     }
 
-    
-
-    async updateTeacherInfo(user : User, updateData:TeacherDTO): Promise<Teacher> {
+    async updateTeacherInfo(user : User, updateData): Promise<Teacher> {
         
         const teacher = await getConnection()
             .createQueryBuilder(Teacher, "teacher")

@@ -35,8 +35,6 @@ export class UserService {
         provider: joinFacebookDto.provider,
         username: joinFacebookDto.username,
         email: joinFacebookDto.email,
-        profile_image : joinFacebookDto.profile_image,
-        
       },
       { reload: false },
     );
