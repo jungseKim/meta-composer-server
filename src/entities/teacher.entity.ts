@@ -12,8 +12,6 @@ import {
 import { Lesson } from './lesson.entity';
 import { Attendance } from './attendance.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import { isString } from 'util';
-import { isStringObject } from 'util/types';
 
 @Entity()
 @Unique(['id'])
@@ -26,7 +24,7 @@ export class Teacher extends BaseEntity {
   user: User;
 
   @Column()
-    @ApiProperty({
+  @ApiProperty({
     example: 'Berklee College of Music',
     description: '강사의 경력'
   })  

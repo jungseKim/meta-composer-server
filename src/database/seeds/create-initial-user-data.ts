@@ -8,8 +8,7 @@ export class CreateInitialUserData implements Seeder {
   constructor(private userService: UserService) {}
   public async run(factory: Factory, connection: Connection): Promise<any> {
     await connection
-    .getRepository(User)
-    .createQueryBuilder('user')
+    .createQueryBuilder()
     .insert()
     .into(User)
     .values([

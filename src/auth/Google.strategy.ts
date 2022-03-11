@@ -29,15 +29,18 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         done : VerifyCallback
     ): Promise<any> {
         console.log(profile);
-        const {name, emails,photos} = profile;
+        const {name, emails} = profile;
         const joinFacebookDto: JoinFacebookDto = {
             email: emails[0].value,
             username: profile.displayName,
             password: '',
             provider: profile.provider,
             provider_id: profile.id,
-            profile_image: profile.photos[0].value
-                       };
+            profile_image: profile
+                .photos[0]
+                .value
+                .toString()
+        };
 
         const user = this
             .usersService

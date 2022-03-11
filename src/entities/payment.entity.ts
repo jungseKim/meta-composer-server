@@ -16,11 +16,7 @@ export class Payment extends BaseEntity {
   signup: Signup;
 
   @Column()
-  signupId : number;
-
-  @Column()
-  payment_number: string;
-    //결제 번호  , merchant_id 임.
+  payment_number: number;
 
   @Column()
   affiliation: string;
