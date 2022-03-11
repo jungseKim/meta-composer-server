@@ -24,11 +24,23 @@ import { TeachersModule } from './teachers/teachers.module';
 
 import ORMConfig from './config/ormconfig';
 import { CommentsModule } from './comments/comments.module';
-import { AssignmentModule } from './assignment/assignment.module';
+import { AssignmentsModule } from './assignments/assignments.module';
+import { WishlistsModule } from './wishlists/wishlists.module';
+import { SheetsModule } from './sheets/sheets.module';
+import { PaymentsModule } from './payments/payments.module';
+import { ConcoursModule } from './concours/concours.module';
+import { ConcoursSignupsModule } from './concours-signups/concours-signups.module';
+
+
+
 
 @Module({
   controllers: [AppController],
+<<<<<<< HEAD
   providers: [AppService, WebRtcGateway],
+=======
+  providers: [AppService, ChatGateway, WebRtcGateway, ],
+>>>>>>> apis
   imports: [
     ChatModule,
     RedisCacheModule,
@@ -49,7 +61,17 @@ import { AssignmentModule } from './assignment/assignment.module';
     }),
     TeachersModule,
     CommentsModule,
+<<<<<<< HEAD
     AssignmentModule,
+=======
+    AssignmentsModule,
+    WishlistsModule,
+    SheetsModule,
+    PaymentsModule,
+    ConcoursModule,
+    ConcoursSignupsModule,
+    
+>>>>>>> apis
   ],
 })
 export class AppModule {}
