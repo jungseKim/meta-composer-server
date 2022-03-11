@@ -79,7 +79,7 @@ export class SetupGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.sockets.map(async (socket) => {
       if (client.data.userId === socket.data.userId) {
         if (socket.data.userAgent === 'vr') {
-          this.redisCacheService.set(
+          this.redisCacheService.addUser(
             client.handshake.auth.token.split(' ')[1],
             socket.data.userId,
           );

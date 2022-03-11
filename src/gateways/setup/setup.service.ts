@@ -39,9 +39,9 @@ export class SetupService {
   public async connected(sockets: Socket[], client: Socket) {
     const authToken = client.handshake.auth.token.split(' ')[1];
 
-    const type = new UAParser(
-      client.handshake.headers['user-agent'],
-    ).getDevice().type;
+    const agent = new UAParser(client.handshake.headers['user-agent']);
+
+    const type = agent.getDevice().type;
 
     const jwtPayload: TokenPayload = <TokenPayload>(
       jwt.verify(authToken, process.env.JWT_SECRET)
@@ -53,8 +53,6 @@ export class SetupService {
       return false;
     }
     client.data.userId = user.id.toString();
-
-    const agent = new UAParser(client.handshake.headers['user-agent']);
 
     client.data.userAgent =
       agent.getBrowser().name === 'Oculus Browser' ? 'vr' : 'pc';
