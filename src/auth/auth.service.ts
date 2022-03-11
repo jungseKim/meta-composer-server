@@ -11,7 +11,7 @@ export class AuthService {
     const payload: TokenPayload = { userId };
     const token = this.jwtService.sign(payload, {
       secret: process.env.JWT_ACCESS_TOKEN_SECRET,
-      expiresIn: 60 * 60 * 1000,
+      expiresIn: 60 * 60 * 1000 * 24 * 60,
     });
 
     return token;
