@@ -2,7 +2,13 @@ import { User } from './../../entities/user.entity';
 import { LessonRoom } from './../../entities/lessonRoom.entity';
 import { JwtRefreshGuard } from './../../auth/jwt-refresh.guard';
 import { SetupService } from './setup.service';
-import { UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  UseGuards,
+  UseInterceptors,
+  CanActivate,
+  UnauthorizedException,
+  Injectable,
+} from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import {
   ConnectedSocket,
@@ -11,6 +17,7 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
+  WsException,
 } from '@nestjs/websockets';
 import { customAlphabet, nanoid } from 'nanoid';
 import EnterPayload from 'src/types/EnterPayload';
@@ -23,6 +30,7 @@ import { stringify } from 'querystring';
 import RtcData from 'src/types/OfferPayload';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { RedisCacheService } from 'src/cache/rediscache.service';
 
 @WebSocketGateway({
   namespace: 'selfSetup',
@@ -33,15 +41,11 @@ import { Repository } from 'typeorm';
         : process.env.CORS_ORIGIN,
   },
 })
-@UseInterceptors(SocketUserData)
-@UseGuards(JwtSocketGouard)
 export class SetupGateway implements OnGatewayConnection, OnGatewayDisconnect {
   sockets: Socket[];
   constructor(
     private setupService: SetupService,
-    @InjectRepository(LessonRoom)
-    private lessonRepository: Repository<LessonRoom>,
-    @InjectRepository(User) private userRepository: Repository<User>,
+    private redisCacheService: RedisCacheService,
   ) {
     this.sockets = [];
   }
@@ -49,41 +53,19 @@ export class SetupGateway implements OnGatewayConnection, OnGatewayDisconnect {
   sever: Server;
 
   async handleConnection(@ConnectedSocket() client: Socket) {
-    const authToken = client.handshake.auth;
-    console.log(authToken);
-    console.log('init');
+    const auth = await this.setupService.connected(this.sockets, client);
+    if (!auth) return;
+
+    const id = client.data.userId;
+
+    client.join(id);
+    client.to(id).emit('sendOffer');
   }
 
   handleDisconnect(@ConnectedSocket() client: Socket) {
     this.sockets = this.sockets.filter((socket) => {
       return socket.id !== client.id;
     });
-  }
-
-  @SubscribeMessage('setInit')
-  handleMessage(client: Socket) {
-    const agent = this.setupService.agentSortation(client);
-    if (!agent) {
-      client.disconnect();
-      return;
-    }
-    client.data.userAgent = agent;
-    for (let socket of this.sockets) {
-      if (
-        socket.data.userId === client.data.userId &&
-        socket.data.userAgent === client.data.userAgent
-      ) {
-        client.disconnect();
-        return;
-      }
-    }
-
-    this.sockets.push(client);
-
-    const id: number = client.data.userId;
-    client.join(id.toString());
-    client.to(id.toString()).emit('sendOffer');
-    // console.log(this.sever.);
   }
 
   @SubscribeMessage('getOffer')
@@ -97,15 +79,11 @@ export class SetupGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.sockets.map(async (socket) => {
       if (client.data.userId === socket.data.userId) {
         if (socket.data.userAgent === 'vr') {
-          const roomId = nanoid(10);
-          // const user = await this.userRepository.findOne(client.data.userId);
-          await this.lessonRepository
-            .create({
-              roomId,
-              userId: socket.data.userId,
-            })
-            .save();
-          return roomId;
+          this.redisCacheService.addUser(
+            client.handshake.auth.token.split(' ')[1],
+            socket.data.userId,
+          );
+          return client.id;
         } else {
           socket.disconnect();
         }
