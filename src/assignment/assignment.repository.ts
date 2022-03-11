@@ -1,12 +1,11 @@
 import { userInfo } from "os";
 import { Assignment } from "src/entities/assignment.entity";
 import { Comment } from "src/entities/comment.entity";
-import { User } from "src/entities/user.entity";
 import { EntityRepository, Repository } from "typeorm";
 
 
 @EntityRepository(Assignment)
-export class AssignmentsRepository extends Repository<Assignment>{
+export class AssignmentRepository extends Repository<Assignment>{
 
 
 
@@ -28,13 +27,6 @@ export class AssignmentsRepository extends Repository<Assignment>{
     }
 
 
-        async getAllMyAssignment(user :User){
-
-            const myAssignment = this.createQueryBuilder("assignment").
-            where("assignment.userId = :userId",{userId: user.id})
-          .getMany()
-            return myAssignment;
-        }
 }
 
 
