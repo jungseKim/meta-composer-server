@@ -25,31 +25,36 @@ export class Teacher extends BaseEntity {
   user: User;
 
   @Column()
-    @ApiProperty({
+  @ApiProperty({
     example: 'Berklee College of Music',
-    description: '강사의 경력'
-  })  
+    description: '강사의 경력',
+  })
   career: string;
+
   @Column()
   @ApiProperty({
     example: 'Glad to meet you',
-    description: '강사 자기소개'
-  })  
+    description: '강사 자기소개',
+  })
   introduce: string;
+
   @Column()
   @ApiProperty({
     example: 'http://localhost:3000',
-    description: '자기소개 동영상'
-  })  
+    description: '자기소개 동영상',
+  })
   self_video: string;
-  @OneToMany((type) => Lesson, (lesson) => lesson.teacher, {  onDelete: 'CASCADE',})
-  lesson: Lesson;
+  @OneToMany((type) => Lesson, (lesson) => lesson.teacher, {
+    onDelete: 'CASCADE',
+  })
+  lessons: Lesson[];
   @OneToMany((type) => Attendance, (attendance) => attendance.teacher)
   attendance: Attendance;
+
   @Column()
   @ApiProperty({
     example: '1',
-    description: '로그인후 jwt토큰을 header에 넣으면 자동으로 들어가는 유저ID'
-  })  
+    description: '로그인후 jwt토큰을 header에 넣으면 자동으로 들어가는 유저ID',
+  })
   userId: number;
 }
