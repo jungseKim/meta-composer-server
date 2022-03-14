@@ -53,10 +53,10 @@ export class ChatService {
 
   public async saveMessage(room: ChatRoom, message: string, userId: number) {
     // const room=  await this.chatRoomRepository.findOne(roomId);
-    this.messageRepository.create({
-      chatRoom: room,
-      fromWho: userId,
-    });
+    // this.messageRepository.create({
+    //   chatRoom: room,
+    //   send: userId,
+    // });
   }
 
   public async getChatRoomMeesage(id: number, page: number) {

@@ -38,11 +38,11 @@ export class LessonsController {
             .getLessonById(id);     
     }
     @UseGuards(AuthGuard('jwt'))
-    // @UseGuards(TeacherGuard)
+
     @Post()
     @ApiOperation({summary: '레슨 생성', description: '레슨을 생성한다'})
     @ApiResponse({status: 200, description: '레슨 생성완료', type: Lesson, })
-    // @ApiBody({ type: Lesson })
+    @ApiBody({ type: Lesson })
     //type 를 entity 로
     create(@Body()updateData,@UserDecorator()user : User): Promise<Lesson> {
 
@@ -54,7 +54,7 @@ export class LessonsController {
     }
    
     @UseGuards(AuthGuard('jwt'))
-    // @UseGuards(TeacherGuard)
+  
     @Delete('/:id')
     @ApiOperation({summary: '레슨 삭제', description: '레슨을 삭제한다'})
     @ApiResponse({status: 200, description: '레슨 삭제완료', type: Lesson})
@@ -65,4 +65,3 @@ export class LessonsController {
     }
 }
 
-//이거수정하기

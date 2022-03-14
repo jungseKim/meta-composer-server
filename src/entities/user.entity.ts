@@ -94,22 +94,6 @@ export class User extends BaseEntity {
   @OneToMany((type) => ConcoursSignup, (concoursSignup) => concoursSignup.user,{  onDelete: 'CASCADE'  })
   concoursSignup: ConcoursSignup;
 
-
-  // @CreateDateColumn({
-  //   type: 'timestamp',
-  //   default: () => 'CURRENT_TIMESTAMP(6)',
-  //   name: 'created_at'
-  // })
-  // createdAt: Date;
-  // @UpdateDateColumn({
-  //   type: 'timestamp',
-  //   default: () => 'CURRENT_TIMESTAMP(6)(6)',
-  //   nullable: true,
-  //   name: 'updated_at'
-  // })
-  // updatedAt: Date;
-
-
   @CreateDateColumn()
   created_at: Date;
 
