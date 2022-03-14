@@ -49,56 +49,6 @@ export class ChatService {
     }
 
     client.data.userId = user.id;
-
-    const userChatList = await this.chatRoomRepository.find(user);
-
-    userChatList.forEach((room) => {
-      const roomId: number = room.id;
-      client.join(roomId.toString());
-    });
-
-    for (const chatRoom of userChatList) {
-      const message = await chatRoom.messages;
-    }
-    userChatList;
-
-    const teacher = await this.teacherRepository.findOne(user);
-
-    if (teacher) {
-      const lessons = await this.lessonRepository.find(teacher);
-
-      const lessonChatRooms = [];
-
-      lessons.map(async (lesson) => {
-        return await this.chatRoomRepository.find(lesson);
-      });
-      lessons.forEach((lesson) => {
-        this.chatRoomRepository.find(lesson);
-      });
-
-      const teacherChatList = await this.chatRoomRepository.find(lesson);
-      teacherChatList.forEach((room) => {
-        const roomId: number = room.id;
-        client.join(roomId.toString());
-      });
-
-      userChatList.concat(teacherChatList);
-    }
-
-    return userChatList;
-  }
-
-  public async chatJoin(userId: number, roomId: string) {
-    // const user = await this.userRepository.findOne(userId);
-    const chatRoom: ChatRoom = await this.chatRoomRepository.findOne(roomId);
-    const messages: Message[] = await chatRoom.messages;
-
-    messages.forEach((msg) => {
-      if (msg.fromWho !== userId) {
-        msg.read = true;
-        this.messageRepository.save(msg);
-      }
-    });
   }
 
   public async saveMessage(room: ChatRoom, message: string, userId: number) {
@@ -107,5 +57,14 @@ export class ChatService {
       chatRoom: room,
       fromWho: userId,
     });
+  }
+
+  public async getChatRoomMeesage(id: number, page: number) {
+    return this.messageRepository
+      .createQueryBuilder('message')
+      .innerJoin('message.chatRoom', 'chatRoom', 'chatRoom := id', {
+        id,
+      })
+      .skip(10 * (page - 1)).take;
   }
 }
