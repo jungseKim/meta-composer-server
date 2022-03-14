@@ -56,8 +56,6 @@ const ORMConfig: TypeOrmModuleOptions = {
     LessonRoom,
     ConcoursSignup,
     Concours,
-
-    Message,
   ],
 
   synchronize: false, // false 기본값

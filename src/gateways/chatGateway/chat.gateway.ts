@@ -40,9 +40,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const room: ChatRoom = client.data.currentRoom;
     if (room.id === payload.roomId) {
       await this.chatService.saveMessage(
+        client.data.user,
         room,
         payload.message,
-        client.data.userId,
       );
       client.to(payload.roomId.toString()).emit(payload.message);
     }

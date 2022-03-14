@@ -8,13 +8,14 @@ https://docs.nestjs.com/providers#services
 
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/entities/user.entity';
-import { Repository } from 'typeorm';
+import { Repository, QueryBuilder } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import * as jwt from 'jsonwebtoken';
 import { TokenPayload } from 'src/auth/token-payload.interface';
 import { ChatRoom } from 'src/entities/chatRoom.entity';
 import { Message } from 'src/entities/message.entity';
+import { MAX } from 'class-validator';
 @Injectable()
 export class ChatService {
   constructor(
@@ -48,23 +49,54 @@ export class ChatService {
       return;
     }
 
-    client.data.userId = user.id;
+    client.data.user = user;
   }
 
-  public async saveMessage(room: ChatRoom, message: string, userId: number) {
-    // const room=  await this.chatRoomRepository.findOne(roomId);
+  public async saveMessage(user: User, room: ChatRoom, message: string) {
     this.messageRepository.create({
-      chatRoom: room,
-      fromWho: userId,
+      user,
+      sender: user.id,
+      message,
+      chatRoomId: room.id,
     });
   }
 
   public async getChatRoomMeesage(id: number, page: number) {
-    return this.messageRepository
+    return await this.messageRepository
       .createQueryBuilder('message')
-      .innerJoin('message.chatRoom', 'chatRoom', 'chatRoom := id', {
+      .innerJoin('message.chatRoom', 'chatRoom', 'chatRoom.id = :id', {
         id,
       })
-      .skip(10 * (page - 1)).take;
+      .orderBy('message.createdAt', 'DESC')
+      .take(10)
+      .skip(10 * (page - 1))
+      .getMany();
+  }
+
+  public async getRoomList(user: User) {
+    const teacher = await this.teacherRepository.findOne(user);
+    const chatList = {};
+    if (teacher) {
+      const lessonChat = await this.lessonRepository
+        .createQueryBuilder('lesson')
+        .innerJoin('lesson.teacher', 'teacher', 'teacher.id = :id', {
+          id: user.id,
+        })
+        .innerJoinAndSelect('lesson.chatRooms', 'chatRooms')
+        .getMany();
+
+      chatList['lessonChat'] = lessonChat;
+    }
+    const userChatList = await this.chatRoomRepository
+      .createQueryBuilder('chatRoom')
+      .where('chatRoom.userId = :id', { id: user.id })
+      // .innerJoinAndSelect('chatRoom.messages', 'messages')
+      // .skip(10)
+      // .take(10)
+      // .where('messages.createdAt = MAX(messages.createdAt)')
+      .getMany();
+    chatList['userChatList'] = userChatList;
+
+    return chatList;
   }
 }
