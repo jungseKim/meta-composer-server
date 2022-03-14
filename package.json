@@ -23,7 +23,7 @@
     "seed:run": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed -n src/config/ormconfig.ts",
     "schema:drop": "ts-node ./node_modules/typeorm/cli.js schema:drop -f src/config/ormconfig.ts",
     "schema:sync": "ts-node ./node_modules/typeorm/cli.js schema:sync -f src/config/ormconfig.ts",
-    "seed:10":"npm run seed:run & npm run seed:run & npm run seed:run & npm run seed:run & npm run seed:run & npm run seed:run & npm run seed:run & npm run seed:run & npm run seed:run & npm run seed:run & npm run seed:run & "
+    "seed:10": "npm run seed:run & npm run seed:run & npm run seed:run & npm run seed:run & npm run seed:run & npm run seed:run & npm run seed:run & npm run seed:run & npm run seed:run & npm run seed:run & npm run seed:run & "
   },
   "dependencies": {
     "@nestjs/apollo": "^10.0.5",
@@ -66,6 +66,7 @@
     "nanoid": "^3.3.1",
     "nestjs-joi": "^1.7.0",
     "nestjs-seeder": "^0.2.0",
+    "package.json": "^2.0.1",
     "passport": "^0.5.2",
     "passport-facebook": "^3.0.0",
     "passport-google-oauth20": "^2.0.0",

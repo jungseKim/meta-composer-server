@@ -1,5 +1,5 @@
+import { ChatModule } from './gateways/chatGateway/chat.module';
 
-import { RedisCacheModule } from './cache/rediscache.module';
 import { PublicRoomModule } from './gateways/publcRoom/publicroom.module';
 import * as redisStore from 'cache-manager-ioredis';
 import { LessonSocketModule } from './gateways/real-time-lesson/lessonsocket.module';
@@ -10,18 +10,15 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { FacebookStrategy } from './auth/facebook.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
 import { UserModule } from './user/user.module';
 import { WebRtcGateway } from './gateways/rtcGateway/web-rtc.gateway';
 import { RoomModule } from './room/room.module';
-
 import { LessonsModule } from './lessons/lessons.module';
 import { SignupsModule } from './signups/signups.module';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TeachersModule } from './teachers/teachers.module';
-
 import ORMConfig from './config/ormconfig';
 import { CommentsModule } from './comments/comments.module';
 import { AssignmentsModule } from './assignments/assignments.module';
@@ -30,7 +27,8 @@ import { SheetsModule } from './sheets/sheets.module';
 import { PaymentsModule } from './payments/payments.module';
 import { ConcoursModule } from './concours/concours.module';
 import { ConcoursSignupsModule } from './concours-signups/concours-signups.module';
-import { ChatModule } from './gateways/chatGateway/chat.module';
+import { RedisCacheModule } from './cache/rediscache.module';
+
 
 
 
@@ -38,11 +36,11 @@ import { ChatModule } from './gateways/chatGateway/chat.module';
 @Module({
   controllers: [AppController],
   providers: [AppService, WebRtcGateway],
-  imports: [
-        ChatModule,
+  imports: 
+  [ ChatModule,
     RedisCacheModule,
     PublicRoomModule,
-     LessonSocketModule,
+    LessonSocketModule,
     AuthModule,
     RoomModule,
     SetupModule,
@@ -64,6 +62,7 @@ import { ChatModule } from './gateways/chatGateway/chat.module';
     PaymentsModule,
     ConcoursModule,
     ConcoursSignupsModule,
+    
    ],
 })
 export class AppModule {}

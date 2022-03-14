@@ -24,11 +24,9 @@ export class Message extends BaseEntity {
 
 
    @ManyToOne((type) => User, (user) => user.message)
-  @JoinColumn({ name: "sender" })
+  @JoinColumn()
   //join칼럼명 이름바꾸기1
   sender : User;
-
-
 
 
   @Column({ unique: false ,name:"senderId"})
