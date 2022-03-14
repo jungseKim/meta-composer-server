@@ -1,9 +1,11 @@
 import {
   BaseEntity,
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Assignment } from './assignment.entity';
 import { Lesson } from './lesson.entity';
@@ -38,4 +40,10 @@ export class Sheet extends BaseEntity {
 
   @Column()
   assignmentId: number
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 }

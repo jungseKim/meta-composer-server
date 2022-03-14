@@ -28,7 +28,7 @@ export class CreateInitialMessageData implements Seeder {
     .into(Message)
     .values([
       {
-        sender:allUserIds[Math.floor(Math.random() * allUserIds.length)],
+        senderId:allUserIds[Math.floor(Math.random() * allUserIds.length)],
         message:faker.lorem.words(),
         chatRoomId:allchatRoomIds[Math.floor(Math.random() * allchatRoomIds.length)]
         

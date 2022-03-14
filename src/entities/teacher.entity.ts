@@ -2,12 +2,14 @@ import { User } from './user.entity';
 import {
   BaseEntity,
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   Unique,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Lesson } from './lesson.entity';
 import { Attendance } from './attendance.entity';
@@ -52,4 +54,10 @@ export class Teacher extends BaseEntity {
     description: '로그인후 jwt토큰을 header에 넣으면 자동으로 들어가는 유저ID'
   })  
   userId: number;
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 }

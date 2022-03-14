@@ -1,4 +1,4 @@
-import { ChatModule } from './gateways/chatGateway/chat.module';
+
 import { RedisCacheModule } from './cache/rediscache.module';
 import { PublicRoomModule } from './gateways/publcRoom/publicroom.module';
 import * as redisStore from 'cache-manager-ioredis';
@@ -30,6 +30,7 @@ import { SheetsModule } from './sheets/sheets.module';
 import { PaymentsModule } from './payments/payments.module';
 import { ConcoursModule } from './concours/concours.module';
 import { ConcoursSignupsModule } from './concours-signups/concours-signups.module';
+import { ChatModule } from './gateways/chatGateway/chat.module';
 
 
 
@@ -38,10 +39,10 @@ import { ConcoursSignupsModule } from './concours-signups/concours-signups.modul
   controllers: [AppController],
   providers: [AppService, WebRtcGateway],
   imports: [
-    ChatModule,
+        ChatModule,
     RedisCacheModule,
     PublicRoomModule,
-    LessonSocketModule,
+     LessonSocketModule,
     AuthModule,
     RoomModule,
     SetupModule,
@@ -57,14 +58,12 @@ import { ConcoursSignupsModule } from './concours-signups/concours-signups.modul
     }),
     TeachersModule,
     CommentsModule,
-
     AssignmentsModule,
     WishlistsModule,
     SheetsModule,
     PaymentsModule,
     ConcoursModule,
     ConcoursSignupsModule,
- 
-  ],
+   ],
 })
 export class AppModule {}

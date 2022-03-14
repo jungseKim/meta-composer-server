@@ -1,3 +1,4 @@
+import { UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Lesson, LessonType } from 'src/entities/lesson.entity';
 import { Teacher } from 'src/entities/teacher.entity';
@@ -9,8 +10,17 @@ export class LessonsRepository extends Repository<Lesson> {
   // @InjectRepository(TeacherRepository)private lessonsRepository : LessonsRepository,
 
   // const teacherId = Repository<Teacher>.find(user.id);
-  async createLesson(updateData,user): Promise<Lesson> {
+  async createLesson(updateData,user): Promise<any> {
 
+    // const checkTeacher = await this.
+    // createQueryBuilder('teacher').
+    // where('teacher.userId = :id', {
+    //    id: user.id,
+    //  })
+    //  .getOne();
+
+
+    //  if(checkTeacher){
     this.find({
       where: {
           project: { name: "TypeORM", initials: "TORM" },
@@ -29,6 +39,10 @@ export class LessonsRepository extends Repository<Lesson> {
 
     await this.save(lesson);
     return lesson;
+  // }
+  // else{
+  //   return "you are not teacher"
+  // }
   }
 
 

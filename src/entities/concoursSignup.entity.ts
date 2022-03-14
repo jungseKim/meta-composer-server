@@ -1,9 +1,11 @@
 import {
     BaseEntity,
     Column,
+    CreateDateColumn,
     Entity,
     ManyToOne,
     PrimaryGeneratedColumn,
+    UpdateDateColumn,
   } from 'typeorm';
 import { Concours } from './concours.entity';
 import { User } from './user.entity';
@@ -36,6 +38,10 @@ import { User } from './user.entity';
     participated_date : string;
     //참가한 날짜
 
-
+    @CreateDateColumn()
+    created_at: Date;
+  
+    @UpdateDateColumn()
+    updated_at: Date;
   }
   

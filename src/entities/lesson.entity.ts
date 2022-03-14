@@ -2,11 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   BaseEntity,
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   Unique,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Assignment } from './assignment.entity';
 import { ChatRoom } from './chatRoom.entity';
@@ -103,6 +105,14 @@ export class Lesson extends BaseEntity {
     description:'레슨을 생성할 강사의 ID값 입니다.'
   })  
   teacherId: number;
+
+
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 }
 // number will be converted into integer, string into varchar, boolean into bool, etc. But you can use any column type your database supports by explicitly specifying a column type into the @Column decorator.  from typeorm.io
 
