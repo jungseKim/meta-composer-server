@@ -16,6 +16,7 @@ import { TokenPayload } from 'src/auth/token-payload.interface';
 import { ChatRoom } from 'src/entities/chatRoom.entity';
 import { Message } from 'src/entities/message.entity';
 import { MAX } from 'class-validator';
+import ChatList from 'src/types/ChatList';
 @Injectable()
 export class ChatService {
   constructor(
@@ -31,6 +32,7 @@ export class ChatService {
     private messageRepository: Repository<Message>,
   ) {}
 
+  //--------------------gateWay------------------------------
   public async auth(client: Socket): Promise<ChatRoom[]> {
     const authToken = client.handshake.auth.token.split(' ')[1];
 
@@ -49,18 +51,33 @@ export class ChatService {
       return;
     }
 
-    client.data.user = user;
+    client.data.userId = user.id;
   }
-
-  public async saveMessage(user: User, room: ChatRoom, message: string) {
-    this.messageRepository.create({
-      user,
-      sender: user.id,
-      message,
-      chatRoomId: room.id,
+  public async chatRoomJoin(client: Socket, roomId: number) {
+    const userId: number = client.data.userId;
+    const room = await this.chatRoomRepository.findOne(roomId);
+    const messages = await this.messageRepository.find(room);
+    messages.forEach(async (msg) => {
+      if (msg.senderId !== userId && !msg.is_read) {
+        msg.is_read = true;
+        await msg.save();
+      }
     });
+    client.data.currentRoomId = room.id;
+    client.join(room.id.toString());
   }
 
+  public async saveMessage(userId: number, roomId: number, message: string) {
+    await this.messageRepository
+      .create({
+        senderId: userId,
+        message,
+        chatRoomId: roomId,
+      })
+      .save();
+  }
+
+  //---------------------controller----------------------
   public async getChatRoomMeesage(id: number, page: number) {
     return await this.messageRepository
       .createQueryBuilder('message')
@@ -74,8 +91,17 @@ export class ChatService {
   }
 
   public async getRoomList(user: User) {
+    const userChatList = await this.chatRoomRepository
+      .createQueryBuilder('chatRoom')
+      .where('chatRoom.userId = :id', { id: user.id })
+      // .innerJoinAndSelect('chatRoom.messages', 'messages')
+      // .skip(10)
+      // .take(10)
+      // .where('messages.createdAt = MAX(messages.createdAt)')
+      .getMany();
+
     const teacher = await this.teacherRepository.findOne(user);
-    const chatList = {};
+
     if (teacher) {
       const lessonChat = await this.lessonRepository
         .createQueryBuilder('lesson')
@@ -85,18 +111,11 @@ export class ChatService {
         .innerJoinAndSelect('lesson.chatRooms', 'chatRooms')
         .getMany();
 
-      chatList['lessonChat'] = lessonChat;
+      const chatList: ChatList = { lessonChat, userChatList };
+      return chatList;
     }
-    const userChatList = await this.chatRoomRepository
-      .createQueryBuilder('chatRoom')
-      .where('chatRoom.userId = :id', { id: user.id })
-      // .innerJoinAndSelect('chatRoom.messages', 'messages')
-      // .skip(10)
-      // .take(10)
-      // .where('messages.createdAt = MAX(messages.createdAt)')
-      .getMany();
-    chatList['userChatList'] = userChatList;
 
+    const chatList: ChatList = { lessonChat: null, userChatList };
     return chatList;
   }
 }
