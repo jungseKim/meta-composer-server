@@ -1,9 +1,11 @@
 import {
   BaseEntity,
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Signup } from './signup.entity';
 import { Teacher } from './teacher.entity';
@@ -25,4 +27,10 @@ export class Attendance extends BaseEntity {
 
   @Column({ type: 'date' })
   date: number;
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 }

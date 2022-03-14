@@ -2,6 +2,7 @@ import { Teacher } from './teacher.entity';
 import {
   BaseEntity,
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -9,6 +10,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
   Unique,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Comment } from './comment.entity';
 import { ChatRoom } from './chatRoom.entity';
@@ -64,7 +66,7 @@ export class User extends BaseEntity {
   @OneToOne((type) => Teacher, (teacher) => teacher.user)
   teacher: Teacher;
 
-  @ManyToOne((type) => Message, (message) => message.user)
+  @OneToMany((type) => Message, (message) => message.sender)
   message: Message;
   // sender
 
@@ -91,4 +93,26 @@ export class User extends BaseEntity {
 
   @OneToMany((type) => ConcoursSignup, (concoursSignup) => concoursSignup.user,{  onDelete: 'CASCADE'  })
   concoursSignup: ConcoursSignup;
+
+
+  // @CreateDateColumn({
+  //   type: 'timestamp',
+  //   default: () => 'CURRENT_TIMESTAMP(6)',
+  //   name: 'created_at'
+  // })
+  // createdAt: Date;
+  // @UpdateDateColumn({
+  //   type: 'timestamp',
+  //   default: () => 'CURRENT_TIMESTAMP(6)(6)',
+  //   nullable: true,
+  //   name: 'updated_at'
+  // })
+  // updatedAt: Date;
+
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 }

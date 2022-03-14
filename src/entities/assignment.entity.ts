@@ -1,10 +1,12 @@
 import {
   BaseEntity,
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Lesson } from './lesson.entity';
 import { Sheet } from './sheet.entity';
@@ -54,5 +56,11 @@ export class Assignment extends BaseEntity {
   userId : number;
   @Column()
   lessonId : number;
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 
 }
