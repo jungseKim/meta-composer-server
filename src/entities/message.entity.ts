@@ -53,6 +53,13 @@ export class Message extends BaseEntity {
   }) 
   message:string;
 
+
+  @Column({ type: 'boolean' ,default:false})
+  @ApiProperty({
+   description:'읽었는지 유무'
+  }) 
+  is_read :boolean;
+
   @CreateDateColumn()
   created_at: Date;
 
