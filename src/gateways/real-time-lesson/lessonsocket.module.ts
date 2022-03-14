@@ -12,6 +12,9 @@ import { LessonService } from './lesson.service';
 @Module({
   imports: [TypeOrmModule.forFeature([User, LessonRoom])],
   controllers: [],
-  providers: [LessonGateway, LessonService],
+  providers: [LessonGateway,
+      LessonService
+    ],
 })
+
 export class LessonSocketModule {}

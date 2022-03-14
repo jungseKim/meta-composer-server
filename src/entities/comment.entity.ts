@@ -1,9 +1,11 @@
 import {
   BaseEntity,
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Lesson } from './lesson.entity';
 import { User } from './user.entity';
@@ -41,4 +43,11 @@ export class Comment extends BaseEntity {
   userId:number
   @Column()
   lessonId:number
+
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 }

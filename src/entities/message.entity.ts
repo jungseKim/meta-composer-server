@@ -9,6 +9,7 @@ import {
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { ChatRoom } from './chatRoom.entity';
 import { User } from './user.entity';
@@ -22,17 +23,17 @@ export class Message extends BaseEntity {
   chatRoom: ChatRoom;
 
   @ManyToOne((type) => User, (user) => user.message)
-  @JoinColumn({ name: 'sender' })
+  @JoinColumn()
   //join칼럼명 이름바꾸기1
-  user: User;
+  sender: User;
 
-  @Column({ unique: false, name: 'sender' })
+  @Column({ unique: false, name: 'senderId' })
   //join 칼럼명 이름바꾸기2
   @ApiProperty({
     example: '1',
     description: '메시지 발신자 ID값',
   })
-  sender: number;
+  senderId: number;
   //이름바꾸기3
 
   @Column({ unique: false })
@@ -50,5 +51,8 @@ export class Message extends BaseEntity {
   message: string;
 
   @CreateDateColumn()
-  createdAt: Date;
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 }

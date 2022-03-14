@@ -19,19 +19,18 @@ export class CreateInitialMessageData implements Seeder {
       .getMany();
     const allchatRoomIds = allchatRooms.map((x) => x.id);
 
-    for (let i = 0; i < 40; i++) {
-      await connection
-        .createQueryBuilder()
-        .insert()
-        .into(Message)
-        .values([
-          {
-            sender: 1,
-            message: faker.lorem.words(),
-            chatRoomId: 1,
-          },
-        ])
-        .execute();
-    }
+    await connection
+      .createQueryBuilder()
+      .insert()
+      .into(Message)
+      .values([
+        {
+          senderId: allUserIds[Math.floor(Math.random() * allUserIds.length)],
+          message: faker.lorem.words(),
+          chatRoomId:
+            allchatRoomIds[Math.floor(Math.random() * allchatRoomIds.length)],
+        },
+      ])
+      .execute();
   }
 }

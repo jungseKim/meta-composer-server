@@ -2,9 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
     BaseEntity,
     Column,
+    CreateDateColumn,
     Entity,
     OneToMany,
     PrimaryGeneratedColumn,
+    UpdateDateColumn,
   } from 'typeorm';
 import { ConcoursSignup } from './concoursSignup.entity';
 
@@ -65,6 +67,10 @@ import { ConcoursSignup } from './concoursSignup.entity';
     @OneToMany((type) => ConcoursSignup, (concoursSignup) => concoursSignup.concours, {  onDelete: 'CASCADE',})
     concoursSignup: ConcoursSignup;
 
-    
+    @CreateDateColumn()
+    created_at: Date;
+  
+    @UpdateDateColumn()
+    updated_at: Date;
   }
   

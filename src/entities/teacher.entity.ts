@@ -30,14 +30,12 @@ export class Teacher extends BaseEntity {
     description: '강사의 경력',
   })
   career: string;
-
   @Column()
   @ApiProperty({
     example: 'Glad to meet you',
     description: '강사 자기소개',
   })
   introduce: string;
-
   @Column()
   @ApiProperty({
     example: 'http://localhost:3000',
@@ -50,7 +48,6 @@ export class Teacher extends BaseEntity {
   lessons: Lesson[];
   @OneToMany((type) => Attendance, (attendance) => attendance.teacher)
   attendance: Attendance;
-
   @Column()
   @ApiProperty({
     example: '1',

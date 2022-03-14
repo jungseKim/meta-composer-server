@@ -1,10 +1,12 @@
 import {
   BaseEntity,
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Lesson } from './lesson.entity';
 import { Signup } from './signup.entity';
@@ -29,4 +31,10 @@ export class Signupschedule extends BaseEntity {
     (signuptimetable) => signuptimetable.signupschedule,
   )
   signuptimetable: Signuptimetable;
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 }

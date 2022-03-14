@@ -12,7 +12,7 @@ import {ApiBody, ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags} from '@
 import {UserDecorator} from 'src/decorators/user.decorator';
 import {Lesson} from 'src/entities/lesson.entity';
 import { User } from 'src/entities/user.entity';
-
+// import { TeacherGuard } from 'src/guards/teacherGuard';
 import {LessonsService} from './lessons.service';
 
 @Controller('api/lessons')
@@ -20,6 +20,7 @@ import {LessonsService} from './lessons.service';
 export class LessonsController {
     constructor(private lessonsService : LessonsService) {}
     @UseGuards(AuthGuard('jwt'))
+    
     @Get()
     @ApiOperation({summary: '레슨 조회', description: '전체 레슨 조회'})
     @ApiResponse({status: 200, description: '레슨 생성완료', type: Lesson})
@@ -37,18 +38,23 @@ export class LessonsController {
             .getLessonById(id);     
     }
     @UseGuards(AuthGuard('jwt'))
+
     @Post()
     @ApiOperation({summary: '레슨 생성', description: '레슨을 생성한다'})
     @ApiResponse({status: 200, description: '레슨 생성완료', type: Lesson, })
     @ApiBody({ type: Lesson })
     //type 를 entity 로
     create(@Body()updateData,@UserDecorator()user : User): Promise<Lesson> {
+
+              
+
         return this
             .lessonsService
             .createLesson(updateData,user);
     }
    
     @UseGuards(AuthGuard('jwt'))
+  
     @Delete('/:id')
     @ApiOperation({summary: '레슨 삭제', description: '레슨을 삭제한다'})
     @ApiResponse({status: 200, description: '레슨 삭제완료', type: Lesson})
@@ -58,3 +64,4 @@ export class LessonsController {
         return this.lessonsService.deleteLessonById(id);
     }
 }
+

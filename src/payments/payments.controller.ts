@@ -13,6 +13,7 @@ export class PaymentsController {
         return this.paymentsService.getMyAllPayments(updateData);
     }
 
+    
 
     @UseGuards(AuthGuard('jwt'))
     @Post()
@@ -20,6 +21,8 @@ export class PaymentsController {
 
         return this.paymentsService.createPayment(updateData);
     }
+
+
 
 
 

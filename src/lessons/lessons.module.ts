@@ -4,9 +4,11 @@ import { LessonsController } from './lessons.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LessonsRepository } from './lessons.repository';
 
+
+
 @Module({
   imports: [TypeOrmModule.forFeature([LessonsRepository])],
-  providers: [LessonsService],
+  providers: [LessonsService,],
   controllers: [LessonsController],
 })
 export class LessonsModule {}
