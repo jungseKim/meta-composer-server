@@ -31,6 +31,7 @@ export enum LessonType {
 @Entity()
 @Unique(['id'])
 export class Lesson extends BaseEntity {
+  @ApiProperty({ example: 1, description: '프라이머리키' })
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -109,11 +110,17 @@ export class Lesson extends BaseEntity {
   })
   teacherId: number;
 
-
-
+  @ApiProperty({
+    example: '2022-03-15 10:38:40.480462',
+    description: '생성날짜',
+  })
   @CreateDateColumn()
   created_at: Date;
 
+  @ApiProperty({
+    example: '2022-03-15 10:38:40.480462',
+    description: '업데이트 날짜',
+  })
   @UpdateDateColumn()
   updated_at: Date;
 }

@@ -94,10 +94,9 @@ export class ChatService {
     const userChatList = await this.chatRoomRepository
       .createQueryBuilder('chatRoom')
       .where('chatRoom.userId = :id', { id: user.id })
-      // .innerJoinAndSelect('chatRoom.messages', 'messages')
-      // .skip(10)
-      // .take(10)
-      // .where('messages.createdAt = MAX(messages.createdAt)')
+      .leftJoinAndSelect('chatRoom.messages', 'messages')
+      .orderBy('messages.created_at', 'DESC')
+      .limit(1)
       .getMany();
 
     const teacher = await this.teacherRepository.findOne(user);
@@ -109,6 +108,9 @@ export class ChatService {
           id: user.id,
         })
         .innerJoinAndSelect('lesson.chatRooms', 'chatRooms')
+        .leftJoinAndSelect('chatRooms.messages', 'messages')
+        .orderBy('messages.created_at', 'DESC')
+        .limit(1)
         .getMany();
 
       const chatList: ChatList = { lessonChat, userChatList };

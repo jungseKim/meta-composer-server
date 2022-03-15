@@ -1,5 +1,3 @@
-import { ChatList2 } from 'src/types/ChatList';
-import { ChatRoom } from 'src/entities/chatRoom.entity';
 import { UserDecorator } from 'src/decorators/user.decorator';
 import { JwtGuard } from 'src/auth/jwt.guard';
 import { ChatService } from './chat.service';
@@ -19,13 +17,16 @@ import { User } from 'src/entities/user.entity';
 import { TransformResponseInterceptor } from 'src/common/interceptors/transformResponse.interceptor';
 import {
   ApiBasicAuth,
+  ApiOkResponse,
   ApiOperation,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { ResponseChatList } from './dto/response-chatList.dto';
+import { Message } from 'src/entities/message.entity';
 
 @Controller('api/chat')
-@ApiTags('')
+@ApiTags('chat')
 export class ChatController {
   constructor(private chatService: ChatService) {}
 
@@ -33,7 +34,11 @@ export class ChatController {
     summary: 'RoomList 조회',
     description: '자신이 속해있는 리스트 조회',
   })
-  @ApiResponse({ status: 200, description: '룸 조회 완료', type: ChatList })
+  @ApiResponse({
+    status: 200,
+    description: '각 채팅방에 마지막 메세지 같이 보내줌',
+    type: ResponseChatList,
+  })
   @Get('/roomList')
   @UseInterceptors(TransformResponseInterceptor)
   @UseGuards(JwtGuard)
@@ -42,10 +47,10 @@ export class ChatController {
   }
 
   @ApiOperation({
-    summary: 'RoomList 조회',
-    description: '자신이 속해있는 리스트 조회',
+    summary: 'message 페이지 네이션',
+    description: '10개씩줌 ',
   })
-  @ApiResponse({ status: 200, description: '룸 조회 완료', type: ChatRoom2 })
+  @ApiOkResponse({ status: 200, description: 'page별로', type: [Message] })
   @Get(':id/messages')
   @UseInterceptors(TransformResponseInterceptor)
   public async getChatRoomMessage(
