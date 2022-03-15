@@ -99,7 +99,7 @@ export class ChatService {
       .limit(1)
       .getMany();
 
-    const teacher = await this.teacherRepository.findOne(user);
+    const teacher = await this.teacherRepository.findOne(user.id);
 
     if (teacher) {
       const lessonChat = await this.lessonRepository
