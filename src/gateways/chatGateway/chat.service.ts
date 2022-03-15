@@ -17,6 +17,7 @@ import { ChatRoom } from 'src/entities/chatRoom.entity';
 import { Message } from 'src/entities/message.entity';
 import { MAX } from 'class-validator';
 import ChatList from 'src/types/ChatList';
+import { NotificationService } from 'src/modules/notification/notification.service';
 @Injectable()
 export class ChatService {
   constructor(
@@ -30,12 +31,14 @@ export class ChatService {
     private lessonRepository: Repository<Lesson>,
     @InjectRepository(Message)
     private messageRepository: Repository<Message>,
+    private notificationService: NotificationService,
   ) {}
 
   //--------------------gateWay------------------------------
   public async auth(client: Socket): Promise<ChatRoom[]> {
-    const authToken = client.handshake.auth.token.split(' ')[1];
-
+    // const authToken = client.handshake.auth.token?.split(' ')[1];
+    const authToken = client.handshake.headers.authorization?.split(' ')[1];
+    console.log(authToken);
     if (!authToken) {
       client.disconnect();
       return;
@@ -51,8 +54,28 @@ export class ChatService {
       return;
     }
 
+    // const teacher = await this.teacherRepository.findOneOrFail(user);
+
+    const teacher = await this.teacherRepository
+      .createQueryBuilder('teacher')
+      .innerJoin('teacher.user', 'user', 'user.id = :id', {
+        id: user.id,
+      })
+      .getOne();
+    console.log({ teacher });
+    if (teacher) {
+      const lessons: Lesson[] = await teacher.lessons;
+      lessons.forEach(async (lesson) => {
+        const chatRooms: ChatRoom[] = await lesson.chatRooms;
+        chatRooms.forEach((room) => {
+          console.log(room.id);
+          client.join(room.id.toString());
+        });
+      });
+    }
     client.data.userId = user.id;
   }
+
   public async chatRoomJoin(client: Socket, roomId: number) {
     const userId: number = client.data.userId;
     const room = await this.chatRoomRepository.findOne(roomId);
@@ -68,13 +91,15 @@ export class ChatService {
   }
 
   public async saveMessage(userId: number, roomId: number, message: string) {
-    await this.messageRepository
+    const messageSend = await this.messageRepository
       .create({
         senderId: userId,
         message,
         chatRoomId: roomId,
       })
       .save();
+
+    // this.notificationService.pushMessage(messageSend);
   }
 
   //---------------------controller----------------------

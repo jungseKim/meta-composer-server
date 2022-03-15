@@ -43,6 +43,7 @@ export class NotificationService {
   }
 
   public async pushMessage(payload: { userId: number; message: Message }) {
-    this.clients[payload.userId];
+    const client = this.clients[payload.userId];
+    client.emit('push-message', payload.message);
   }
 }

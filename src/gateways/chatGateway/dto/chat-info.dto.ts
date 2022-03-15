@@ -53,5 +53,5 @@ export class LessonDto extends PickType(Lesson, [
   'teacherId',
 ] as const) {
   @ApiProperty({ type: () => ChatRoomDto, isArray: true })
-  chatRooms: ChatRoom[];
+  chatRooms: Promise<ChatRoom[]>;
 }

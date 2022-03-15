@@ -12,9 +12,11 @@ import { Teacher } from 'src/entities/teacher.entity';
 import { ChatRoom } from 'src/entities/chatRoom.entity';
 import { Message } from 'src/entities/message.entity';
 import { ChatController } from './chat.controller';
+import { NotificationModule } from 'src/modules/notification/notification.module';
 
 @Module({
   imports: [
+    NotificationModule,
     TypeOrmModule.forFeature([User, Teacher, Lesson, ChatRoom, Message]),
   ],
   controllers: [ChatController],
