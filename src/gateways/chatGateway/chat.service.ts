@@ -54,25 +54,23 @@ export class ChatService {
       return;
     }
 
-    // const teacher = await this.teacherRepository.findOneOrFail(user);
+    //실시간 알람은 notification service에서 다 처리 = 여기서 이벤트 바인딩 할필요 없음
 
-    const teacher = await this.teacherRepository
-      .createQueryBuilder('teacher')
-      .innerJoin('teacher.user', 'user', 'user.id = :id', {
-        id: user.id,
-      })
-      .getOne();
-    console.log({ teacher });
-    if (teacher) {
-      const lessons: Lesson[] = await teacher.lessons;
-      lessons.forEach(async (lesson) => {
-        const chatRooms: ChatRoom[] = await lesson.chatRooms;
-        chatRooms.forEach((room) => {
-          console.log(room.id);
-          client.join(room.id.toString());
-        });
-      });
-    }
+    // const teacher = await this.teacherRepository.findOneOrFail({
+    //   userId: user.id,
+    // });
+
+    // if (teacher) {
+    //   const lessons: Lesson[] = await teacher.lessons;
+    //   console.log(lessons);
+    //   lessons.forEach(async (lesson) => {
+    //     const chatRooms: ChatRoom[] = await lesson.chatRooms;
+    //     chatRooms.forEach((room) => {
+    //       console.log(room.id);
+    //       client.join(room.id.toString());
+    //     });
+    //   });
+    // }
     client.data.userId = user.id;
   }
 
@@ -91,6 +89,7 @@ export class ChatService {
   }
 
   public async saveMessage(userId: number, roomId: number, message: string) {
+    console.log(userId, roomId, message);
     const messageSend = await this.messageRepository
       .create({
         senderId: userId,
@@ -99,7 +98,16 @@ export class ChatService {
       })
       .save();
 
-    // this.notificationService.pushMessage(messageSend);
+    const chatRoom = await this.chatRoomRepository.findOne(roomId);
+    if (chatRoom.userId === userId) {
+      this.notificationService.pushMessage(userId, messageSend);
+    } else {
+      const lesson = await chatRoom.lesson;
+      const teacher = await lesson.teacher;
+
+      this.notificationService.pushMessage(teacher.userId, messageSend);
+    }
+    return messageSend;
   }
 
   //---------------------controller----------------------

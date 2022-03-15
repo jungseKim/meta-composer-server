@@ -37,6 +37,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client: Socket,
     payload: { roomId: number; message: string },
   ) {
+    console.log(payload);
     const roomId: number = client.data.currentRoomId;
     const userId: number = client.data.userId;
     if (roomId === payload.roomId) {

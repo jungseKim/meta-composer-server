@@ -38,7 +38,7 @@ export class Lesson extends BaseEntity {
   @ManyToOne((type) => Teacher, (teacher) => teacher.lessons, {
     onDelete: 'CASCADE',
   })
-  teacher: Teacher;
+  teacher: Promise<Teacher>;
 
   @Column()
   @ApiProperty({

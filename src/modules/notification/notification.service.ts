@@ -23,8 +23,8 @@ export class NotificationService {
   }
 
   public async auth(client: Socket): Promise<ChatRoom[]> {
-    const authToken = client.handshake.auth.token.split(' ')[1];
-
+    // const authToken = client.handshake.auth.token.split(' ')[1];
+    const authToken = client.handshake.headers.authorization?.split(' ')[1];
     if (!authToken) {
       client.disconnect();
       return;
@@ -42,8 +42,9 @@ export class NotificationService {
     this.clients[user.id] = client;
   }
 
-  public async pushMessage(payload: { userId: number; message: Message }) {
-    const client = this.clients[payload.userId];
-    client.emit('push-message', payload.message);
+  public async pushMessage(userId: number, message: Message) {
+    const client = this.clients[userId];
+    console.log(userId, message);
+    client.emit('push-message', message);
   }
 }

@@ -45,7 +45,7 @@ export class Teacher extends BaseEntity {
   @OneToMany((type) => Lesson, (lesson) => lesson.teacher, {
     onDelete: 'CASCADE',
   })
-  lessons: Lesson[];
+  lessons: Promise<Lesson[]>;
   @OneToMany((type) => Attendance, (attendance) => attendance.teacher)
   attendance: Attendance;
   @Column()
