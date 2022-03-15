@@ -1,3 +1,5 @@
+import { NotificationService } from './modules/notification/notification.service';
+import { NotificationModule } from './modules/notification/notification.module';
 import { ChatModule } from './gateways/chatGateway/chat.module';
 
 import { PublicRoomModule } from './gateways/publcRoom/publicroom.module';
@@ -29,15 +31,12 @@ import { ConcoursModule } from './concours/concours.module';
 import { ConcoursSignupsModule } from './concours-signups/concours-signups.module';
 import { RedisCacheModule } from './cache/rediscache.module';
 
-
-
-
-
 @Module({
   controllers: [AppController],
   providers: [AppService, WebRtcGateway],
-  imports: 
-  [ ChatModule,
+  imports: [
+    NotificationModule,
+    ChatModule,
     RedisCacheModule,
     PublicRoomModule,
     LessonSocketModule,
@@ -62,7 +61,6 @@ import { RedisCacheModule } from './cache/rediscache.module';
     PaymentsModule,
     ConcoursModule,
     ConcoursSignupsModule,
-    
-   ],
+  ],
 })
 export class AppModule {}
