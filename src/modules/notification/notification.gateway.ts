@@ -13,6 +13,7 @@ import {
   ConnectedSocket,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { NotificationService } from './notification.service';
 @WebSocketGateway({
   namespace: 'notification',
   cors: {
@@ -25,11 +26,15 @@ export class NotificationGateway
   @WebSocketServer()
   server: Server;
 
+  constructor(private notificationService: NotificationService) {}
+
   @SubscribeMessage('events')
   handleEvent(@MessageBody() data: string) {
     this.server.emit('events', data);
   }
-  async handleConnection(@ConnectedSocket() client: Socket) {}
+  async handleConnection(@ConnectedSocket() client: Socket) {
+    this.notificationService.auth(client);
+  }
 
   handleDisconnect(@ConnectedSocket() client: any) {}
 }
