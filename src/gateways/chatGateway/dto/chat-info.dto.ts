@@ -5,6 +5,7 @@ import { PickType, ApiProperty } from '@nestjs/swagger';
 import { Lesson } from 'src/entities/lesson.entity';
 import { time } from 'console';
 import { Message } from 'src/entities/message.entity';
+import { User } from 'src/entities/user.entity';
 
 export class ChatRoomDto extends PickType(ChatRoom, [
   'id',
@@ -19,6 +20,25 @@ export class ChatRoomDto extends PickType(ChatRoom, [
     description: '마지막으로 한채팅',
   })
   messages: Message;
+}
+
+export class ChatRoomInfoDto extends PickType(ChatRoom, [
+  'id',
+  'userId',
+  'lessonId',
+  'created_at',
+  'updated_at',
+] as const) {
+  @ApiProperty({
+    type: Lesson,
+    description: '마지막으로 한채팅',
+  })
+  lesson: Lesson;
+  @ApiProperty({
+    type: User,
+    description: '마지막으로 한채팅',
+  })
+  user: User;
 }
 
 export class LessonDto extends PickType(Lesson, [

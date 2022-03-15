@@ -8,14 +8,19 @@ import * as jwt from 'jsonwebtoken';
 import { Socket } from 'socket.io';
 import { TokenPayload } from 'src/auth/token-payload.interface';
 import { ChatRoom } from 'src/entities/chatRoom.entity';
+import { Message } from 'src/entities/message.entity';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 @Injectable()
 export class NotificationService {
+  clients: Record<number, Socket>;
+
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-  ) {}
+  ) {
+    this.clients = {};
+  }
 
   public async auth(client: Socket): Promise<ChatRoom[]> {
     const authToken = client.handshake.auth.token.split(' ')[1];
@@ -34,7 +39,10 @@ export class NotificationService {
       client.disconnect();
       return;
     }
+    this.clients[user.id] = client;
+  }
 
-    client.data.userId = user.id;
+  public async pushMessage(payload: { userId: number; message: Message }) {
+    this.clients[payload.userId];
   }
 }

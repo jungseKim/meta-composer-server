@@ -78,11 +78,11 @@ export class ChatService {
   }
 
   //---------------------controller----------------------
-  public async getChatRoomMeesage(id: number, page: number) {
+  public async getChatRoomMeesage(roomId: number, page: number) {
     return await this.messageRepository
       .createQueryBuilder('message')
       .innerJoin('message.chatRoom', 'chatRoom', 'chatRoom.id = :id', {
-        id,
+        roomId,
       })
       .orderBy('message.createdAt', 'DESC')
       .take(10)
@@ -119,5 +119,17 @@ export class ChatService {
 
     const chatList: ChatList = { lessonChat: null, userChatList };
     return chatList;
+  }
+
+  public async getChatRoomInfo(roomId: number) {
+    // const room = await this.chatRoomRepository.findOne(roomId);
+
+    const room = await this.chatRoomRepository
+      .createQueryBuilder('room')
+      .where('room.id = :roomId', { roomId })
+      .leftJoinAndSelect('room.user', 'user')
+      .leftJoinAndSelect('room.lesson', 'lesson')
+      .getOne();
+    return room;
   }
 }

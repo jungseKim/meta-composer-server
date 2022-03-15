@@ -24,6 +24,7 @@ import {
 } from '@nestjs/swagger';
 import { ResponseChatList } from './dto/response-chatList.dto';
 import { Message } from 'src/entities/message.entity';
+import { ChatRoomInfoDto } from './dto/chat-info.dto';
 
 @Controller('api/chat')
 @ApiTags('chat')
@@ -51,12 +52,27 @@ export class ChatController {
     description: '10개씩줌 ',
   })
   @ApiOkResponse({ status: 200, description: 'page별로', type: [Message] })
-  @Get(':id/messages')
+  @Get(':roomId/messages')
   @UseInterceptors(TransformResponseInterceptor)
   public async getChatRoomMessage(
-    @Param('id') id: number,
+    @Param('roomId') roomId: number,
     @Query('page') page: number,
   ) {
-    return this.chatService.getChatRoomMeesage(id, page);
+    return this.chatService.getChatRoomMeesage(roomId, page);
+  }
+
+  @ApiOperation({
+    summary: 'chatting room 에 대한 정보 ',
+    description: '(강사, 유저) join 한 값',
+  })
+  @ApiOkResponse({
+    status: 200,
+    description: 'page별로',
+    type: ChatRoomInfoDto,
+  })
+  @Get(':roomId/chatRoom')
+  @UseInterceptors(TransformResponseInterceptor)
+  public async getChatRoomInfo(@Param('roomId') roomId: number) {
+    return this.chatService.getChatRoomInfo(roomId);
   }
 }
