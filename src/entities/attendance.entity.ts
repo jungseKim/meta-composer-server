@@ -16,13 +16,13 @@ export class Attendance extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne((type) => User, (user) => user.attendance)
+  @ManyToOne(() => User, (user) => user.attendances)
   user: User;
 
-  @ManyToOne((type) => Teacher, (teacher) => teacher.attendance)
+  @ManyToOne(() => Teacher, (teacher) => teacher.attendances)
   teacher: Teacher;
 
-  @ManyToOne((type) => Signup, (signup) => signup.attendance)
+  @ManyToOne(() => Signup, (signup) => signup.attendances)
   signup: Signup;
 
   @Column({ type: 'date' })

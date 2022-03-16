@@ -17,14 +17,14 @@ export class ChatRoom extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne((type) => User, (user) => user.chatRoom)
+  @ManyToOne(() => User, (user) => user.chatRooms)
   user: User;
   //student
 
-  @ManyToOne((type) => Lesson, (lesson) => lesson.chatRoom)
+  @ManyToOne(() => Lesson, (lesson) => lesson.chatRooms)
   lesson: Lesson;
 
-  @OneToMany((type) => Message, (message) => message.chatRoom)
+  @OneToMany(() => Message, (message) => message.chatRoom,{eager : true })
   messages: Message[];
 
 

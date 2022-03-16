@@ -13,15 +13,15 @@ import {
 @Entity()
 export class Category extends BaseEntity {
   @PrimaryGeneratedColumn()
-  @OneToMany((type) => Category, (category) => category.pid)
-  id: number;
+  @OneToMany(() => Category, (category) => category.pid,{eager : true })
+  ids: number[];
 
   @Column()
   tag: string;
 
   //   @ManyToOne((type) => Category, (category) => category.id)
   //   pid: number;
-  @ManyToOne((type) => Category, (category) => category.id)
+  @ManyToOne(() => Category, (category) => category.ids)
   pid: number;
 
   @CreateDateColumn()

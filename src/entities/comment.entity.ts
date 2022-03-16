@@ -27,10 +27,10 @@ export class Comment extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne((type) => User, (user) => user.comment)
+  @ManyToOne(() => User, (user) => user.comments)
   user: User;
 
-  @ManyToOne((type) => Lesson, (lesson) => lesson.comment)
+  @ManyToOne(() => Lesson, (lesson) => lesson.comments)
   lesson: Lesson;
 
   @Column()

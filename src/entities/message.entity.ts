@@ -23,20 +23,19 @@ export class Message extends BaseEntity {
   chatRoom: ChatRoom;
 
 
-   @ManyToOne((type) => User, (user) => user.message)
-  @JoinColumn()
+ 
+   @ManyToOne((type) => User, (user) => user.messages)
+   @JoinColumn({ name: 'senderId' })
   //join칼럼명 이름바꾸기1
   sender : User;
-
-
-  @Column({ unique: false ,name:"senderId"})
+  
                               //join 칼럼명 이름바꾸기2
   @ApiProperty({
     example:'1',
     description:'메시지 발신자 ID값'
   }) 
   senderId: number;
-  //이름바꾸기3
+  // 이름바꾸기3
 
   @Column({ unique: false })
   @ApiProperty({

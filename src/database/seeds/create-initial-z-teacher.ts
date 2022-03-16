@@ -1,9 +1,9 @@
-import { Connection } from 'typeorm';
-import { Factory, Seeder } from 'typeorm-seeding';
-import { User } from '../../entities/user.entity';
-import { faker } from '@faker-js/faker';
-import { Teacher } from '../../entities/teacher.entity';
-import { Lesson } from '../../entities/lesson.entity';
+import { Connection } from "typeorm";
+import { Factory, Seeder } from "typeorm-seeding";
+import { User } from "../../entities/user.entity";
+import { faker } from "@faker-js/faker";
+import { Teacher } from "../../entities/teacher.entity";
+import { Lesson } from "../../entities/lesson.entity";
 
 export class CreateInitialZTeacherData implements Seeder {
   public async run(factory: Factory, connection: Connection): Promise<void> {
@@ -15,78 +15,80 @@ export class CreateInitialZTeacherData implements Seeder {
     //    })
     //    .getOne();
 
-    await connection
-      .createQueryBuilder()
-      .insert()
-      .into(User)
-      .values([
-        {
-          email: faker.internet.email(),
-          password: faker.animal.type(),
-          username: faker.name.firstName(),
-          provider_id: "GENERATED_BY_SEEDER_RAMDOM ID="+faker.address.cityName()
-        },
-      ])
-      .execute();
+    for (let count = 0; count <= 3; count++) {
+      // await connection
+      // .createQueryBuilder()
+      // .insert()
+      // .into(User)
+      // .values([
+      //   {
+      //     email: faker.internet.email(),
+      //     password: faker.animal.type(),
+      //     username: faker.name.firstName(),
+      //     provider_id: "GENERATED_BY_SEEDER_RAMDOM ID="+faker.address.cityName()
+      //   },
+      // ])
+      // .execute();
 
-    const allUsers = await connection
-      .getRepository(User)
-      .createQueryBuilder('user')
-      .getMany();
+      const allUsers = await connection
+        .getRepository(User)
+        .createQueryBuilder("user")
+        .getMany();
 
-    // allUsers에서 랜덤으로 하나 선택
-    // const randomUser = allUsers[Math.floor(Math.random() * allUsers.length)];
+      // allUsers에서 랜덤으로 하나 선택
+      // const randomUser = allUsers[Math.floor(Math.random() * allUsers.length)];
 
-    const allUsersIds = allUsers.map((x) => x.id);
+      const allUsersIds = allUsers.map((x) => x.id);
 
-    const alreadyTeacherUserId = await connection
-      .getRepository(Teacher)
-      .createQueryBuilder('teacher')
-      .getMany();
+      const alreadyTeacherUserId = await connection
+        .getRepository(Teacher)
+        .createQueryBuilder("teacher")
+        .getMany();
 
-    const alreadyTeacherUserIds = alreadyTeacherUserId.map((x) => x.id);
+      const alreadyTeacherUserIds = alreadyTeacherUserId.map((x) => x.userId);
 
-    const difference = allUsersIds.filter(
-      (x) => !alreadyTeacherUserIds.includes(x),
-    );
+      const difference = allUsersIds.filter(
+        (x) => !alreadyTeacherUserIds.includes(x),
+      );
 
-    let trueNum = Math.floor(Math.random() * difference.length);
-    try {
-      if (!difference.includes(trueNum)) {
-        while (difference.includes(trueNum)) {
-          trueNum = Math.floor(Math.random() * difference.length);
+      let trueNum = Math.floor(Math.random() * difference.length);
+      try {
+        if (!difference.includes(trueNum)) {
+          while (difference.includes(trueNum)) {
+            trueNum = Math.floor(Math.random() * difference.length);
+          }
+
+          await connection
+            .createQueryBuilder()
+            .insert()
+            .into(Teacher)
+            .values([
+              {
+                career: faker.company.companyName(),
+                introduce: faker.lorem.words(),
+                self_video: faker.internet.url(),
+                userId: difference[trueNum],
+              },
+            ])
+            .execute();
+        } else {
+          await connection
+            .createQueryBuilder()
+            .insert()
+            .into(Teacher)
+            .values([
+              {
+                career: faker.company.companyName(),
+                introduce: faker.lorem.words(),
+                self_video: faker.internet.url(),
+                userId: difference[trueNum],
+              },
+            ])
+            .execute();
         }
-
-        await connection
-          .createQueryBuilder()
-          .insert()
-          .into(Teacher)
-          .values([
-            {
-              career: faker.company.companyName(),
-              introduce: faker.lorem.words(),
-              self_video: faker.internet.url(),
-              userId: 1 + trueNum,
-            },
-          ])
-          .execute();
-      } else {
-        await connection
-          .createQueryBuilder()
-          .insert()
-          .into(Teacher)
-          .values([
-            {
-              career: faker.company.companyName(),
-              introduce: faker.lorem.words(),
-              self_video: faker.internet.url(),
-              userId: 1 + trueNum,
-            },
-          ])
-          .execute();
+      } catch (error) {
+        return;
       }
-    } catch (error) {
-      return;
     }
   }
 }

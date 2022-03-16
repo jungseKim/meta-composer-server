@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { SheetsController } from './sheets.controller';
-import SheetsRepository from './sheets.repository';
-import { SheetsService } from './sheets.service';
+import { SheetsController } from '../sheets/sheets.controller';
+import SheetsRepository from '../sheets/sheets.repository';
+import { SheetsService } from '../sheets/sheets.service';
 
 @Module({
 

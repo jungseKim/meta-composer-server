@@ -15,10 +15,10 @@ import { User } from './user.entity';
     @PrimaryGeneratedColumn()
     id: number;
       
-    @ManyToOne((type) => Concours, (concours) => concours.concoursSignup,{  onDelete: 'CASCADE',  })
+    @ManyToOne((type) => Concours, (concours) => concours.concoursSignups,{  onDelete: 'CASCADE',  })
     concours: Concours;
      
-    @ManyToOne((type) => User, (user) => user.concoursSignup,{  onDelete: 'CASCADE',  })
+    @ManyToOne((type) => User, (user) => user.concoursSignups,{  onDelete: 'CASCADE',  })
     user: User;
 
     @Column()

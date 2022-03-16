@@ -63,14 +63,24 @@ import { ConcoursSignup } from './concoursSignup.entity';
       description: '콩쿠르 설명'
     })  
     contents: string;
+
+    @Column()
+    @ApiProperty({
+      example: 'https://www.imgimgimg.com',
+      description: '콩쿠르 커버 이미지 저장 주소'
+    })  
+    coverIMG_url: string;
+
     
-    @OneToMany((type) => ConcoursSignup, (concoursSignup) => concoursSignup.concours, {  onDelete: 'CASCADE',})
-    concoursSignup: ConcoursSignup;
+    @OneToMany(() => ConcoursSignup, (concoursSignup) => concoursSignup.concours, {  onDelete: 'CASCADE', eager:true})
+    concoursSignups: ConcoursSignup[];
 
     @CreateDateColumn()
     created_at: Date;
   
     @UpdateDateColumn()
     updated_at: Date;
+
+
   }
   

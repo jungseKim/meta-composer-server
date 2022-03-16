@@ -45,4 +45,8 @@ export class TeachersService {
             .save(teacher);
         return teacher;
     }
+
+    async findAllTeachers(){
+        return this.teachersRepository.findAllTeachers();
+    }
 }

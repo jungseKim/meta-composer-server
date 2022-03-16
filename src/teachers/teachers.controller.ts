@@ -18,6 +18,7 @@ export class TeachersController {
         @ApiResponse({status: 200, description: '강사 조회 완료', type: Teacher})
         findAllTeachers(){
             return this.teachersRepository.find();
+           
         }
         @UseGuards(AuthGuard('jwt'))
         @Post()

@@ -3,14 +3,14 @@ import { Module } from '@nestjs/common';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
-import { UserModule } from 'src/user/user.module';
+import { UserModule } from 'src/modules/user.module';
 import { UserService } from 'src/user/user.service';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-import { FacebookStrategy } from './facebook.strategy';
-import { JwtRefreshTokenStrategy } from './jwt-refresh-token.strategy';
-import { JwtStrategy } from './jwt.strategy';
-import { GoogleStrategy } from './Google.strategy';
+import { AuthController } from '../auth/auth.controller';
+import { AuthService } from '../auth/auth.service';
+import { FacebookStrategy } from '../auth/facebook.strategy';
+import { JwtRefreshTokenStrategy } from '../auth/jwt-refresh-token.strategy';
+import { JwtStrategy } from '../auth/jwt.strategy';
+import { GoogleStrategy } from '../auth/Google.strategy';
 @Module({
   imports: [
     ConfigModule,
