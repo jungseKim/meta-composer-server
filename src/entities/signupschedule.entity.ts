@@ -27,10 +27,10 @@ export class Signupschedule extends BaseEntity {
   finishdate: number;
 
   @OneToMany(
-    (type) => Signuptimetable,
-    (signuptimetable) => signuptimetable.signupschedule,
+    () => Signuptimetable,
+    (signuptimetable) => signuptimetable.signupschedule,{eager : true }
   )
-  signuptimetable: Signuptimetable;
+  signuptimetables: Signuptimetable[];
 
   @CreateDateColumn()
   created_at: Date;

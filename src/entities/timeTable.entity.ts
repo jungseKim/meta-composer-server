@@ -24,7 +24,7 @@ export class TimeTable extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne((type) => Lesson, (lesson) => lesson.timeTable)
+  @ManyToOne((type) => Lesson, (lesson) => lesson.timeTables)
   lesson: Lesson;
 
   @Column({ type: 'enum', enum: Day })

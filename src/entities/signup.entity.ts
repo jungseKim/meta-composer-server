@@ -18,10 +18,10 @@ export class Signup extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne((type) => User, (user) => user.signup)
+  @ManyToOne((type) => User, (user) => user.signups)
   user: User;
 
-  @ManyToOne((type) => Lesson, (lesson) => lesson.signup,{  onDelete: 'CASCADE',})
+  @ManyToOne((type) => Lesson, (lesson) => lesson.signups,{  onDelete: 'CASCADE',})
   lesson: Lesson;
 
   @Column()
@@ -35,16 +35,16 @@ export class Signup extends BaseEntity {
   userId:number;
 
   @OneToMany(
-    (type) => Signupschedule,
-    (signupschedule) => signupschedule.signup,
+    () => Signupschedule,
+    (signupschedule) => signupschedule.signup,{eager : true }
   )
   signupschedule: Signupschedule;
 
-  @OneToMany((type) => Payment, (payment) => payment.signup)
+  @OneToMany(() => Payment, (payment) => payment.signup,{eager : true })
   payment: Payment;
 
-  @OneToMany((type) => Attendance, (attendance) => attendance.signup)
-  attendance: Attendance;
+  @OneToMany(() => Attendance, (attendance) => attendance.signup,{eager : true })
+  attendances: Attendance[];
 
   // @Column({ type: 'date' })
   // date: string;

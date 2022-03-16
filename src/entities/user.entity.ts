@@ -1,5 +1,7 @@
+
 import { Notification } from 'src/entities/notification.entity';
 import { Teacher } from './teacher.entity';
+
 import {
   BaseEntity,
   Column,
@@ -12,46 +14,67 @@ import {
   PrimaryGeneratedColumn,
   Unique,
   UpdateDateColumn,
-} from 'typeorm';
-import { Comment } from './comment.entity';
-import { ChatRoom } from './chatRoom.entity';
-import { Wishlist } from './wishlist.entity';
-import { Signup } from './signup.entity';
-import { Attendance } from './attendance.entity';
-import { Sheet } from './sheet.entity';
-import { Assignment } from './assignment.entity';
-import { ConcoursSignup } from './concoursSignup.entity';
-import { LessonRoom } from './lessonRoom.entity';
-import { Message } from './message.entity';
-import { ApiProperty } from '@nestjs/swagger';
+
+} from "typeorm";
+import { Comment } from "./comment.entity";
+import { ChatRoom } from "./chatRoom.entity";
+import { Wishlist } from "./wishlist.entity";
+import { Signup } from "./signup.entity";
+import { Attendance } from "./attendance.entity";
+import { Sheet } from "./sheet.entity";
+import { Assignment } from "./assignment.entity";
+import { ConcoursSignup } from "./concoursSignup.entity";
+import { LessonRoom } from "./lessonRoom.entity";
+import { Message } from "./message.entity";
+import { ApiProperty } from "@nestjs/swagger";
+
 
 export enum ProviderType {
-  FACEBOOK = 'Facebook',
-  INSTAGRAM = 'Instagram',
-  WHATSAPP = 'WhatsApp',
-  ETC = 'etc',
+  FACEBOOK = "Facebook",
+  INSTAGRAM = "Instagram",
+  WHATSAPP = "WhatsApp",
+  ETC = "etc",
 }
 @Entity()
-@Unique(['id'])
+@Unique(["id"])
 export class User extends BaseEntity {
   @ApiProperty({ example: 1, description: '프라이머리키' })
   @PrimaryGeneratedColumn()
   id: number;
   @ApiProperty({ example: 'example@naver.com', description: '유저 이메일' })
   @Column({ unique: true })
+  @ApiProperty({
+    example: "example@gmail.com",
+    description: "이메일입니다.",
+  })
   email: string;
-  @ApiProperty({ example: 'password123', description: 'nullable' })
+
   @Column({ nullable: true })
+  @ApiProperty({
+    example: "password123",
+    description: "비밀번호, nullable ",
+  })
+
   password: string;
   @ApiProperty({ example: '김정세', description: '유저닉네임' })
   @Column()
+  @ApiProperty({
+    example: "닉네임123",
+    description: "유저 이름",
+  })
   username: string;
   @ApiProperty({ example: 'null', description: 'nullable' })
   @Column({ nullable: true })
+  @ApiProperty({
+    example: "https://eager-beating.name",
+    description: "유저 프로필 이미지, nullable",
+  })
   profile_image: string;
+
   @ApiProperty({ example: 'facebook', description: '소셜로그인' })
   @Column({ nullable: true })
   provider: string;
+
   @ApiProperty({ example: '123123123', description: '소셜로그인 아이디' })
   @Column({ unique: true })
   provider_id: string;
@@ -72,9 +95,10 @@ export class User extends BaseEntity {
   @OneToOne((type) => Teacher, (teacher) => teacher.user)
   teacher: Teacher;
 
-  @OneToMany((type) => Message, (message) => message.sender)
-  message: Message;
+  @OneToMany((type) => Message, (message) => message.sender, { eager: true })
+  messages: Message[];
   // sender
+
 
   @OneToMany((type) => Notification, (notification) => notification.user)
   notifications: Notification[];
@@ -82,27 +106,38 @@ export class User extends BaseEntity {
   @OneToMany((type) => Comment, (comment) => comment.user)
   comment: Comment;
 
-  @OneToMany((type) => ChatRoom, (chatRoom) => chatRoom.user)
-  chatRoom: ChatRoom;
 
-  @OneToMany((type) => Wishlist, (wishlist) => wishlist.user)
-  wishlist: Wishlist;
-  @OneToMany((type) => Signup, (signup) => signup.user)
-  signup: Signup;
-  @OneToMany((type) => Attendance, (attendance) => attendance.user)
-  attendance: Attendance;
-  @OneToMany((type) => Sheet, (sheet) => sheet.user)
-  sheet: Sheet;
+  @OneToMany((type) => Comment, (comment) => comment.user, { eager: true })
+  comments: Comment[];
 
-  @OneToMany((type) => Assignment, (assignment) => assignment.user)
-  assignment: Assignment;
+  @OneToMany((type) => ChatRoom, (chatRoom) => chatRoom.user, { eager: true })
+  chatRooms: ChatRoom[];
+
+  @OneToMany((type) => Wishlist, (wishlist) => wishlist.user, { eager: true })
+  wishlists: Wishlist[];
+  @OneToMany((type) => Signup, (signup) => signup.user, { eager: true })
+  signups: Signup[];
+  @OneToMany((type) => Attendance, (attendance) => attendance.user, {
+    eager: true,
+  })
+  attendances: Attendance[];
+  @OneToMany((type) => Sheet, (sheet) => sheet.user, { eager: true })
+  sheets: Sheet[];
+
+  @OneToMany((type) => Assignment, (assignment) => assignment.user, {
+    eager: true,
+  })
+  assignments: Assignment[];
+
 
   @OneToMany(
     (type) => ConcoursSignup,
     (concoursSignup) => concoursSignup.user,
-    { onDelete: 'CASCADE' },
+
+    { onDelete: "CASCADE", eager: true },
   )
-  concoursSignup: ConcoursSignup;
+  concoursSignups: ConcoursSignup[];
+
 
   @CreateDateColumn()
   created_at: Date;

@@ -14,9 +14,9 @@ import { User } from './user.entity';
 export class Sheet extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
-  @ManyToOne((type) => User, (user) => user.sheet)
+  @ManyToOne((type) => User, (user) => user.sheets)
   user: User;
-  @ManyToOne((type) => Lesson, (lesson) => lesson.sheet)
+  @ManyToOne((type) => Lesson, (lesson) => lesson.sheets)
   lesson: Lesson;
 
   @Column({ unique: true })
@@ -26,7 +26,7 @@ export class Sheet extends BaseEntity {
   isOpen: boolean;
   //0 => false   ,   1 => true
 
-  @ManyToOne((type) => Assignment, (assignment) => assignment.sheet)
+  @ManyToOne((type) => Assignment, (assignment) => assignment.sheets)
   assignment: Assignment;
 
   @Column()

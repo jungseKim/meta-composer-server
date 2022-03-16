@@ -1,11 +1,22 @@
-import { find } from 'rxjs';
-import { Lesson } from './../../entities/lesson.entity';
-import { Teacher } from './../../entities/teacher.entity';
-import { Socket } from 'socket.io';
+import { find } from "rxjs";
+import { Lesson } from "./../../entities/lesson.entity";
+import { Teacher } from "./../../entities/teacher.entity";
+import { Socket } from "socket.io";
 /*
 https://docs.nestjs.com/providers#services
 */
 
+<<<<<<< HEAD
+import { Injectable } from "@nestjs/common";
+import { User } from "src/entities/user.entity";
+import { Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
+
+import * as jwt from "jsonwebtoken";
+import { TokenPayload } from "src/modules/auth/token-payload.interface";
+import { ChatRoom } from "src/entities/chatRoom.entity";
+import { Message } from "src/entities/message.entity";
+=======
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/entities/user.entity';
 import { Repository, QueryBuilder } from 'typeorm';
@@ -19,6 +30,7 @@ import { MAX } from 'class-validator';
 import ChatList from 'src/types/ChatList';
 import { NotificationService } from 'src/gateways/notification/notification.service';
 import { Signup } from 'src/entities/signup.entity';
+>>>>>>> d2087aaa9df49eba11ec7b491b11af4725510517
 @Injectable()
 export class ChatService {
   constructor(
@@ -39,9 +51,14 @@ export class ChatService {
 
   //--------------------gateWay------------------------------
   public async auth(client: Socket): Promise<ChatRoom[]> {
+<<<<<<< HEAD
+    const authToken = client.handshake.auth.token.split(" ")[1];
+
+=======
     const authToken = client.handshake.auth.token?.split(' ')[1];
     // const authToken = client.handshake.headers.authorization?.split(' ')[1];
     console.log(authToken);
+>>>>>>> d2087aaa9df49eba11ec7b491b11af4725510517
     if (!authToken) {
       client.disconnect();
       return;
@@ -51,7 +68,7 @@ export class ChatService {
       jwt.verify(authToken, process.env.JWT_SECRET)
     );
 
-    const user = await this.userRepository.findOne(jwtPayload['userId']);
+    const user = await this.userRepository.findOne(jwtPayload["userId"]);
     if (!user) {
       client.disconnect();
       return;
@@ -81,6 +98,13 @@ export class ChatService {
     client.join(room.id.toString());
   }
 
+<<<<<<< HEAD
+  public async getChatRoomMeesage(id: number, page: number) {
+    return this.messageRepository
+      .createQueryBuilder("message")
+      .innerJoin("message.chatRoom", "chatRoom", "chatRoom := id", {
+        id,
+=======
   public async saveMessage(userId: number, roomId: number, message: string) {
     console.log(userId, roomId, message);
     const messageSend = await this.messageRepository
@@ -88,6 +112,7 @@ export class ChatService {
         senderId: userId,
         message,
         chatRoomId: roomId,
+>>>>>>> d2087aaa9df49eba11ec7b491b11af4725510517
       })
       .save();
 

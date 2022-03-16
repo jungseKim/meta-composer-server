@@ -17,12 +17,12 @@ export class Assignment extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne((type) => User, (user) => user.assignment)
+  @ManyToOne(() => User, (user) => user.assignments)
   user: User;
 
-  @ManyToOne((type) => Lesson, (lesson) => lesson.assignment)
+  @ManyToOne(() => Lesson, (lesson) => lesson.assignments)
   lesson: Lesson;
-
+  
   @Column({ type: 'datetime' })
   startedTime: number;
 
@@ -48,8 +48,8 @@ export class Assignment extends BaseEntity {
   finished_times: number;
 
   //
-  @OneToMany((type) => Sheet, (sheet) => sheet.assignment)
-  sheet: Sheet;
+  @OneToMany(() => Sheet, (sheet) => sheet.assignment,{eager : true })
+  sheets: Sheet[];
 
 
   @Column()
