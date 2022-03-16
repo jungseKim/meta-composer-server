@@ -37,20 +37,22 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client: Socket,
     payload: { roomId: number; message: string },
   ) {
-    const room: ChatRoom = client.data.currentRoom;
-    if (room.id === payload.roomId) {
-      await this.chatService.saveMessage(
-        room,
+    console.log(payload);
+    const roomId: number = client.data.currentRoomId;
+    const userId: number = client.data.userId;
+    if (roomId === payload.roomId) {
+      const message = await this.chatService.saveMessage(
+        userId,
+        payload.roomId,
         payload.message,
-        client.data.userId,
       );
-      client.to(payload.roomId.toString()).emit(payload.message);
+      client.to(payload.roomId.toString()).emit('getMessage', message);
     }
   }
 
   @SubscribeMessage('chatJoin')
-  async chatJoin(client: Socket, roomId: string) {
-    const room: ChatRoom = client.data.currentRoom;
-    client.data.currentRoom = room; //다른 방이면 메세지 막음
+  async chatRoomJoin(client: Socket, payload: { roomId: number }) {
+    this.chatService.chatRoomJoin(client, payload.roomId);
+    //다른 방이면 메세지 막음
   }
 }
