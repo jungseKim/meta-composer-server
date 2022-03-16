@@ -66,7 +66,8 @@ export class ChatService {
     const userId: number = client.data.userId;
     const room = await this.chatRoomRepository.findOne(roomId);
     console.log({ userId });
-    const messages = await room.messages;
+    const messages: Message[] = await room.messages;
+
     // const messages = await this.messageRepository.find(room);
     messages.forEach(async (msg) => {
       if (msg.senderId !== userId && !msg.is_read) {
@@ -104,10 +105,10 @@ export class ChatService {
   public async getChatRoomMeesage(roomId: number, page: number) {
     return await this.messageRepository
       .createQueryBuilder('message')
-      .innerJoin('message.chatRoom', 'chatRoom', 'chatRoom.id = :id', {
+      .where('message.chatRoomId = :roomId', {
         roomId,
       })
-      .orderBy('message.createdAt', 'DESC')
+      .orderBy('message.created_at', 'DESC')
       .take(10)
       .skip(10 * (page - 1))
       .getMany();
@@ -117,6 +118,8 @@ export class ChatService {
     const userChatList = await this.chatRoomRepository
       .createQueryBuilder('chatRoom')
       .where('chatRoom.userId = :id', { id: user.id })
+      .innerJoinAndSelect('chatRoom.lesson', 'lesson')
+      .innerJoinAndSelect('lesson.teacher', 'teacher')
       .leftJoinAndSelect('chatRoom.messages', 'messages')
       .orderBy('messages.created_at', 'DESC')
       .limit(1)
@@ -131,6 +134,7 @@ export class ChatService {
           id: user.id,
         })
         .innerJoinAndSelect('lesson.chatRooms', 'chatRooms')
+        .innerJoinAndSelect('chatRooms.user', 'user')
         .leftJoinAndSelect('chatRooms.messages', 'messages')
         .orderBy('messages.created_at', 'DESC')
         .limit(1)

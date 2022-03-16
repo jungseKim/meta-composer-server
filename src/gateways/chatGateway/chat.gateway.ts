@@ -51,8 +51,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('chatJoin')
-  async chatRoomJoin(client: Socket, roomId: number) {
-    this.chatService.chatRoomJoin(client, roomId);
+  async chatRoomJoin(client: Socket, payload: { roomId: number }) {
+    this.chatService.chatRoomJoin(client, payload.roomId);
     //다른 방이면 메세지 막음
   }
 }
