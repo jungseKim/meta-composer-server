@@ -20,4 +20,14 @@ export class TeachersRepository extends Repository<Teacher> {
     
     return registeredTeacher;
   }
+
+  async findAllTeachers(){
+             const allTeachers = await this.createQueryBuilder("teacher")
+        .leftJoinAndSelect("teacher.id", 'id') 
+        .getOne();
+
+        return allTeachers;
+
+        //     eager: true
+  }
 }

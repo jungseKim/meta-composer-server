@@ -19,15 +19,17 @@ export class ChatRoom extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne((type) => User, (user) => user.chatRoom)
+  @ManyToOne(() => User, (user) => user.chatRooms)
   user: User;
   //student
+
 
   @ManyToOne((type) => Lesson, (lesson) => lesson.chatRooms)
   lesson: Promise<Lesson>;
 
   @OneToMany((type) => Message, (message) => message.chatRoom)
   messages: Promise<Message[]>;
+
 
   @Column({ unique: false })
   @ApiProperty({

@@ -20,19 +20,24 @@ import { TeacherDTO } from './dto/teachers.dto';
 @Controller('api/teachers')
 @ApiTags('강사 API')
 export class TeachersController {
-  constructor(
-    private teachersSerice: TeachersService,
-    private teachersRepository: TeachersRepository,
-  ) {}
-  @Get()
-  @ApiOperation({
-    summary: '강사 조회',
-    description: '메타 컨포저에 등록된 강사들 조회',
-  })
-  @ApiResponse({ status: 200, description: '강사 조회 완료', type: Teacher })
-  findAllTeachers() {
-    return this.teachersRepository.find();
-  }
+
+    constructor(private teachersSerice : TeachersService, private teachersRepository : TeachersRepository){}
+        @Get()
+        @ApiOperation({summary: '강사 조회', description: '메타 컨포저에 등록된 강사들 조회'})
+        @ApiResponse({status: 200, description: '강사 조회 완료', type: Teacher})
+        findAllTeachers(){
+            return this.teachersRepository.find();
+           
+        }
+        @UseGuards(AuthGuard('jwt'))
+        @Post()
+        @ApiOperation({summary: '강사 등록', description: '강사를 등록한다'})
+        @ApiResponse({status: 200, description: '강사 등록 완료', type: Teacher})
+        @ApiBody({ type: Teacher })
+        registerTeacher(@UserDecorator()user : User , @Body() updateData:TeacherDTO):Promise<Teacher>{
+            return  this.teachersSerice.registerTeacher(user,updateData);
+        }
+
 
   @UseGuards(AuthGuard('jwt'))
   @Post()

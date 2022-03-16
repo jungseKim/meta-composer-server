@@ -8,10 +8,10 @@ import { User } from './user.entity';
 export class Wishlist extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
-  @ManyToOne((type) => User, (user) => user.wishlist)
+  @ManyToOne((type) => User, (user) => user.wishlists)
   user: User;
 //ddtest
-  @ManyToOne((type) => Lesson, (lesson) => lesson.wishlist)
+  @ManyToOne((type) => Lesson, (lesson) => lesson.wishlists)
   lesson: Lesson;
 
 

@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AssignmentsController } from './assignments.controller';
-import { AssignmentsRepository } from './assignments.repository';
+import { AssignmentsController } from '../assignments/assignments.controller';
+import { AssignmentsRepository } from '../assignments/assignments.repository';
 
-import { AssignmentsService } from './assignments.service';
+import { AssignmentsService } from '../assignments/assignments.service';
 
 @Module({
 

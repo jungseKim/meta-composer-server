@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { RoomController } from './room.controller';
+import { RoomController } from '../room/room.controller';
 
 @Module({
   controllers: [RoomController]

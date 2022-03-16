@@ -20,7 +20,7 @@ import { isStringObject } from 'util/types';
 export class Teacher extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
-  @OneToOne((type) => User, (user) => user.teacher)
+  @OneToOne(() => User, (user) => user.teacher,{eager : true })
   @JoinColumn()
   user: User;
 
@@ -42,12 +42,14 @@ export class Teacher extends BaseEntity {
     description: '자기소개 동영상',
   })
   self_video: string;
+
   @OneToMany((type) => Lesson, (lesson) => lesson.teacher, {
     onDelete: 'CASCADE',
   })
   lessons: Promise<Lesson[]>;
   @OneToMany((type) => Attendance, (attendance) => attendance.teacher)
   attendance: Attendance;
+
   @Column()
   @ApiProperty({
     example: '1',

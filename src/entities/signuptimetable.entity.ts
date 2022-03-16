@@ -18,7 +18,7 @@ export class Signuptimetable extends BaseEntity {
 
   @ManyToOne(
     (type) => Signupschedule,
-    (signupschedule) => signupschedule.signuptimetable,
+    (signupschedule) => signupschedule.signuptimetables,
   )
   signupschedule: Signupschedule;
 

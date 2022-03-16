@@ -35,10 +35,12 @@ export class Lesson extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+
   @ManyToOne((type) => Teacher, (teacher) => teacher.lessons, {
     onDelete: 'CASCADE',
   })
   teacher: Promise<Teacher>;
+
 
   @Column()
   @ApiProperty({
@@ -77,31 +79,35 @@ export class Lesson extends BaseEntity {
   type: LessonType;
   //enum?
 
-  @OneToMany((type) => TimeTable, (timeTable) => timeTable.lesson)
-  timeTable: TimeTable;
+  @OneToMany(() => TimeTable, (timeTable) => timeTable.lesson,{eager : true })
+  timeTables: TimeTable[];
 
-  @OneToMany((type) => Part, (part) => part.lesson)
-  part: Part;
+  @OneToMany(() => Part, (part) => part.lesson,{eager : true })
+  parts: Part[];
 
-  @OneToMany((type) => Comment, (comment) => comment.lesson)
-  comment: Comment;
+  @OneToMany(() => Comment, (comment) => comment.lesson,{eager : true })
+  comments: Comment[];
+
 
   @OneToMany((type) => ChatRoom, (chatRoom) => chatRoom.lesson, {
     eager: true,
   })
+
   chatRooms: ChatRoom[];
 
-  @OneToMany((type) => Wishlist, (wishlist) => wishlist.lesson)
-  wishlist: Wishlist;
+  @OneToMany(() => Wishlist, (wishlist) => wishlist.lesson,{eager : true })
+  wishlists: Wishlist[];
 
-  @OneToMany((type) => Signup, (signup) => signup.lesson, { cascade: true })
-  signup: Signup;
 
-  @OneToMany((type) => Sheet, (sheet) => sheet.lesson)
-  sheet: Sheet;
+  @OneToMany(() => Signup, (signup) => signup.lesson,{  cascade: true})
+  signups: Signup[];
 
-  @OneToMany((type) => Assignment, (assignment) => assignment.lesson)
-  assignment: Assignment;
+
+  @OneToMany(() => Sheet, (sheet) => sheet.lesson,{eager : true })
+  sheets: Sheet[];
+
+  @OneToMany((type) => Assignment, (assignment) => assignment.lesson,{eager : true })
+  assignments: Assignment[];
 
   @Column()
   @ApiProperty({

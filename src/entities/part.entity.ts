@@ -14,7 +14,7 @@ export class Part extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: string;
 
-  @ManyToOne((type) => Lesson, (lesson) => lesson.part)
+  @ManyToOne((type) => Lesson, (lesson) => lesson.parts)
   lesson: Lesson;
 
   @Column()
