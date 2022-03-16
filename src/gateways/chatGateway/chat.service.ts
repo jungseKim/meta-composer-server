@@ -17,7 +17,7 @@ import { ChatRoom } from 'src/entities/chatRoom.entity';
 import { Message } from 'src/entities/message.entity';
 import { MAX } from 'class-validator';
 import ChatList from 'src/types/ChatList';
-import { NotificationService } from 'src/modules/notification/notification.service';
+import { NotificationService } from 'src/gateways/notification/notification.service';
 import { Signup } from 'src/entities/signup.entity';
 @Injectable()
 export class ChatService {
@@ -66,8 +66,9 @@ export class ChatService {
     const userId: number = client.data.userId;
     const room = await this.chatRoomRepository.findOne(roomId);
     console.log({ userId });
-    const messages: Message[] = await room.messages;
-
+    const messages = await room.messages;
+    // const messages: Message[] = await room.messages;
+    console.log({ messages });
     // const messages = await this.messageRepository.find(room);
     messages.forEach(async (msg) => {
       if (msg.senderId !== userId && !msg.is_read) {
@@ -102,15 +103,19 @@ export class ChatService {
   }
 
   //---------------------controller----------------------
-  public async getChatRoomMeesage(roomId: number, page: number) {
+  public async getChatRoomMeesage(
+    roomId: number,
+    page: number,
+    perPage: number,
+  ) {
     return await this.messageRepository
       .createQueryBuilder('message')
       .where('message.chatRoomId = :roomId', {
         roomId,
       })
       .orderBy('message.created_at', 'DESC')
-      .take(10)
-      .skip(10 * (page - 1))
+      .take(perPage)
+      .skip(perPage * (page - 1))
       .getMany();
   }
 

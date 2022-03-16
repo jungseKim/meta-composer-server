@@ -1,5 +1,5 @@
-import { NotificationService } from './modules/notification/notification.service';
-import { NotificationModule } from './modules/notification/notification.module';
+import { NotificationService } from './gateways/notification/notification.service';
+import { NotificationModule } from './gateways/notification/notification.module';
 import { ChatModule } from './gateways/chatGateway/chat.module';
 
 import { PublicRoomModule } from './gateways/publcRoom/publicroom.module';

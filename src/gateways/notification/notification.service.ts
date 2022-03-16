@@ -1,3 +1,4 @@
+import { createQueryBuilder } from 'typeorm';
 /*
 https://docs.nestjs.com/providers#services
 */
@@ -19,6 +20,8 @@ export class NotificationService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(Notification)
+    private notificationRepository: Repository<Notification>,
   ) {
     this.clients = {};
   }
@@ -42,6 +45,7 @@ export class NotificationService {
     }
     this.clients[user.id] = client;
   }
+
   public disconnection(client: Socket) {
     const userId: number = client.data.userId;
     delete this.clients[userId];
@@ -50,5 +54,9 @@ export class NotificationService {
   public async pushMessage(userId: number, message: Message) {
     const client = this.clients[userId];
     client?.emit('push-message', message);
+  }
+  //-----------------controller----------------------------
+  public async getNotifitions(user: User, page: number, perPage: number) {
+    this.notificationRepository.createQueryBuilder('noti');
   }
 }
