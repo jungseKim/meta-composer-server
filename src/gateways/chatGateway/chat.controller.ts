@@ -9,6 +9,7 @@ import {
   Controller,
   Get,
   Param,
+  Post,
   Query,
   UseGuards,
   UseInterceptors,
@@ -25,6 +26,7 @@ import {
 import { ResponseChatList } from './dto/response-chatList.dto';
 import { Message } from 'src/entities/message.entity';
 import { ChatRoomInfoDto } from './dto/chat-info.dto';
+import { ChatRoom } from 'src/entities/chatRoom.entity';
 
 @Controller('api/chat')
 @ApiTags('chat')
@@ -53,6 +55,7 @@ export class ChatController {
   })
   @ApiOkResponse({ status: 200, description: 'page별로', type: [Message] })
   @Get(':roomId/messages')
+  @UseGuards(JwtGuard)
   @UseInterceptors(TransformResponseInterceptor)
   public async getChatRoomMessage(
     @Param('roomId') roomId: number,
@@ -71,8 +74,28 @@ export class ChatController {
     type: ChatRoomInfoDto,
   })
   @Get(':roomId/chatRoom')
+  @UseGuards(JwtGuard)
   @UseInterceptors(TransformResponseInterceptor)
   public async getChatRoomInfo(@Param('roomId') roomId: number) {
     return this.chatService.getChatRoomInfo(roomId);
+  }
+
+  @ApiOperation({
+    summary: '채팅방 생성 ',
+    description: '유저가 레슨채팅방에 대한 채팅방임 수강 안하면 안됨',
+  })
+  @ApiOkResponse({
+    status: 200,
+    description: '생성된 채팅방 정보',
+    type: ChatRoom,
+  })
+  @Post(':lessonId/chatRoom')
+  @UseGuards(JwtGuard)
+  @UseInterceptors(TransformResponseInterceptor)
+  public async createChatRoom(
+    @UserDecorator() user: User,
+    @Param('lessonId') lessonId: number,
+  ) {
+    return this.chatService.createChatRoom(user.id, lessonId);
   }
 }

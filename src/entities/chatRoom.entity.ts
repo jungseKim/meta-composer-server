@@ -24,10 +24,10 @@ export class ChatRoom extends BaseEntity {
   //student
 
   @ManyToOne((type) => Lesson, (lesson) => lesson.chatRooms)
-  lesson: Lesson;
+  lesson: Promise<Lesson>;
 
   @OneToMany((type) => Message, (message) => message.chatRoom)
-  messages: Message[];
+  messages: Promise<Message[]>;
 
   @Column({ unique: false })
   @ApiProperty({

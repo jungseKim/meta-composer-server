@@ -17,6 +17,8 @@ import { ChatRoom } from 'src/entities/chatRoom.entity';
 import { Message } from 'src/entities/message.entity';
 import { MAX } from 'class-validator';
 import ChatList from 'src/types/ChatList';
+import { NotificationService } from 'src/modules/notification/notification.service';
+import { Signup } from 'src/entities/signup.entity';
 @Injectable()
 export class ChatService {
   constructor(
@@ -30,12 +32,16 @@ export class ChatService {
     private lessonRepository: Repository<Lesson>,
     @InjectRepository(Message)
     private messageRepository: Repository<Message>,
+    @InjectRepository(Signup)
+    private signupRepository: Repository<Signup>,
+    private notificationService: NotificationService,
   ) {}
 
   //--------------------gateWay------------------------------
   public async auth(client: Socket): Promise<ChatRoom[]> {
-    const authToken = client.handshake.auth.token.split(' ')[1];
-
+    const authToken = client.handshake.auth.token?.split(' ')[1];
+    // const authToken = client.handshake.headers.authorization?.split(' ')[1];
+    console.log(authToken);
     if (!authToken) {
       client.disconnect();
       return;
@@ -51,12 +57,17 @@ export class ChatService {
       return;
     }
 
+    //실시간 알람은 notification service에서 다 처리 = 여기서 이벤트 바인딩 할필요 없음
+
     client.data.userId = user.id;
   }
+
   public async chatRoomJoin(client: Socket, roomId: number) {
     const userId: number = client.data.userId;
     const room = await this.chatRoomRepository.findOne(roomId);
-    const messages = await this.messageRepository.find(room);
+    console.log({ userId });
+    const messages = await room.messages;
+    // const messages = await this.messageRepository.find(room);
     messages.forEach(async (msg) => {
       if (msg.senderId !== userId && !msg.is_read) {
         msg.is_read = true;
@@ -64,17 +75,29 @@ export class ChatService {
       }
     });
     client.data.currentRoomId = room.id;
+    console.log(room.id);
     client.join(room.id.toString());
   }
 
   public async saveMessage(userId: number, roomId: number, message: string) {
-    await this.messageRepository
+    console.log(userId, roomId, message);
+    const messageSend = await this.messageRepository
       .create({
         senderId: userId,
         message,
         chatRoomId: roomId,
       })
       .save();
+
+    const chatRoom = await this.chatRoomRepository.findOne(roomId);
+    if (chatRoom.userId === userId) {
+      const lesson = await chatRoom.lesson;
+      const teacher = await lesson.teacher;
+      this.notificationService.pushMessage(teacher.userId, messageSend);
+    } else {
+      this.notificationService.pushMessage(userId, messageSend);
+    }
+    return messageSend;
   }
 
   //---------------------controller----------------------
@@ -122,8 +145,6 @@ export class ChatService {
   }
 
   public async getChatRoomInfo(roomId: number) {
-    // const room = await this.chatRoomRepository.findOne(roomId);
-
     const room = await this.chatRoomRepository
       .createQueryBuilder('room')
       .where('room.id = :roomId', { roomId })
@@ -131,5 +152,25 @@ export class ChatService {
       .leftJoinAndSelect('room.lesson', 'lesson')
       .getOne();
     return room;
+  }
+
+  public async createChatRoom(userId: number, lessonId: number) {
+    const chatRoom = await this.chatRoomRepository.findOneOrFail({
+      userId,
+      lessonId,
+    });
+    if (chatRoom) {
+      return chatRoom;
+    } else {
+      if (!(await this.signupRepository.findOneOrFail({ userId, lessonId }))) {
+        return '수강 한 학생들만 채팅신청을 할수 있습니다';
+      }
+      return await this.chatRoomRepository
+        .create({
+          userId,
+          lessonId,
+        })
+        .save();
+    }
   }
 }
