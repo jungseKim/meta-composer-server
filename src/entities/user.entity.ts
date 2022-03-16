@@ -1,4 +1,7 @@
-import { Teacher } from "./teacher.entity";
+
+import { Notification } from 'src/entities/notification.entity';
+import { Teacher } from './teacher.entity';
+
 import {
   BaseEntity,
   Column,
@@ -95,6 +98,13 @@ export class User extends BaseEntity {
   @OneToMany((type) => Message, (message) => message.sender, { eager: true })
   messages: Message[];
   // sender
+
+
+  @OneToMany((type) => Notification, (notification) => notification.user)
+  notifications: Notification[];
+
+  @OneToMany((type) => Comment, (comment) => comment.user)
+  comment: Comment;
 
 
   @OneToMany((type) => Comment, (comment) => comment.user, { eager: true })
