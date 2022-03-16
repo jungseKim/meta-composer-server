@@ -60,8 +60,9 @@ export class ChatController {
   public async getChatRoomMessage(
     @Param('roomId') roomId: number,
     @Query('page') page: number,
+    @Query('perPage') perPage: number,
   ) {
-    return this.chatService.getChatRoomMeesage(roomId, page);
+    return this.chatService.getChatRoomMeesage(roomId, page,perPage);
   }
 
   @ApiOperation({
