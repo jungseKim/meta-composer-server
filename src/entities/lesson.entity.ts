@@ -89,7 +89,7 @@ export class Lesson extends BaseEntity {
   @OneToMany((type) => ChatRoom, (chatRoom) => chatRoom.lesson, {
     eager: true,
   })
-  chatRooms: Promise<ChatRoom[]>;
+  chatRooms: ChatRoom[];
 
   @OneToMany((type) => Wishlist, (wishlist) => wishlist.lesson)
   wishlist: Wishlist;
