@@ -1,3 +1,4 @@
+import { type } from 'os';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   BaseEntity,
@@ -14,6 +15,7 @@ import { Message } from './message.entity';
 import { User } from './user.entity';
 @Entity()
 export class ChatRoom extends BaseEntity {
+  @ApiProperty({ example: 1, description: '프라이머리키' })
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -21,32 +23,38 @@ export class ChatRoom extends BaseEntity {
   user: User;
   //student
 
-  @ManyToOne(() => Lesson, (lesson) => lesson.chatRooms)
-  lesson: Lesson;
 
-  @OneToMany(() => Message, (message) => message.chatRoom,{eager : true })
-  messages: Message[];
+  @ManyToOne((type) => Lesson, (lesson) => lesson.chatRooms)
+  lesson: Promise<Lesson>;
+
+  @OneToMany((type) => Message, (message) => message.chatRoom)
+  messages: Promise<Message[]>;
 
 
   @Column({ unique: false })
   @ApiProperty({
-    example:'1',
-    description:'참여한 유저의 ID'
-  }) 
-  userId:number;
+    example: '1',
+    description: '참여한 유저의 ID',
+  })
+  userId: number;
 
   @Column({ unique: false })
   @ApiProperty({
-    example:'1',
-    description:'채팅방이 해당하는 레슨의 ID'
-  }) 
-  lessonId : number;
+    example: '1',
+    description: '채팅방이 해당하는 레슨의 ID',
+  })
+  lessonId: number;
 
-
+  @ApiProperty({
+    example: '2022-03-15 10:38:40.480462',
+    description: '생성날짜',
+  })
   @CreateDateColumn()
   created_at: Date;
-
+  @ApiProperty({
+    example: '2022-03-15 10:38:40.480462',
+    description: '업데이트 날짜',
+  })
   @UpdateDateColumn()
   updated_at: Date;
-
 }

@@ -11,6 +11,7 @@ import {
   PrimaryGeneratedColumn,
   Unique,
   UpdateDateColumn,
+
 } from "typeorm";
 import { Comment } from "./comment.entity";
 import { ChatRoom } from "./chatRoom.entity";
@@ -24,6 +25,7 @@ import { LessonRoom } from "./lessonRoom.entity";
 import { Message } from "./message.entity";
 import { ApiProperty } from "@nestjs/swagger";
 
+
 export enum ProviderType {
   FACEBOOK = "Facebook",
   INSTAGRAM = "Instagram",
@@ -33,26 +35,32 @@ export enum ProviderType {
 @Entity()
 @Unique(["id"])
 export class User extends BaseEntity {
+  @ApiProperty({ example: 1, description: '프라이머리키' })
   @PrimaryGeneratedColumn()
   id: number;
+  @ApiProperty({ example: 'example@naver.com', description: '유저 이메일' })
   @Column({ unique: true })
   @ApiProperty({
     example: "example@gmail.com",
     description: "이메일입니다.",
   })
   email: string;
+
   @Column({ nullable: true })
   @ApiProperty({
     example: "password123",
     description: "비밀번호, nullable ",
   })
+
   password: string;
+  @ApiProperty({ example: '김정세', description: '유저닉네임' })
   @Column()
   @ApiProperty({
     example: "닉네임123",
     description: "유저 이름",
   })
   username: string;
+  @ApiProperty({ example: 'null', description: 'nullable' })
   @Column({ nullable: true })
   @ApiProperty({
     example: "https://eager-beating.name",
@@ -60,8 +68,11 @@ export class User extends BaseEntity {
   })
   profile_image: string;
 
+  @ApiProperty({ example: 'facebook', description: '소셜로그인' })
   @Column({ nullable: true })
   provider: string;
+
+  @ApiProperty({ example: '123123123', description: '소셜로그인 아이디' })
   @Column({ unique: true })
   provider_id: string;
   //
@@ -85,6 +96,7 @@ export class User extends BaseEntity {
   messages: Message[];
   // sender
 
+
   @OneToMany((type) => Comment, (comment) => comment.user, { eager: true })
   comments: Comment[];
 
@@ -107,12 +119,15 @@ export class User extends BaseEntity {
   })
   assignments: Assignment[];
 
+
   @OneToMany(
     (type) => ConcoursSignup,
     (concoursSignup) => concoursSignup.user,
+
     { onDelete: "CASCADE", eager: true },
   )
   concoursSignups: ConcoursSignup[];
+
 
   @CreateDateColumn()
   created_at: Date;
