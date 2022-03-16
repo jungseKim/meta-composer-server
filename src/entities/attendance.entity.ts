@@ -6,10 +6,10 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
-import { Signup } from './signup.entity';
-import { Teacher } from './teacher.entity';
-import { User } from './user.entity';
+} from "typeorm";
+import { Signup } from "./signup.entity";
+import { Teacher } from "./teacher.entity";
+import { User } from "./user.entity";
 
 @Entity()
 export class Attendance extends BaseEntity {
@@ -25,7 +25,7 @@ export class Attendance extends BaseEntity {
   @ManyToOne(() => Signup, (signup) => signup.attendances)
   signup: Signup;
 
-  @Column({ type: 'date' })
+  @Column({ type: "date" })
   date: number;
 
   @CreateDateColumn()

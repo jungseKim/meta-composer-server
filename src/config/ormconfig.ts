@@ -1,36 +1,36 @@
-import { LessonRoom } from '../entities/lessonRoom.entity';
-import { Teacher } from '../entities/teacher.entity';
-import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { User } from '../entities/user.entity';
-import dotenv from 'dotenv';
-import { Lesson } from '../entities/lesson.entity';
-import { TimeTable } from '../entities/timeTable.entity';
-import { Part } from '../entities/part.entity';
-import { Assignment } from '../entities/assignment.entity';
-import { Attendance } from '../entities/attendance.entity';
-import { ChatRoom } from '../entities/chatRoom.entity';
-import { Message } from '../entities/message.entity';
-import { Payment } from '../entities/payment.entity';
-import { Sheet } from '../entities/sheet.entity';
-import { Signup } from '../entities/signup.entity';
-import { Signupschedule } from '../entities/signupschedule.entity';
-import { Signuptimetable } from '../entities/signuptimetable.entity';
-import { Wishlist } from '../entities/wishlist.entity';
-import { Category } from '../entities/category.entity';
-import { Comment } from '../entities/comment.entity';
-import { Notification } from '../entities/notification.entity';
-import { ConcoursSignup } from '../entities/concoursSignup.entity';
-import { Concours } from '../entities/concours.entity';
+import { LessonRoom } from "../entities/lessonRoom.entity";
+import { Teacher } from "../entities/teacher.entity";
+import { TypeOrmModuleOptions } from "@nestjs/typeorm";
+import { User } from "../entities/user.entity";
+import dotenv from "dotenv";
+import { Lesson } from "../entities/lesson.entity";
+import { TimeTable } from "../entities/timeTable.entity";
+import { Part } from "../entities/part.entity";
+import { Assignment } from "../entities/assignment.entity";
+import { Attendance } from "../entities/attendance.entity";
+import { ChatRoom } from "../entities/chatRoom.entity";
+import { Message } from "../entities/message.entity";
+import { Payment } from "../entities/payment.entity";
+import { Sheet } from "../entities/sheet.entity";
+import { Signup } from "../entities/signup.entity";
+import { Signupschedule } from "../entities/signupschedule.entity";
+import { Signuptimetable } from "../entities/signuptimetable.entity";
+import { Wishlist } from "../entities/wishlist.entity";
+import { Category } from "../entities/category.entity";
+import { Comment } from "../entities/comment.entity";
+import { Notification } from "../entities/notification.entity";
+import { ConcoursSignup } from "../entities/concoursSignup.entity";
+import { Concours } from "../entities/concours.entity";
 
 dotenv.config();
 
 const ORMConfig: TypeOrmModuleOptions = {
-  type: 'mysql',
-  host: 'localhost',
+  type: "mysql",
+  host: "localhost",
   port: 3306,
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
-  database: 'nest',
+  database: "nest",
   entities: [
     User,
     Teacher,
@@ -58,12 +58,12 @@ const ORMConfig: TypeOrmModuleOptions = {
     Concours,
   ],
 
-  synchronize: false, // false 기본값
-  charset: 'utf8mb4',
+  synchronize: true, // false 기본값
+  charset: "utf8mb4",
   autoLoadEntities: true,
   logging: true,
   keepConnectionAlive: true,
-  migrations: [__dirname + '/./src/migrations/*.ts'],
-  cli: { migrationsDir: './src/migrations' },
+  migrations: [__dirname + "/./src/migrations/*.ts"],
+  cli: { migrationsDir: "./src/migrations" },
 };
 export default ORMConfig;
