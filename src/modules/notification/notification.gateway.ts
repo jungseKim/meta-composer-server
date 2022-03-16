@@ -36,5 +36,7 @@ export class NotificationGateway
     this.notificationService.auth(client);
   }
 
-  handleDisconnect(@ConnectedSocket() client: any) {}
+  handleDisconnect(@ConnectedSocket() client: Socket) {
+    this.notificationService.disconnection(client);
+  }
 }
