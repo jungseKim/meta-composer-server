@@ -1,3 +1,4 @@
+import { Notification } from 'src/entities/notification.entity';
 import { Teacher } from './teacher.entity';
 import {
   BaseEntity,
@@ -74,6 +75,9 @@ export class User extends BaseEntity {
   @OneToMany((type) => Message, (message) => message.sender)
   message: Message;
   // sender
+
+  @OneToMany((type) => Notification, (notification) => notification.user)
+  notifications: Notification[];
 
   @OneToMany((type) => Comment, (comment) => comment.user)
   comment: Comment;

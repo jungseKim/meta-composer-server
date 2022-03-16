@@ -1,4 +1,16 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { type } from 'os';
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
+import { User } from './user.entity';
 
 @Entity()
 export class Notification extends BaseEntity {
@@ -23,4 +35,11 @@ export class Notification extends BaseEntity {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @ManyToOne((type) => User, (user) => user.notifications)
+  user: User;
+
+  @Column({ name: 'userId' })
+  //join 칼럼명 이름바꾸기2
+  userId: number;
 }

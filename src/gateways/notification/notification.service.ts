@@ -13,6 +13,7 @@ import { ChatRoom } from 'src/entities/chatRoom.entity';
 import { Message } from 'src/entities/message.entity';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
+import { Notification } from 'src/entities/notification.entity';
 @Injectable()
 export class NotificationService {
   clients: Record<number, Socket>;
@@ -57,6 +58,13 @@ export class NotificationService {
   }
   //-----------------controller----------------------------
   public async getNotifitions(user: User, page: number, perPage: number) {
-    this.notificationRepository.createQueryBuilder('noti');
+    const userId = user.id;
+
+    return await this.notificationRepository
+      .createQueryBuilder('message')
+      .orderBy('message.created_at', 'DESC')
+      .take(perPage)
+      .skip(perPage * (page - 1))
+      .getMany();
   }
 }
