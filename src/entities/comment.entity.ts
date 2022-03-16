@@ -1,3 +1,4 @@
+import { ApiProperty } from "@nestjs/swagger";
 import {
   BaseEntity,
   Column,
@@ -6,9 +7,9 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
-import { Lesson } from './lesson.entity';
-import { User } from './user.entity';
+} from "typeorm";
+import { Lesson } from "./lesson.entity";
+import { User } from "./user.entity";
 
 export enum Rating {
   ONE = 1,
@@ -27,23 +28,28 @@ export class Comment extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.comments)
+  @ManyToOne(() => User, (user) => user.comments, { nullable: false })
   user: User;
 
   @ManyToOne(() => Lesson, (lesson) => lesson.comments)
   lesson: Lesson;
 
   @Column()
+  @ApiProperty({
+    example: "강의가 도움이 많이 되었습니다.",
+    description: "강의 후기 내용",
+  })
   contents: string;
 
-  @Column({ type: 'enum', enum: Rating })
+  @Column({ type: "enum", enum: Rating })
+  @ApiProperty({
+    example: 4.5,
+    description: "강의 별점입니다. 1~5중에 0.5간격으로 선택가능",
+  })
   rating: Rating;
 
   @Column()
-  userId:number
-  @Column()
-  lessonId:number
-
+  lessonId: number;
 
   @CreateDateColumn()
   created_at: Date;

@@ -1,20 +1,20 @@
-import { find } from 'rxjs';
-import { Lesson } from './../../entities/lesson.entity';
-import { Teacher } from './../../entities/teacher.entity';
-import { Socket } from 'socket.io';
+import { find } from "rxjs";
+import { Lesson } from "./../../entities/lesson.entity";
+import { Teacher } from "./../../entities/teacher.entity";
+import { Socket } from "socket.io";
 /*
 https://docs.nestjs.com/providers#services
 */
 
-import { Injectable } from '@nestjs/common';
-import { User } from 'src/entities/user.entity';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from "@nestjs/common";
+import { User } from "src/entities/user.entity";
+import { Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
 
-import * as jwt from 'jsonwebtoken';
-import { TokenPayload } from 'src/auth/token-payload.interface';
-import { ChatRoom } from 'src/entities/chatRoom.entity';
-import { Message } from 'src/entities/message.entity';
+import * as jwt from "jsonwebtoken";
+import { TokenPayload } from "src/modules/auth/token-payload.interface";
+import { ChatRoom } from "src/entities/chatRoom.entity";
+import { Message } from "src/entities/message.entity";
 @Injectable()
 export class ChatService {
   constructor(
@@ -31,7 +31,7 @@ export class ChatService {
   ) {}
 
   public async auth(client: Socket): Promise<ChatRoom[]> {
-    const authToken = client.handshake.auth.token.split(' ')[1];
+    const authToken = client.handshake.auth.token.split(" ")[1];
 
     if (!authToken) {
       client.disconnect();
@@ -42,7 +42,7 @@ export class ChatService {
       jwt.verify(authToken, process.env.JWT_SECRET)
     );
 
-    const user = await this.userRepository.findOne(jwtPayload['userId']);
+    const user = await this.userRepository.findOne(jwtPayload["userId"]);
     if (!user) {
       client.disconnect();
       return;
@@ -61,8 +61,8 @@ export class ChatService {
 
   public async getChatRoomMeesage(id: number, page: number) {
     return this.messageRepository
-      .createQueryBuilder('message')
-      .innerJoin('message.chatRoom', 'chatRoom', 'chatRoom := id', {
+      .createQueryBuilder("message")
+      .innerJoin("message.chatRoom", "chatRoom", "chatRoom := id", {
         id,
       })
       .skip(10 * (page - 1)).take;
