@@ -8,7 +8,7 @@ import {
   Post,
   Put,
 } from "@nestjs/common";
-import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Concours } from "src/entities/concours.entity";
 import { ConcoursService } from "./concours.service";
 
@@ -48,6 +48,7 @@ export class ConcoursController {
   @Post()
   @ApiOperation({ summary: "콩쿠르 생성", description: "콩쿠르 생성" })
   @ApiResponse({ status: 200, description: "콩쿠르 생성완료", type: Concours })
+  @ApiBody({ type: Concours })
   createConcours(@Body() updateData): Promise<Concours> {
     return this.concoursService.createConcours(updateData);
   }
@@ -69,6 +70,7 @@ export class ConcoursController {
     description: "콩쿠르 정보 업데이트완료",
     type: Concours,
   })
+  @ApiBody({ type: Concours })
   updateConcours(@Param("id") id: number, @Body() updateData) {
     return this.concoursService.updateConcours(id, updateData);
   }

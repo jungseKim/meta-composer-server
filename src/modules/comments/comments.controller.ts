@@ -52,7 +52,6 @@ export class CommentsController {
     description: "특정 코멘트를 조회한다",
   })
   @ApiResponse({ status: 200, description: "코멘트 조회 완료", type: Comment })
-  @ApiBody({ type: Comment })
   getCommentById(
     @Param("id") lessonId: number,
     @Param("cid") commentId: number,
