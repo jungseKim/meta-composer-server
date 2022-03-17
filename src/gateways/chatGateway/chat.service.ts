@@ -19,6 +19,7 @@ import ChatList from "src/types/ChatList";
 import { NotificationService } from "src/gateways/notification/notification.service";
 import { Signup } from "src/entities/signup.entity";
 import { TokenPayload } from "src/modules/auth/token-payload.interface";
+import { SendMessageDto } from "./dto/send-message.dto";
 @Injectable()
 export class ChatService {
   constructor(
@@ -37,71 +38,48 @@ export class ChatService {
     private notificationService: NotificationService,
   ) {}
 
-  //--------------------gateWay------------------------------
-  public async auth(client: Socket): Promise<ChatRoom[]> {
-    const authToken = client.handshake.auth.token.split(" ")[1];
+  //실시간 알람은 notification service에서 다 처리 = 여기서 이벤트 바인딩 할필요 없음
 
-    if (!authToken) {
-      client.disconnect();
-      return;
-    }
-
-    const jwtPayload: TokenPayload = <TokenPayload>(
-      jwt.verify(authToken, process.env.JWT_SECRET)
-    );
-
-    const user = await this.userRepository.findOne(jwtPayload["userId"]);
-    if (!user) {
-      client.disconnect();
-      return;
-    }
-
-    //실시간 알람은 notification service에서 다 처리 = 여기서 이벤트 바인딩 할필요 없음
-
-    client.data.userId = user.id;
-  }
-
-  public async chatRoomJoin(client: Socket, roomId: number) {
-    const userId: number = client.data.userId;
+  public async chatRoomJoin(userId: number, roomId: number) {
     const room = await this.chatRoomRepository.findOne(roomId);
-    console.log({ userId });
+
     const messages = await room.messages;
-    // const messages: Message[] = await room.messages;
     console.log({ messages });
-    // const messages = await this.messageRepository.find(room);
     messages.forEach(async (msg) => {
       if (msg.senderId !== userId && !msg.is_read) {
         msg.is_read = true;
         await msg.save();
       }
     });
-    client.data.currentRoomId = room.id;
-    console.log(room.id);
-    client.join(room.id.toString());
   }
 
-  public async saveMessage(userId: number, roomId: number, message: string) {
-    console.log(userId, roomId, message);
+  public async saveMessage(user: User, sendMessage: SendMessageDto) {
+    const senderId = user.id;
+    const message = sendMessage.message;
+    const chatRoomId = sendMessage.roomId;
+
+    const chatRoom = await this.chatRoomRepository.findOneOrFail(chatRoomId);
+    if (!chatRoom) {
+      return false;
+    }
     const messageSend = await this.messageRepository
       .create({
-        senderId: userId,
+        senderId,
         message,
-        chatRoomId: roomId,
+        chatRoomId,
       })
       .save();
 
-    const chatRoom = await this.chatRoomRepository.findOne(roomId);
-    if (chatRoom.userId === userId) {
+    if (chatRoom.userId === senderId) {
       const lesson = await chatRoom.lesson;
       const teacher = await lesson.teacher;
       this.notificationService.pushMessage(teacher.userId, messageSend);
     } else {
-      this.notificationService.pushMessage(userId, messageSend);
+      this.notificationService.pushMessage(senderId, messageSend);
     }
     return messageSend;
   }
 
-  //---------------------controller----------------------
   public async getChatRoomMeesage(
     roomId: number,
     page: number,
@@ -152,7 +130,9 @@ export class ChatService {
     return chatList;
   }
 
-  public async getChatRoomInfo(roomId: number) {
+  public async getChatRoomInfo(user: User, roomId: number) {
+    await this.chatRoomJoin(user.id, roomId);
+
     const room = await this.chatRoomRepository
       .createQueryBuilder("room")
       .where("room.id = :roomId", { roomId })
