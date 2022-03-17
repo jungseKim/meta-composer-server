@@ -70,7 +70,9 @@
                     //테스트를위해 임시로 넣은 JWT토큰 , 실제로는 지워야함.
 
                     data: JSON.stringify({
-                        merchant_uid: rsp.merchant_uid
+                        merchant_uid: rsp.merchant_uid,
+                        startdate: "2022-03-17",
+                        finishdate: "2022-04-17"
                     }),
                     dataType: "json",
                     contentType: "application/json",

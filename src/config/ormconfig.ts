@@ -13,7 +13,6 @@ import { Message } from "../entities/message.entity";
 import { Payment } from "../entities/payment.entity";
 import { Sheet } from "../entities/sheet.entity";
 import { Signup } from "../entities/signup.entity";
-import { Signupschedule } from "../entities/signupschedule.entity";
 import { Signuptimetable } from "../entities/signuptimetable.entity";
 import { Wishlist } from "../entities/wishlist.entity";
 import { Category } from "../entities/category.entity";
@@ -46,7 +45,6 @@ const ORMConfig: TypeOrmModuleOptions = {
     Payment,
     Sheet,
     Signup,
-    Signupschedule,
     Signuptimetable,
     TimeTable,
     User,
@@ -56,6 +54,7 @@ const ORMConfig: TypeOrmModuleOptions = {
     LessonRoom,
     ConcoursSignup,
     Concours,
+    Notification,
   ],
 
   synchronize: false, // false 기본값
