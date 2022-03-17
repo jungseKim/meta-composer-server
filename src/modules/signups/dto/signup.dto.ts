@@ -2,8 +2,9 @@ import { PickType } from "@nestjs/swagger";
 import { Signup } from "src/entities/signup.entity";
 
 export class SignupDto extends PickType(Signup, [
-'merchant_uid',
-'lessonId',
-'userId'
- 
-]as const){}
+  "merchant_uid",
+  "lessonId",
+  "userId",
+  "startdate",
+  "finishdate",
+] as const) {}

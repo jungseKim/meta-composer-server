@@ -1,3 +1,4 @@
+import { ApiProperty } from "@nestjs/swagger";
 import {
   BaseEntity,
   Column,
@@ -6,26 +7,21 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
-import { Lesson } from './lesson.entity';
-import { Signup } from './signup.entity';
-import { Signupschedule } from './signupschedule.entity';
-import { User } from './user.entity';
+} from "typeorm";
+import { Signup } from "./signup.entity";
 @Entity()
 export class Signuptimetable extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(
-    (type) => Signupschedule,
-    (signupschedule) => signupschedule.signuptimetables,
-  )
-  signupschedule: Signupschedule;
+  @ManyToOne((type) => Signup, (signup) => signup.signuptimetables)
+  signup: Signup;
 
-  @Column({ type: 'date' })
-  date: number;
-
-  @Column({ type: 'datetime' })
+  @Column({ type: "datetime" })
+  @ApiProperty({
+    example: "2022-03-17 10:40:40",
+    description: "레슨이 있는 날짜와 시간",
+  })
   time: number;
 
   @CreateDateColumn()
@@ -33,7 +29,4 @@ export class Signuptimetable extends BaseEntity {
 
   @UpdateDateColumn()
   updated_at: Date;
-
-
-
 }
