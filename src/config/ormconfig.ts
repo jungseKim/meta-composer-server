@@ -17,7 +17,7 @@ import { Signuptimetable } from "../entities/signuptimetable.entity";
 import { Wishlist } from "../entities/wishlist.entity";
 import { Category } from "../entities/category.entity";
 import { Comment } from "../entities/comment.entity";
-import { Notification } from "../entities/notification.entity";
+import { CustomNotification } from "../entities/custom-notification.entity";
 import { ConcoursSignup } from "../entities/concoursSignup.entity";
 import { Concours } from "../entities/concours.entity";
 
@@ -49,7 +49,7 @@ const ORMConfig: TypeOrmModuleOptions = {
     TimeTable,
     User,
     Wishlist,
-    Notification,
+    CustomNotification,
     Category,
     LessonRoom,
     ConcoursSignup,

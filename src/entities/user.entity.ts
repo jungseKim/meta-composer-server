@@ -1,4 +1,6 @@
-import { Notification } from "../entities/notification.entity";
+
+import { CustomNotification } from "./custom-notification.entity";
+
 import { Teacher } from "./teacher.entity";
 
 import {
@@ -95,8 +97,11 @@ export class User extends BaseEntity {
   messages: Message[];
   // sender
 
-  @OneToMany((type) => Notification, (notification) => notification.user)
-  notifications: Notification[];
+  @OneToMany(
+    (type) => CustomNotification,
+    (customNotifications) => customNotifications.user,
+  )
+  customNotifications: CustomNotification[];
 
   @OneToMany((type) => Comment, (comment) => comment.user)
   comment: Comment;

@@ -1,3 +1,5 @@
+import { Lesson } from "./../../entities/lesson.entity";
+import { Signup } from "src/entities/signup.entity";
 import { createQueryBuilder } from "typeorm";
 /*
 https://docs.nestjs.com/providers#services
@@ -13,7 +15,7 @@ import { ChatRoom } from "src/entities/chatRoom.entity";
 import { Message } from "src/entities/message.entity";
 import { User } from "src/entities/user.entity";
 import { Repository } from "typeorm";
-import { Notification } from "src/entities/notification.entity";
+import { CustomNotification } from "src/entities/custom-notification.entity";
 @Injectable()
 export class NotificationService {
   clients: Record<number, Socket>;
@@ -21,8 +23,8 @@ export class NotificationService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    @InjectRepository(Notification)
-    private notificationRepository: Repository<Notification>,
+    @InjectRepository(CustomNotification)
+    private CustomnotificationRepository: Repository<CustomNotification>,
   ) {
     this.clients = {};
   }
@@ -52,6 +54,7 @@ export class NotificationService {
     delete this.clients[userId];
   }
 
+  // 채팅은 알림 저장할 필요가 없음
   public async pushMessage(userId: number, message: Message) {
     const client = this.clients[userId];
     client?.emit("push-message", message);
@@ -60,11 +63,35 @@ export class NotificationService {
   public async getNotifitions(user: User, page: number, perPage: number) {
     const userId = user.id;
 
-    return await this.notificationRepository
-      .createQueryBuilder("message")
+    return await this.CustomnotificationRepository.createQueryBuilder("noti")
+      .where("noti.userId = :userId", {
+        userId,
+      })
       .orderBy("message.created_at", "DESC")
       .take(perPage)
       .skip(perPage * (page - 1))
       .getMany();
+  }
+
+  public async getNotifitionInfo(notiId: number) {
+    // return await this.CustomnotificationRepository.createQueryBuilder("noti")
+    // .where('noti.uotiId = :notiId',{
+    //   notiId
+    // }).innerJoinAndSelect('noti.user','user')
+    // .
+  }
+  public async pushStarClass(signup: Signup) {
+    const notification = await this.CustomnotificationRepository.create({
+      signupId: signup.id,
+    }).save();
+
+    const userId = signup.userId;
+    const teacherUserId = (await signup.lesson.teacher).userId;
+
+    const user = this.clients[userId];
+    user?.emit("start-class", notification);
+
+    const teacher = this.clients[teacherUserId];
+    teacher?.emit("start-class", notification);
   }
 }

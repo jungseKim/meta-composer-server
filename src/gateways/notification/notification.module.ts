@@ -1,17 +1,17 @@
-import { NotificationController } from './notification.controller';
+import { NotificationController } from "./notification.controller";
 /*
 https://docs.nestjs.com/modules
 */
 
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'src/entities/user.entity';
-import { NotificationGateway } from './notification.gateway';
-import { NotificationService } from './notification.service';
-import { Notification } from 'src/entities/notification.entity';
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { User } from "src/entities/user.entity";
+import { NotificationGateway } from "./notification.gateway";
+import { NotificationService } from "./notification.service";
+import { CustomNotification } from "src/entities/custom-notification.entity";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Notification])],
+  imports: [TypeOrmModule.forFeature([User, CustomNotification])],
   controllers: [NotificationController],
   providers: [NotificationGateway, NotificationService],
   exports: [NotificationService],

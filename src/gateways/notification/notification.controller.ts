@@ -8,6 +8,7 @@ https://docs.nestjs.com/controllers#controllers
 import {
   Controller,
   Get,
+  Param,
   Query,
   UseGuards,
   UseInterceptors,
@@ -20,7 +21,7 @@ import { User } from "src/entities/user.entity";
 export class NotificationController {
   constructor(private notificationService: NotificationService) {}
 
-  @Get("/")
+  @Get("/list")
   @UseGuards(JwtGuard)
   @UseInterceptors(TransformResponseInterceptor)
   public async getNotifitions(
@@ -30,4 +31,14 @@ export class NotificationController {
   ) {
     return this.notificationService.getNotifitions(user, page, perPage);
   }
+
+  @Get(":id/info")
+  @UseGuards(JwtGuard)
+  @UseInterceptors(TransformResponseInterceptor)
+  public async getNotifitionInfo(@Param("id") notiId: number) {
+    // return this.notificationService.getNotifitionInfo(notiId);
+  }
+
+  @Get("test")
+  public async test() {}
 }
