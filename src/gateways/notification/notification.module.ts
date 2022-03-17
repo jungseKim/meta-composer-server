@@ -1,3 +1,4 @@
+import { Signup } from "src/entities/signup.entity";
 import { NotificationController } from "./notification.controller";
 /*
 https://docs.nestjs.com/modules
@@ -11,7 +12,7 @@ import { NotificationService } from "./notification.service";
 import { CustomNotification } from "src/entities/custom-notification.entity";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, CustomNotification])],
+  imports: [TypeOrmModule.forFeature([User, CustomNotification, Signup])],
   controllers: [NotificationController],
   providers: [NotificationGateway, NotificationService],
   exports: [NotificationService],

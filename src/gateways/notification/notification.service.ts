@@ -1,5 +1,5 @@
 import { Lesson } from "./../../entities/lesson.entity";
-import { Signup } from "src/entities/signup.entity";
+import { Signup, weekDays } from "src/entities/signup.entity";
 import { createQueryBuilder } from "typeorm";
 /*
 https://docs.nestjs.com/providers#services
@@ -25,6 +25,8 @@ export class NotificationService {
     private userRepository: Repository<User>,
     @InjectRepository(CustomNotification)
     private CustomnotificationRepository: Repository<CustomNotification>,
+    @InjectRepository(Signup)
+    private signupRepository: Repository<Signup>,
   ) {
     this.clients = {};
   }
@@ -81,17 +83,30 @@ export class NotificationService {
     // .
   }
   public async pushStarClass(signup: Signup) {
-    const notification = await this.CustomnotificationRepository.create({
-      signupId: signup.id,
-    }).save();
-
     const userId = signup.userId;
     const teacherUserId = (await signup.lesson.teacher).userId;
 
+    console.log(teacherUserId);
+    const studentNotification = await this.CustomnotificationRepository.create({
+      signupId: signup.id,
+      userId,
+    }).save();
+
+    const teacherNotification = await this.CustomnotificationRepository.create({
+      signupId: signup.id,
+      userId: teacherUserId,
+    }).save();
+
     const user = this.clients[userId];
-    user?.emit("start-class", notification);
+    user?.emit("push-start-class", studentNotification);
 
     const teacher = this.clients[teacherUserId];
-    teacher?.emit("start-class", notification);
+    teacher?.emit("push-start-class", teacherNotification);
+  }
+  public async test() {
+    const signup = await this.signupRepository.create({});
+    const userId = signup.userId;
+    const teacherUserId = (await signup.lesson.teacher).userId;
+    console.log(userId, teacherUserId);
   }
 }

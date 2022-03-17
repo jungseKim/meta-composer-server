@@ -1,3 +1,6 @@
+import { type } from "os";
+import { PageValidationPipe } from "./dto/page-validation.pipe";
+import { SendMessageDto } from "./dto/send-message.dto";
 import { UserDecorator } from "src/decorators/user.decorator";
 
 import { ChatService } from "./chat.service";
@@ -6,6 +9,7 @@ https://docs.nestjs.com/controllers#controllers
 */
 
 import {
+  Body,
   Controller,
   Get,
   Param,
@@ -18,6 +22,7 @@ import { User } from "src/entities/user.entity";
 import { TransformResponseInterceptor } from "src/common/interceptors/transformResponse.interceptor";
 import {
   ApiBasicAuth,
+  ApiBody,
   ApiOkResponse,
   ApiOperation,
   ApiResponse,
@@ -60,26 +65,29 @@ export class ChatController {
   @UseInterceptors(TransformResponseInterceptor)
   public async getChatRoomMessage(
     @Param("roomId") roomId: number,
-    @Query("page") page: number,
-    @Query("perPage") perPage: number,
+    @Query("page", PageValidationPipe) page: number,
+    @Query("perPage", PageValidationPipe) perPage: number,
   ) {
     return this.chatService.getChatRoomMeesage(roomId, page, perPage);
   }
 
   @ApiOperation({
     summary: "chatting room 에 대한 정보 ",
-    description: "(강사, 유저) join 한 값",
+    description: "(강사, 유저) join 한 값 방",
   })
   @ApiOkResponse({
     status: 200,
     description: "page별로",
     type: ChatRoomInfoDto,
   })
-  @Get(":roomId/chatRoom")
+  @Get(":roomId/chatRoomInfo")
   @UseGuards(JwtGuard)
   @UseInterceptors(TransformResponseInterceptor)
-  public async getChatRoomInfo(@Param("roomId") roomId: number) {
-    return this.chatService.getChatRoomInfo(roomId);
+  public async getChatRoomInfo(
+    @UserDecorator() user: User,
+    @Param("roomId") roomId: number,
+  ) {
+    return this.chatService.getChatRoomInfo(user, roomId);
   }
 
   @ApiOperation({
@@ -99,5 +107,24 @@ export class ChatController {
     @Param("lessonId") lessonId: number,
   ) {
     return this.chatService.createChatRoom(user.id, lessonId);
+  }
+
+  @ApiOperation({
+    summary: "메세지 보내기 ",
+    description: "없는 룸 일경우 false 리턴",
+  })
+  @ApiOkResponse({
+    status: 200,
+    description: "보낸메세지 리턴",
+    type: Message,
+  })
+  @Post(":chatRoomId/sendMessage")
+  @UseGuards(JwtGuard)
+  @UseInterceptors(TransformResponseInterceptor)
+  public async sendMessage(
+    @UserDecorator() user: User,
+    @Body() sendMessageDto: SendMessageDto,
+  ) {
+    return this.chatService.saveMessage(user, sendMessageDto);
   }
 }
