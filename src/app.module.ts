@@ -1,3 +1,4 @@
+import { TasksModule } from "./modules/tasks/tasks.module";
 import { NotificationService } from "./gateways/notification/notification.service";
 import { NotificationModule } from "./gateways/notification/notification.module";
 import { ChatModule } from "./gateways/chatGateway/chat.module";
@@ -29,11 +30,14 @@ import { SheetsModule } from "./modules/sheets/sheets.module";
 import { PaymentsModule } from "./modules/payments/payments.module";
 import { ConcoursModule } from "./modules/concours/concours.module";
 import { ConcoursSignupsModule } from "./modules/concours-signups/concours-signups.module";
+import { ScheduleModule } from "@nestjs/schedule";
 
 @Module({
   controllers: [AppController],
   providers: [AppService, WebRtcGateway],
   imports: [
+    ScheduleModule.forRoot(),
+    TasksModule,
     NotificationModule,
     ChatModule,
     RedisCacheModule,

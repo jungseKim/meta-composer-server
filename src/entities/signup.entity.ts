@@ -7,12 +7,13 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
-import { Attendance } from './attendance.entity';
-import { Lesson } from './lesson.entity';
-import { Payment } from './payment.entity';
-import { Signupschedule } from './signupschedule.entity';
-import { User } from './user.entity';
+} from "typeorm";
+import { Attendance } from "./attendance.entity";
+import { CustomNotification } from "./custom-notification.entity";
+import { Lesson } from "./lesson.entity";
+import { Payment } from "./payment.entity";
+import { Signupschedule } from "./signupschedule.entity";
+import { User } from "./user.entity";
 @Entity()
 export class Signup extends BaseEntity {
   @PrimaryGeneratedColumn()
@@ -21,34 +22,41 @@ export class Signup extends BaseEntity {
   @ManyToOne((type) => User, (user) => user.signups)
   user: User;
 
-  @ManyToOne((type) => Lesson, (lesson) => lesson.signups,{  onDelete: 'CASCADE',})
+  @ManyToOne((type) => Lesson, (lesson) => lesson.signups, {
+    onDelete: "CASCADE",
+  })
   lesson: Lesson;
 
   @Column()
-  merchant_uid:string;
-  
-  @Column()
-  lessonId:number;
-
+  merchant_uid: string;
 
   @Column()
-  userId:number;
+  lessonId: number;
 
-  @OneToMany(
-    () => Signupschedule,
-    (signupschedule) => signupschedule.signup,{eager : true }
-  )
+  @Column()
+  userId: number;
+
+  @OneToMany(() => Signupschedule, (signupschedule) => signupschedule.signup, {
+    eager: true,
+  })
   signupschedule: Signupschedule;
 
-  @OneToMany(() => Payment, (payment) => payment.signup,{eager : true })
+  @OneToMany(() => Payment, (payment) => payment.signup, { eager: true })
   payment: Payment;
 
-  @OneToMany(() => Attendance, (attendance) => attendance.signup,{eager : true })
+  @OneToMany(
+    () => CustomNotification,
+    (customNotifications) => customNotifications.signup,
+  )
+  customNotifications: CustomNotification[];
+
+  @OneToMany(() => Attendance, (attendance) => attendance.signup, {
+    eager: true,
+  })
   attendances: Attendance[];
 
   // @Column({ type: 'date' })
   // date: string;
-
 
   @CreateDateColumn()
   created_at: Date;

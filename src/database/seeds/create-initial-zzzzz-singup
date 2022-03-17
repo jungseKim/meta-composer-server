@@ -1,0 +1,41 @@
+import { Lesson } from "./../../entities/lesson.entity";
+import { Connection } from "typeorm";
+import { Factory, Seeder } from "typeorm-seeding";
+import { User } from "../../entities/user.entity";
+import { ChatRoom } from "../../entities/chatRoom.entity";
+import { Message } from "../../entities/message.entity";
+import { faker } from "@faker-js/faker";
+import { Signup } from "../../entities/signup.entity";
+
+export class CreateInitialSignupData implements Seeder {
+  public async run(factory: Factory, connection: Connection): Promise<any> {
+    for (let count = 0; count <= 10; count++) {
+      const allLesson = await connection
+        .getRepository(Lesson)
+        .createQueryBuilder("lesson")
+        .getMany();
+
+      const lesson = allLesson[Math.floor(Math.random() * allLesson.length)];
+
+      const allUsers = await connection
+        .getRepository(User)
+        .createQueryBuilder("user")
+        .getMany();
+
+      const user = allUsers[Math.floor(Math.random() * allUsers.length)];
+
+      await connection
+        .createQueryBuilder()
+        .insert()
+        .into(Signup)
+        .values([
+          {
+            userId: user.id,
+            lessonId: lesson.id,
+            merchant_uid: "23232",
+          },
+        ])
+        .execute();
+    }
+  }
+}
