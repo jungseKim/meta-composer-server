@@ -40,5 +40,7 @@ export class NotificationController {
   }
 
   @Get("test")
-  public async test() {}
+  public async test() {
+    await this.notificationService.test();
+  }
 }
