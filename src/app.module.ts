@@ -31,6 +31,7 @@ import { PaymentsModule } from "./modules/payments/payments.module";
 import { ConcoursModule } from "./modules/concours/concours.module";
 import { ConcoursSignupsModule } from "./modules/concours-signups/concours-signups.module";
 import { ScheduleModule } from "@nestjs/schedule";
+import { Signup } from "./entities/signup.entity";
 
 @Module({
   controllers: [AppController],

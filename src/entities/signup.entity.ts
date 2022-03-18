@@ -39,7 +39,7 @@ export class Signup extends BaseEntity {
   @ManyToOne((type) => Lesson, (lesson) => lesson.signups, {
     onDelete: "CASCADE",
   })
-  lesson: Lesson;
+  lesson: Promise<Lesson>;
 
   @ApiProperty({
     example: "merchant_12345",

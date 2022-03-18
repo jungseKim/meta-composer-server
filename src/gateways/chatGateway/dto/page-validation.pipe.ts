@@ -12,11 +12,11 @@ import {
 
 @Injectable()
 export class PageValidationPipe implements PipeTransform {
-  transform(value: any, metadata: ArgumentMetadata) {
-    if (typeof value === "number" && value >= 1) {
+  transform(value: any, { metatype }: ArgumentMetadata) {
+    if (value >= 1 && metatype === Number) {
       return value;
     } else {
-      throw new BadRequestException("Wrong input value");
+      throw new BadRequestException("Please add a number greater than 0.");
     }
   }
 }

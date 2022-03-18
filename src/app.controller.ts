@@ -15,7 +15,7 @@ export class AppController {
 
   @Get("heelow")
   getHello() {
-    // this.tasksService.addCronJob("test!!", new Date(Date.now() + 2 * 1000));
+    this.tasksService.signupNotification(null, 0, 3);
   }
 
   @Get("lessons/1")
