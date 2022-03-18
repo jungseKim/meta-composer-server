@@ -66,28 +66,28 @@ export class Signup extends BaseEntity {
     example: "2022-03-17",
     description: "수강이 시작하는 날짜",
   })
-  startdate: number;
+  startdate: string;
 
   @Column({ type: "date" })
   @ApiProperty({
     example: "2022-04-17",
     description: "수강이 끝나는 날짜",
   })
-  finishdate: number;
+  finishdate: string;
 
   @Column({ type: "enum", enum: weekDays })
   @ApiProperty({
     example: weekDays.Monday,
     description: "사용자가 수강 신청한 요일",
   })
-  weekdays: number;
+  weekdays: string;
 
   @Column({ type: "time" })
   @ApiProperty({
     example: "11:30:00",
     description: "사용자가 수강 신청한 시간",
   })
-  lessonTime: number;
+  lessonTime: string;
 
   @OneToMany(
     () => Signuptimetable,
