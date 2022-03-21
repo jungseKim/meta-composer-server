@@ -37,26 +37,51 @@ export class ChatService {
     private signupRepository: Repository<Signup>,
     private notificationService: NotificationService,
   ) {}
+  public async auth(client: Socket): Promise<ChatRoom[]> {
+    const authToken = client.handshake.auth.token?.split(" ")[1];
+    // const authToken = client.handshake.headers.authorization?.split(" ")[1];
+    if (!authToken) {
+      client.disconnect();
+      return;
+    }
 
-  //실시간 알람은 notification service에서 다 처리 = 여기서 이벤트 바인딩 할필요 없음
+    const jwtPayload: TokenPayload = <TokenPayload>(
+      jwt.verify(authToken, process.env.JWT_SECRET)
+    );
 
-  public async chatRoomJoin(userId: number, roomId: number) {
+    const user = await this.userRepository.findOne(jwtPayload["userId"]);
+    if (!user) {
+      client.disconnect();
+      return;
+    }
+
+    client.data.userId = user.id;
+  }
+
+  public async chatRoomJoin(client: Socket, roomId: number) {
     const room = await this.chatRoomRepository.findOne(roomId);
-
+    const userId: number = client.data.userId;
     const messages = await room.messages;
-    console.log({ messages });
     messages.forEach(async (msg) => {
       if (msg.senderId !== userId && !msg.is_read) {
         msg.is_read = true;
         await msg.save();
       }
     });
+
+    client.rooms.forEach((room) => {
+      client.to(room).emit("chatLeave-event");
+    });
+    client.rooms.clear();
+    client.join(room.id.toString());
+    client.to(room.id.toString()).emit("chatJoin-event");
   }
 
   public async saveMessage(user: User, sendMessage: SendMessageDto) {
     const senderId = user.id;
     const message = sendMessage.message;
     const chatRoomId = sendMessage.roomId;
+    const is_read = sendMessage.is_read;
 
     const chatRoom = await this.chatRoomRepository.findOneOrFail(chatRoomId);
     if (!chatRoom) {
@@ -67,6 +92,7 @@ export class ChatService {
         senderId,
         message,
         chatRoomId,
+        is_read,
       })
       .save();
 
@@ -131,7 +157,7 @@ export class ChatService {
   }
 
   public async getChatRoomInfo(user: User, roomId: number) {
-    await this.chatRoomJoin(user.id, roomId);
+    // await this.chatRoomJoin(user.id, roomId);
 
     const room = await this.chatRoomRepository
       .createQueryBuilder("room")

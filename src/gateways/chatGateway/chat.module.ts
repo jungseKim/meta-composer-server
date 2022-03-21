@@ -1,3 +1,4 @@
+import { ChatGateway } from "./chat.gateway";
 import { ChatService } from "./chat.service";
 /*
 https://docs.nestjs.com/modules
@@ -27,6 +28,6 @@ import { Signup } from "src/entities/signup.entity";
     ]),
   ],
   controllers: [ChatController],
-  providers: [ChatService],
+  providers: [ChatService, ChatGateway],
 })
 export class ChatModule {}

@@ -5,9 +5,9 @@ import { createQueryBuilder } from "typeorm";
 https://docs.nestjs.com/providers#services
 */
 
-import { Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import console from "console";
+import console, { timeStamp } from "console";
 import * as jwt from "jsonwebtoken";
 import { Socket } from "socket.io";
 import { TokenPayload } from "src/modules/auth/token-payload.interface";
@@ -16,6 +16,7 @@ import { Message } from "src/entities/message.entity";
 import { User } from "src/entities/user.entity";
 import { Repository } from "typeorm";
 import { CustomNotification } from "src/entities/custom-notification.entity";
+import { TasksService } from "src/modules/tasks/tasks.service";
 @Injectable()
 export class NotificationService {
   clients: Record<number, Socket>;
@@ -25,15 +26,13 @@ export class NotificationService {
     private userRepository: Repository<User>,
     @InjectRepository(CustomNotification)
     private CustomnotificationRepository: Repository<CustomNotification>,
-    @InjectRepository(Signup)
-    private signupRepository: Repository<Signup>,
   ) {
     this.clients = {};
   }
 
   public async auth(client: Socket): Promise<ChatRoom[]> {
-    const authToken = client.handshake.auth.token?.split(" ")[1];
-    // const authToken = client.handshake.headers.authorization?.split(' ')[1];
+    // const authToken = client.handshake.auth.token?.split(" ")[1];
+    const authToken = client.handshake.headers.authorization?.split(" ")[1];
     if (!authToken) {
       client.disconnect();
       return;
@@ -61,37 +60,53 @@ export class NotificationService {
     const client = this.clients[userId];
     client?.emit("push-message", message);
   }
-  //-----------------controller----------------------------
+
   public async getNotifitions(user: User, page: number, perPage: number) {
     const userId = user.id;
+    console.log(userId);
 
+    //안읽은게 먼저, 최근께 먼저
     return await this.CustomnotificationRepository.createQueryBuilder("noti")
       .where("noti.userId = :userId", {
         userId,
       })
-      .orderBy("message.created_at", "DESC")
+      .orderBy("noti.readTime")
+      .addOrderBy("noti.created_at", "DESC")
       .take(perPage)
       .skip(perPage * (page - 1))
       .getMany();
   }
 
-  public async getNotifitionInfo(notiId: number) {
-    // return await this.CustomnotificationRepository.createQueryBuilder("noti")
-    // .where('noti.uotiId = :notiId',{
-    //   notiId
-    // }).innerJoinAndSelect('noti.user','user')
-    // .
+  public async getNotifitionInfo(user: User, notiId: number) {
+    //읽음 처리
+    const notification = await this.CustomnotificationRepository.findOne(
+      notiId,
+    );
+    if (notification.userId !== user.id) {
+      throw new ForbiddenException();
+    }
+    if (!notification) {
+      return "empty not";
+    }
+    notification.readTime = new Date().toDateString();
+    await notification.save();
+
+    //여기서 레프트 조인 계속 하면됨
+    return await this.CustomnotificationRepository.createQueryBuilder("noti")
+      .where("noti.Id = :notiId", {
+        notiId,
+      })
+      .leftJoinAndSelect("noti.signup", "signup")
+      .getOne();
   }
   public async pushStarClass(signup: Signup) {
     const userId = signup.userId;
-    const teacherUserId = (await signup.lesson.teacher).userId;
-
+    const teacherUserId = await (await (await signup.lesson).teacher).userId;
     console.log(teacherUserId);
     const studentNotification = await this.CustomnotificationRepository.create({
       signupId: signup.id,
       userId,
     }).save();
-
     const teacherNotification = await this.CustomnotificationRepository.create({
       signupId: signup.id,
       userId: teacherUserId,
@@ -99,14 +114,18 @@ export class NotificationService {
 
     const user = this.clients[userId];
     user?.emit("push-start-class", studentNotification);
-
     const teacher = this.clients[teacherUserId];
     teacher?.emit("push-start-class", teacherNotification);
   }
-  public async test() {
-    const signup = await this.signupRepository.create({});
-    const userId = signup.userId;
-    const teacherUserId = (await signup.lesson.teacher).userId;
-    console.log(userId, teacherUserId);
+
+  public async deleteNotification(user: User, notiId: number) {
+    const notification = await this.CustomnotificationRepository.findOne(
+      notiId,
+    );
+    if (notification.userId !== user.id) {
+      throw new ForbiddenException();
+    }
+    await this.CustomnotificationRepository.delete(notiId);
+    return notification;
   }
 }

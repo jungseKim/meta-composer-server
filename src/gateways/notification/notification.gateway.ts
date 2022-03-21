@@ -11,13 +11,13 @@ import {
   OnGatewayDisconnect,
   OnGatewayInit,
   ConnectedSocket,
-} from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
-import { NotificationService } from './notification.service';
+} from "@nestjs/websockets";
+import { Server, Socket } from "socket.io";
+import { NotificationService } from "./notification.service";
 @WebSocketGateway({
-  namespace: 'notification',
+  namespace: "notification",
   cors: {
-    origin: 'http://localhost:3000',
+    origin: "http://localhost:3000",
   },
 })
 export class NotificationGateway
@@ -28,10 +28,6 @@ export class NotificationGateway
 
   constructor(private notificationService: NotificationService) {}
 
-  @SubscribeMessage('events')
-  handleEvent(@MessageBody() data: string) {
-    this.server.emit('events', data);
-  }
   async handleConnection(@ConnectedSocket() client: Socket) {
     this.notificationService.auth(client);
   }

@@ -13,9 +13,13 @@ export class AppController {
     private tasksService: TasksService,
   ) {}
 
-  @Get("heelow")
+  @Get("test")
   getHello() {
-    // this.tasksService.addCronJob("test!!", new Date(Date.now() + 2 * 1000));
+    this.tasksService.signupNotification(null, 0, 3);
+  }
+  @Get("test2")
+  getHell2() {
+    this.tasksService.cancleSignNotification(null);
   }
 
   @Get("lessons/1")
