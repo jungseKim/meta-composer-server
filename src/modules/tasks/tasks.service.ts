@@ -48,4 +48,21 @@ export class TasksService {
     this.schedulerRegistry.addCronJob(currentTime.id.toString(), job);
     job.start();
   }
+
+  //만약 레슨 시간 변경시에는 취소한다음 다시 수강
+  public async cancleSignNotification(signup: Signup) {
+    if (signup == null) {
+      signup = await this.signupRepository.findOne(2);
+    }
+    const times = signup.signuptimetables;
+    times.sort((a, b) => {
+      return new Date(a.time).getTime() - new Date(b.time).getTime();
+    });
+
+    const currentDate = new Date();
+    const tiem = times.find(
+      (signTime) => new Date(signTime.time) > currentDate,
+    );
+    this.schedulerRegistry.deleteCronJob(tiem.id.toString());
+  }
 }

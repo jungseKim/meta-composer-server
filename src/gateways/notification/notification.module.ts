@@ -10,9 +10,12 @@ import { User } from "src/entities/user.entity";
 import { NotificationGateway } from "./notification.gateway";
 import { NotificationService } from "./notification.service";
 import { CustomNotification } from "src/entities/custom-notification.entity";
+import { Message } from "src/entities/message.entity";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, CustomNotification, Signup])],
+  imports: [
+    TypeOrmModule.forFeature([User, CustomNotification, Signup, Message]),
+  ],
   controllers: [NotificationController],
   providers: [NotificationGateway, NotificationService],
   exports: [NotificationService],

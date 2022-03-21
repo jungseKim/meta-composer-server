@@ -13,9 +13,13 @@ export class AppController {
     private tasksService: TasksService,
   ) {}
 
-  @Get("heelow")
+  @Get("test")
   getHello() {
     this.tasksService.signupNotification(null, 0, 3);
+  }
+  @Get("test2")
+  getHell2() {
+    this.tasksService.cancleSignNotification(null);
   }
 
   @Get("lessons/1")
