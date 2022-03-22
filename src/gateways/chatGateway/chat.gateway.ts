@@ -12,6 +12,7 @@ import {
 
 import { Server, Socket } from "socket.io";
 import { ChatRoom } from "src/entities/chatRoom.entity";
+import { ChatSocekt } from "../custom-sockets/chat-socket";
 
 @WebSocketGateway({
   namespace: "chat",
@@ -26,7 +27,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   constructor(private chatService: ChatService) {}
 
-  async handleConnection(@ConnectedSocket() client: Socket) {
+  async handleConnection(@ConnectedSocket() client: ChatSocekt) {
     await this.chatService.auth(client);
   }
 
@@ -53,13 +54,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   //2. 서로 연결되었다는 것을 여기서 알려주는게 간단한다.
 
   @SubscribeMessage("chatJoin-emit")
-  async chatRoomJoin(client: Socket, payload: { roomId: number }) {
+  async chatRoomJoin(client: ChatSocekt, payload: { roomId: number }) {
     await this.chatService.chatRoomJoin(client, payload.roomId);
   }
 
-  handleDisconnect(@ConnectedSocket() client: Socket) {
-    client.rooms.forEach((room) => {
-      client.to(room).emit("chatLeave-event");
-    });
+  handleDisconnect(@ConnectedSocket() client: ChatSocekt) {
+    client.to(client.chatRoomId?.toString()).emit("chatLeave-event");
   }
 }
