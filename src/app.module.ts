@@ -3,7 +3,6 @@ import { TasksModule } from "./modules/tasks/tasks.module";
 import { NotificationModule } from "./gateways/notification/notification.module";
 import { ChatModule } from "./gateways/chatGateway/chat.module";
 import { PublicRoomModule } from "./gateways/publcRoom/publicroom.module";
-import { LessonSocketModule } from "./gateways/real-time-lesson/lessonsocket.module";
 import { SetupModule } from "./gateways/setup/setup.module";
 import { Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
@@ -42,7 +41,6 @@ import { Signup } from "./entities/signup.entity";
     ChatModule,
     RedisCacheModule,
     PublicRoomModule,
-    LessonSocketModule,
     AuthModule,
     RoomModule,
     SetupModule,

@@ -1,4 +1,4 @@
-import { Room } from "./../types/redis";
+import { PublicRoom } from "../types/public-room";
 /*
 https://docs.nestjs.com/providers#services
 */
@@ -14,15 +14,15 @@ export class RedisCacheService {
     this.cache.set("roomList", []);
   }
 
-  public async addUser(key: string, value: string): Promise<void> {
+  public async addUser(key: string, value: number): Promise<void> {
     await this.cache.set(key, value, {
-      ttl: 60 * 60 * 1000,
+      ttl: 60 * 60,
     });
     console.log("저장");
   }
 
-  public async getUser(key: string): Promise<string> {
-    const redisValue: string = await this.cache.get(key);
+  public async getUser(key: string): Promise<number> {
+    const redisValue: number = await this.cache.get(key);
     console.log("꺼냄");
     return redisValue;
   }
@@ -32,19 +32,19 @@ export class RedisCacheService {
     console.log("삭제");
   }
 
-  public async privateRooms(): Promise<Room[]> {
+  public async privateRooms(): Promise<PublicRoom[]> {
     return this.cache.get("roomList");
   }
 
   public async addRoom(
     id: string,
-    roomId: string,
+    roomKey: string,
     userId: string,
     title: string,
-  ): Promise<Room | boolean> {
-    const roomList: Room[] = await this.cache.get("roomList");
-    if (id && userId && roomId && title) {
-      const room: Room = { id, userId, roomId, title, onAir: true };
+  ): Promise<PublicRoom | boolean> {
+    const roomList: PublicRoom[] = await this.cache.get("roomList");
+    if (id && userId && roomKey && title) {
+      const room: PublicRoom = { id, userId, roomKey, title, onAir: true };
       roomList.push(room);
       await this.cache.set("roomList", roomList);
       return room;
@@ -53,7 +53,7 @@ export class RedisCacheService {
   }
 
   public async removeRoom(userId: string): Promise<void> {
-    const roomList: Room[] = await this.cache.get("roomList");
+    const roomList: PublicRoom[] = await this.cache.get("roomList");
 
     if (roomList) {
       const newRoomList = roomList.filter((room) => {
@@ -70,7 +70,7 @@ export class RedisCacheService {
   }
 
   public async roomList() {
-    const roomList: Room[] = await this.cache.get("roomList");
+    const roomList: PublicRoom[] = await this.cache.get("roomList");
     console.log(roomList, "dfdf"); //이게 왜 null임?
 
     if (roomList !== [null]) {
@@ -83,7 +83,7 @@ export class RedisCacheService {
   }
 
   public async roomStateChage(roomId: string, userId: string) {
-    const roomList: Room[] = await this.cache.get("roomList");
+    const roomList: PublicRoom[] = await this.cache.get("roomList");
     console.log({ roomList });
     const newRoomList = roomList.map((room) => {
       if (room.id === roomId) {
@@ -99,7 +99,7 @@ export class RedisCacheService {
     value: LessonAttendanceDto,
   ): Promise<void> {
     await this.cache.set(`lesson-${key}`, value, {
-      ttl: 20*60,
+      ttl: 20 * 60,
     });
   }
   public async getLessonRoom(key: number): Promise<LessonAttendanceDto> {

@@ -13,43 +13,34 @@ import { nanoid } from "nanoid";
 import { LessonAttendanceDto } from "src/types/lesson-class";
 import { Repository } from "typeorm";
 import { Signuptimetable } from "src/entities/signuptimetable.entity";
-import { LessonSocket } from "../custom-sockets/chat-socket";
+import { LessonSocket } from "../custom-sockets/my-socket";
 import { TokenPayload } from "src/modules/auth/token-payload.interface";
 import { User } from "src/entities/user.entity";
 
-import * as jwt from "jsonwebtoken";
+import { UAParser } from "ua-parser-js";
+import { WsException } from "@nestjs/websockets";
 @Injectable()
 export class LessonClassService {
   constructor(
     private redisCacheService: RedisCacheService,
     @InjectRepository(Signuptimetable)
     private signuptimetableRepository: Repository<Signuptimetable>,
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
   ) {}
 
-  public async setInit(client: LessonSocket, roomId: number) {
+  public async setInit(client: LessonSocket, lessonId: number) {
     // const authToken = client.handshake.auth.token?.split(" ")[1];
     const authToken = client.handshake.headers.authorization?.split(" ")[1];
-    if (!authToken) {
-      client.disconnect();
-      return;
-    }
-
-    const jwtPayload: TokenPayload = <TokenPayload>(
-      jwt.verify(authToken, process.env.JWT_SECRET)
-    );
-
-    const user = await this.userRepository.findOne(jwtPayload["userId"]);
-    if (!user) {
+    const userId = await this.redisCacheService.getUser(authToken);
+    // const agent = new UAParser(client.handshake.headers["user-agent"]);
+    // const check = agent.getBrowser().name === "Oculus Browser" ? true : false;
+    if (!authToken || userId === null) {
       client.disconnect();
       return;
     }
 
     client.rooms.clear();
-    client.userId = user.id;
-    console.log(user.id);
-    return this.LessonConnection(client, roomId);
+    client.userId = userId;
+    return this.LessonConnection(client, lessonId);
   }
 
   public async clasStart(signup: Signup, signuptimetableId: number) {
@@ -68,7 +59,7 @@ export class LessonClassService {
   public async LessonConnection(client: LessonSocket, signupId: number) {
     const attendanceDto = await this.redisCacheService.getLessonRoom(signupId);
     if (attendanceDto === null || !attendanceDto) {
-      return "레슨 시간 전이거나 없는 레슨 입니다";
+      throw new WsException("수업 시작 전이거나 없는 방입니다");
     }
     const tiemTable = await this.signuptimetableRepository.findOne(
       attendanceDto.signuptimetableId,
@@ -77,8 +68,7 @@ export class LessonClassService {
       client.userId !== attendanceDto.userId &&
       client.userId !== attendanceDto.teacherId
     ) {
-      console.log("rrer");
-      return "권한이 없습니다.";
+      throw new WsException("방참가 권한이 없습니다");
     }
     if (client.userId === attendanceDto.userId) {
       tiemTable.userId = client.userId;

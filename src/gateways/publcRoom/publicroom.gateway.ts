@@ -2,7 +2,12 @@
 https://docs.nestjs.com/websockets/gateways#gateways
 */
 
-import { UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  UseGuards,
+  UseInterceptors,
+  ValidationPipe,
+} from "@nestjs/common";
 import {
   MessageBody,
   SubscribeMessage,
@@ -12,18 +17,20 @@ import {
   OnGatewayDisconnect,
   OnGatewayInit,
   ConnectedSocket,
-} from '@nestjs/websockets';
-import { nanoid } from 'nanoid';
-import { Server, Socket } from 'socket.io';
-import { PublicRoomnService } from './publicroomn.service';
-import RtcData from 'src/types/OfferPayload';
+} from "@nestjs/websockets";
+import { nanoid } from "nanoid";
+import { Server, Socket } from "socket.io";
+import { PublicRoomnService } from "./publicroomn.service";
+import RtcData from "src/types/OfferPayload";
+import { LessonSocket } from "../custom-sockets/my-socket";
+import { StringValidationPipe } from "./pipe/string-validation.pipe";
 
 @WebSocketGateway({
-  namespace: 'public',
+  namespace: "public",
   cors: {
     origin:
-      process.env.NODE_ENV === 'dev'
-        ? 'http://localhost:3000'
+      process.env.NODE_ENV === "dev"
+        ? "http://localhost:3000"
         : process.env.CORS_ORIGIN,
   },
 })
@@ -34,64 +41,49 @@ export class PublicRoomGateway
   @WebSocketServer()
   server: Server;
 
-  async handleConnection(@ConnectedSocket() client: Socket) {
-    return this.publicRoomnService.auth(client);
+  async handleConnection(@ConnectedSocket() client: LessonSocket) {
+    return await this.publicRoomnService.auth(client);
   }
 
-  @SubscribeMessage('roomList')
+  @SubscribeMessage("roomList")
   async roomList() {
     return await this.publicRoomnService.roomList();
   }
 
-  @SubscribeMessage('create')
-  async makeRoom(client: Socket, title: string) {
-    const exist = await this.publicRoomnService.existRoom(client.data.userId);
-    if (exist) {
-      return '이미 참가하고 있는 방이 있습니다';
-    }
-    const roomId = nanoid(10);
-    const id = nanoid(5);
-
-    const room = await this.publicRoomnService.create(
-      id,
+  @SubscribeMessage("create")
+  async makeRoom(client: Socket, payload: { title: string }) {
+    return await this.publicRoomnService.create(
       client,
-      roomId,
-      title,
+      payload.title,
+      this.server,
     );
-    await this.roomListchange();
-    return room;
   }
 
-  @SubscribeMessage('leaveRoom')
+  @SubscribeMessage("leaveRoom")
   async removeRoom(client: Socket, roomId: string | undefined) {
-    await this.publicRoomnService.leaveRoom(client, roomId);
-    await this.roomListchange();
+    await this.publicRoomnService.leaveRoom(client, roomId, this.server);
   }
 
-  @SubscribeMessage('join')
-  async joinRoom(client: Socket, roomId: string) {
-    const exist = await this.publicRoomnService.existRoom(client.data.userId);
-    if (exist) {
-      return '이미 참가하고 있는 방이 있습니다';
-    }
-    const RoomOrFalse = await this.publicRoomnService.joinRoom(client, roomId);
-    if (RoomOrFalse) {
-      this.roomListchange();
-      return RoomOrFalse;
-    } else {
-      return 'aleady exsit room';
-    }
+  //pipe 쓸려면 messageBody 써야되는데 그러면 @@ConnectedSocket() 써줘야
+  //인수로 들어옴
+  @SubscribeMessage("join")
+  async joinRoom(
+    @ConnectedSocket() client: LessonSocket,
+    @MessageBody("roomId", StringValidationPipe) roomId: string,
+  ) {
+    console.log("ddd", roomId, client.userId);
+    return await this.publicRoomnService.joinRoom(client, roomId, this.server);
+  }
+  //이게 과연 필요한가..  필요하드라
+  @SubscribeMessage("enterRoom")
+  entrance(client: Socket, roomKey: string) {
+    client.join(roomKey);
+    client.to(roomKey).emit("sendOffer");
   }
 
-  @SubscribeMessage('enterRoom')
-  entrance(client: Socket, roomId: string) {
-    client.join(roomId);
-    client.to(roomId).emit('sendOffer');
-  }
-
-  @SubscribeMessage('getOffer')
-  sendMessage(client: Socket, roomId: string, data: RtcData) {
-    client.to(roomId).emit('getOffer', data);
+  @SubscribeMessage("getOffer")
+  sendMessage(client: Socket, roomKey: string, data: RtcData) {
+    client.to(roomKey).emit("getOffer", data);
   }
 
   async handleDisconnect(client: Socket) {
@@ -101,6 +93,6 @@ export class PublicRoomGateway
 
   public async roomListchange() {
     const roomList = await this.publicRoomnService.roomList();
-    this.server.emit('listChange', roomList);
+    this.server.emit("listChange", roomList);
   }
 }

@@ -1,3 +1,4 @@
+import { WsException } from "@nestjs/websockets";
 import { find } from "rxjs";
 import { Lesson } from "./../../entities/lesson.entity";
 import { Teacher } from "./../../entities/teacher.entity";
@@ -6,7 +7,7 @@ import { Socket } from "socket.io";
 https://docs.nestjs.com/providers#services
 */
 
-import { Injectable } from "@nestjs/common";
+import { HttpException, Injectable } from "@nestjs/common";
 import { User } from "src/entities/user.entity";
 import { Repository, QueryBuilder, getConnection } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -20,7 +21,7 @@ import { NotificationService } from "src/gateways/notification/notification.serv
 import { Signup } from "src/entities/signup.entity";
 import { TokenPayload } from "src/modules/auth/token-payload.interface";
 import { SendMessageDto } from "./dto/send-message.dto";
-import { ChatSocekt } from "../custom-sockets/chat-socket";
+import { ChatSocekt } from "../custom-sockets/my-socket";
 @Injectable()
 export class ChatService {
   constructor(
@@ -61,9 +62,13 @@ export class ChatService {
   }
 
   public async chatRoomJoin(client: ChatSocekt, roomId: number) {
-    const room = await this.chatRoomRepository.findOne(roomId);
     const userId = client.userId;
 
+    const room = await this.chatRoomRepository.findOneOrFail(roomId);
+    const teaherid = (await (await room.lesson).teacher).userId;
+    if (!room || (room.userId !== userId && teaherid !== userId)) {
+      throw new WsException("방참가 인원이 아닙니다");
+    }
     await getConnection()
       .createQueryBuilder()
       .update(Message)
@@ -71,13 +76,6 @@ export class ChatService {
       .where("senderId != :id", { id: userId })
       .andWhere("chatRoomId = :id", { id: roomId })
       .execute();
-
-    // messages.forEach(async (msg) => {
-    //   if (msg.senderId !== userId && !msg.is_read) {
-    //     msg.is_read = true;
-    //     await msg.save();
-    //   }
-    // });
 
     client.to(client.chatRoomId?.toString()).emit("chatLeave-event");
     client.rooms.clear();
@@ -188,7 +186,7 @@ export class ChatService {
       return chatRoom;
     } else {
       if (!(await this.signupRepository.findOneOrFail({ userId, lessonId }))) {
-        return "수강 한 학생들만 채팅신청을 할수 있습니다";
+        throw new HttpException("수강한 학생들만 채팅신청 가능", 402);
       }
       return await this.chatRoomRepository
         .create({

@@ -12,7 +12,7 @@ import {
 
 import { Server, Socket } from "socket.io";
 import { ChatRoom } from "src/entities/chatRoom.entity";
-import { ChatSocekt } from "../custom-sockets/chat-socket";
+import { ChatSocekt } from "../custom-sockets/my-socket";
 
 @WebSocketGateway({
   namespace: "chat",
@@ -30,24 +30,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleConnection(@ConnectedSocket() client: ChatSocekt) {
     await this.chatService.auth(client);
   }
-
-  // @SubscribeMessage("sendMessage")
-  // async sendMessage(
-  //   client: Socket,
-  //   payload: { roomId: number; message: string },
-  // ) {
-  //   console.log(payload);
-  //   const roomId: number = client.data.currentRoomId;
-  //   const userId: number = client.data.userId;
-  //   if (roomId === payload.roomId) {
-  //     const message = await this.chatService.saveMessage(
-  //       userId,
-  //       payload.roomId,
-  //       payload.message,
-  //     );
-  //     client.to(payload.roomId.toString()).emit("getMessage", message);
-  //   }
-  // }
 
   // 채팅 소켓을 따로 빼는 이유
   //1. 커넥션이 끊어지면 바로 알아야 한다

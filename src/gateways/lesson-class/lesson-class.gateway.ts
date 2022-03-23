@@ -13,7 +13,7 @@ import {
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
 import RtcData from "src/types/OfferPayload";
-import { LessonSocket } from "../custom-sockets/chat-socket";
+import { LessonSocket } from "../custom-sockets/my-socket";
 import { LessonClassService } from "./lesson-class.service";
 
 @WebSocketGateway({
@@ -34,13 +34,13 @@ export class LessonClassGateway
   constructor(private lessonClassService: LessonClassService) {}
 
   @SubscribeMessage("setInit")
-  firstConnection(client: LessonSocket, roomId: number) {
-    return this.lessonClassService.setInit(client, roomId);
+  firstConnection(client: LessonSocket, payload: { lessonId: number }) {
+    return this.lessonClassService.setInit(client, payload.lessonId);
   }
 
   @SubscribeMessage("retry")
-  retryConnection(client: LessonSocket, roomId: number) {
-    return this.lessonClassService.LessonConnection(client, roomId);
+  retryConnection(client: LessonSocket, lessonId: number) {
+    return this.lessonClassService.LessonConnection(client, lessonId);
   }
 
   @SubscribeMessage("getOffer")
