@@ -133,11 +133,11 @@ export class AuthController {
   @UseInterceptors(SetCookieInterceptor)
   @Get("/google/redirect")
   @UseGuards(AuthGuard("google"))
-  // @Redirect(
-  //   process.env.NODE_ENV === "dev"
-  //     ? "http://localhost:3000"
-  //     : "https://meta-composer-client.vercel.app",
-  // )
+  @Redirect(
+    process.env.NODE_ENV === "dev"
+      ? "http://localhost:3000"
+      : "https://meta-composer-client.vercel.app",
+  )
   async googleAuthRedirect(
     @UserDecorator() user: User,
     @Res({ passthrough: true }) response: Response,
