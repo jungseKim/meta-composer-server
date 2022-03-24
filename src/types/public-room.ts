@@ -1,10 +1,10 @@
 // export interface RoomList {
 //   rooms: Room[];
 // }
-export interface Room {
+export interface PublicRoom {
   id: string;
   userId: string;
-  roomId: string;
+  roomKey: string;
   onAir: boolean | string;
   title: string;
 }

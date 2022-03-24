@@ -92,7 +92,7 @@ export class AuthController {
   @UseInterceptors(SetCookieInterceptor)
   @Get("/login")
   async login(@Res({ passthrough: true }) response: Response) {
-    const refreshToken = this.authService.getJwtRefreshToken(5);
+    const refreshToken = this.authService.getJwtRefreshToken(1);
     return refreshToken;
   }
 

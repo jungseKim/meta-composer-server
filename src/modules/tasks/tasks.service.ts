@@ -4,6 +4,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { CronJob } from "cron";
 import { nanoid } from "nanoid";
 import { Signup } from "src/entities/signup.entity";
+import { LessonClassService } from "src/gateways/lesson-class/lesson-class.service";
 import { NotificationService } from "src/gateways/notification/notification.service";
 import { Repository } from "typeorm";
 
@@ -14,6 +15,7 @@ export class TasksService {
   constructor(
     private schedulerRegistry: SchedulerRegistry,
     private notificationService: NotificationService,
+    private lessonClassService: LessonClassService,
     @InjectRepository(Signup)
     private signupRepository: Repository<Signup>,
   ) {}
@@ -26,21 +28,28 @@ export class TasksService {
     if (signup == null) {
       signup = await this.signupRepository.findOne(2);
     }
+    if (current > last) {
+      return;
+    }
     const times = signup.signuptimetables;
     times.sort((a, b) => {
       return new Date(a.time).getTime() - new Date(b.time).getTime();
     });
-    const currentTime = times[current];
-    const date = new Date(currentTime.time);
 
+    const currentTime = times[current];
+
+    //여기서 5분 빼줘야됨 지금은 개발단계라서 이상태로 킵고잉
+    const date = new Date(currentTime.time);
     if (date < new Date()) {
       return this.signupNotification(signup, current + 1, last);
     }
-
+    console.log(date);
     const job = new CronJob(date, async () => {
       this.logger.warn(`time  for job ${current} to run!`);
-      console.log("ruunnnn!!!");
+
       await this.notificationService.pushStarClass(signup);
+      await this.lessonClassService.clasStart(signup, currentTime.id);
+
       if (current !== last) {
         this.signupNotification(signup, current + 1, last);
       }

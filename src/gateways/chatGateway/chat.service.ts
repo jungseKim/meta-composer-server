@@ -1,3 +1,4 @@
+import { WsException } from "@nestjs/websockets";
 import { find } from "rxjs";
 import { Lesson } from "./../../entities/lesson.entity";
 import { Teacher } from "./../../entities/teacher.entity";
@@ -6,9 +7,9 @@ import { Socket } from "socket.io";
 https://docs.nestjs.com/providers#services
 */
 
-import { Injectable } from "@nestjs/common";
+import { HttpException, Injectable } from "@nestjs/common";
 import { User } from "src/entities/user.entity";
-import { Repository, QueryBuilder } from "typeorm";
+import { Repository, QueryBuilder, getConnection } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
 import * as jwt from "jsonwebtoken";
@@ -20,6 +21,7 @@ import { NotificationService } from "src/gateways/notification/notification.serv
 import { Signup } from "src/entities/signup.entity";
 import { TokenPayload } from "src/modules/auth/token-payload.interface";
 import { SendMessageDto } from "./dto/send-message.dto";
+import { ChatSocekt } from "../custom-sockets/my-socket";
 @Injectable()
 export class ChatService {
   constructor(
@@ -37,9 +39,9 @@ export class ChatService {
     private signupRepository: Repository<Signup>,
     private notificationService: NotificationService,
   ) {}
-  public async auth(client: Socket): Promise<ChatRoom[]> {
-    const authToken = client.handshake.auth.token?.split(" ")[1];
-    // const authToken = client.handshake.headers.authorization?.split(" ")[1];
+  public async auth(client: ChatSocekt) {
+    // const authToken = client.handshake.auth.token?.split(" ")[1];
+    const authToken = client.handshake.headers.authorization?.split(" ")[1];
     if (!authToken) {
       client.disconnect();
       return;
@@ -55,24 +57,31 @@ export class ChatService {
       return;
     }
 
-    client.data.userId = user.id;
+    client.rooms.clear();
+    client.userId = user.id;
   }
 
-  public async chatRoomJoin(client: Socket, roomId: number) {
-    const room = await this.chatRoomRepository.findOne(roomId);
-    const userId: number = client.data.userId;
-    const messages = await room.messages;
-    messages.forEach(async (msg) => {
-      if (msg.senderId !== userId && !msg.is_read) {
-        msg.is_read = true;
-        await msg.save();
-      }
-    });
+  public async chatRoomJoin(client: ChatSocekt, roomId: number) {
+    const userId = client.userId;
 
-    client.rooms.forEach((room) => {
-      client.to(room).emit("chatLeave-event");
-    });
+    const room = await this.chatRoomRepository.findOneOrFail(roomId);
+    const teaherid = (await (await room.lesson).teacher).userId;
+    if (!room || (room.userId !== userId && teaherid !== userId)) {
+      throw new WsException("방참가 인원이 아닙니다");
+    }
+    await getConnection()
+      .createQueryBuilder()
+      .update(Message)
+      .set({ is_read: true })
+      .where("senderId != :id", { id: userId })
+      .andWhere("chatRoomId = :id", { id: roomId })
+      .execute();
+
+    client.to(client.chatRoomId?.toString()).emit("chatLeave-event");
     client.rooms.clear();
+
+    client.chatRoomId = roomId;
+
     client.join(room.id.toString());
     client.to(room.id.toString()).emit("chatJoin-event");
   }
@@ -177,7 +186,7 @@ export class ChatService {
       return chatRoom;
     } else {
       if (!(await this.signupRepository.findOneOrFail({ userId, lessonId }))) {
-        return "수강 한 학생들만 채팅신청을 할수 있습니다";
+        throw new HttpException("수강한 학생들만 채팅신청 가능", 402);
       }
       return await this.chatRoomRepository
         .create({

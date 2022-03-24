@@ -1,11 +1,8 @@
+import { LessonClassModule } from "./gateways/lesson-class/lesson-class.module";
 import { TasksModule } from "./modules/tasks/tasks.module";
-import { NotificationService } from "./gateways/notification/notification.service";
 import { NotificationModule } from "./gateways/notification/notification.module";
 import { ChatModule } from "./gateways/chatGateway/chat.module";
-
 import { PublicRoomModule } from "./gateways/publcRoom/publicroom.module";
-import * as redisStore from "cache-manager-ioredis";
-import { LessonSocketModule } from "./gateways/real-time-lesson/lessonsocket.module";
 import { SetupModule } from "./gateways/setup/setup.module";
 import { Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
@@ -37,13 +34,13 @@ import { Signup } from "./entities/signup.entity";
   controllers: [AppController],
   providers: [AppService, WebRtcGateway],
   imports: [
+    LessonClassModule,
     ScheduleModule.forRoot(),
     TasksModule,
     NotificationModule,
     ChatModule,
     RedisCacheModule,
     PublicRoomModule,
-    LessonSocketModule,
     AuthModule,
     RoomModule,
     SetupModule,

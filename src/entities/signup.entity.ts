@@ -34,7 +34,7 @@ export class Signup extends BaseEntity {
   id: number;
 
   @ManyToOne((type) => User, (user) => user.signups)
-  user: User;
+  user: Promise<User>;
 
   @ManyToOne((type) => Lesson, (lesson) => lesson.signups, {
     onDelete: "CASCADE",
