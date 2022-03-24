@@ -8,4 +8,8 @@ export class SignupTimetablesService {
     @InjectRepository(SignuptimetablesRepository)
     private signuptimetablesRepository: SignuptimetablesRepository, //
   ) {}
+
+  async createTimeTable(updateData) {
+    return this.signuptimetablesRepository.createTimeTable(updateData);
+  }
 }

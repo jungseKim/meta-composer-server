@@ -5,10 +5,13 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { Concours } from "./concours.entity";
+import { Payment } from "./payment.entity";
 import { User } from "./user.entity";
 
 @Entity()
@@ -68,4 +71,7 @@ export class ConcoursSignup extends BaseEntity {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @OneToOne(() => Payment, (payment) => payment.concoursSignup)
+  payment: Payment;
 }

@@ -1,6 +1,10 @@
+import { HttpCode } from "@nestjs/common";
 import { Signup } from "src/entities/signup.entity";
 import { User } from "src/entities/user.entity";
 import { EntityRepository, getRepository, Repository } from "typeorm";
+
+import { ApiExtraModels } from "@nestjs/swagger";
+
 @EntityRepository(Signup)
 export class SignupsRepository extends Repository<Signup> {
   async signup(id: number, updateData, user: User): Promise<Signup> {
@@ -11,12 +15,15 @@ export class SignupsRepository extends Repository<Signup> {
       userId: user.id,
       startdate: updateData.startdate,
       finishdate: updateData.finishdate,
+      lessonTime: updateData.lessonTime,
+      weekdays: updateData.weekdays,
     });
 
     const existence = await this.createQueryBuilder("signup")
       .where("signup.lessonId = :lessonid", { lessonid: id })
       .andWhere("signup.userId = :userid", { userid: user.id })
       .getOne();
+
     // .andWhere("signup.merchant_uid =:mid",{mid:merchant_uid})
     if (!existence) {
       await this.save(signup);
