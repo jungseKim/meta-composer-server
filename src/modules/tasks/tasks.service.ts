@@ -40,9 +40,7 @@ export class TasksService {
 
     //여기서 5분 빼줘야됨 지금은 개발단계라서 이상태로 킵고잉
     const date = new Date(currentTime.time);
-    console.log(date, new Date());
     if (date < new Date()) {
-      console.log(current);
       return this.signupNotification(signup, current + 1, last);
     }
     console.log(date);

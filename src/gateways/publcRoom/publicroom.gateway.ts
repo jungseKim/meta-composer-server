@@ -18,12 +18,9 @@ import {
   OnGatewayInit,
   ConnectedSocket,
 } from "@nestjs/websockets";
-import { nanoid } from "nanoid";
 import { Server, Socket } from "socket.io";
 import { PublicRoomnService } from "./publicroomn.service";
 import RtcData from "src/types/OfferPayload";
-import { LessonSocket } from "../custom-sockets/my-socket";
-import { StringValidationPipe } from "./pipe/string-validation.pipe";
 
 @WebSocketGateway({
   namespace: "public",
@@ -41,7 +38,7 @@ export class PublicRoomGateway
   @WebSocketServer()
   server: Server;
 
-  async handleConnection(@ConnectedSocket() client: LessonSocket) {
+  async handleConnection(@ConnectedSocket() client: Socket) {
     return await this.publicRoomnService.auth(client);
   }
 
@@ -68,10 +65,9 @@ export class PublicRoomGateway
   //인수로 들어옴
   @SubscribeMessage("join")
   async joinRoom(
-    @ConnectedSocket() client: LessonSocket,
-    @MessageBody("roomId", StringValidationPipe) roomId: string,
+    @ConnectedSocket() client: Socket,
+    @MessageBody("roomId") roomId: string,
   ) {
-    console.log("ddd", roomId, client.userId);
     return await this.publicRoomnService.joinRoom(client, roomId, this.server);
   }
   //이게 과연 필요한가..  필요하드라

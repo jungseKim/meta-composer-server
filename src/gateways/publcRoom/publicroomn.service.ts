@@ -21,7 +21,7 @@ export class PublicRoomnService {
   }
   check: boolean;
 
-  public async auth(client: LessonSocket): Promise<void> {
+  public async auth(client: Socket): Promise<void> {
     // const token = client.handshake.auth?.token?.split(" ")[1];
     const token = client.handshake.headers.authorization?.split(" ")[1];
     const userId = await this.RedisCacheService.getUser(token);
@@ -30,12 +30,13 @@ export class PublicRoomnService {
     const agent = new UAParser(client.handshake.headers["user-agent"]);
     const check = agent.getBrowser().name === "Oculus Browser" ? true : false;
     console.log(token, userId, check);
+    //이부분 배포때 바꾸기
     if (!token || !userId || check) {
       client.disconnect();
       return;
     }
 
-    client.userId = userId;
+    client.data.userId = userId;
 
     console.log("dddd", client.data.userId);
   }
@@ -102,11 +103,10 @@ export class PublicRoomnService {
   }
 
   public async joinRoom(
-    client: LessonSocket,
+    client: Socket,
     roomId: string,
     server: Server,
   ): Promise<PublicRoom> {
-    console.log("dddd", client.data.userId);
     const exist = await this.existRoom(client.data.userId);
     if (exist) {
       throw new WsException("There's a room that's already participating.");
@@ -123,8 +123,7 @@ export class PublicRoomnService {
     if (room && room.onAir) {
       await this.RedisCacheService.roomStateChage(roomId, client.data.userId);
       //여기서는 룸 key 가 담긴 room정보만 줌
-      // client.join(roomId);
-      // client.to(roomId).emit("sendOffer");
+
       await this.roomListchange(server);
       return room;
     } else {
