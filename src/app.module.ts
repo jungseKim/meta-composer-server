@@ -65,7 +65,7 @@ import { join } from "path";
     PaymentsModule,
     ConcoursModule,
     ConcoursSignupsModule,
-    YoutubesModule,
+    // YoutubesModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, "..", "public"),
     }),
