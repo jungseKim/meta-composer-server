@@ -27,6 +27,7 @@ import { ConcoursSignup } from "./concoursSignup.entity";
 import { LessonRoom } from "./lessonRoom.entity";
 import { Message } from "./message.entity";
 import { ApiProperty } from "@nestjs/swagger";
+import { Payment } from "./payment.entity";
 
 export enum ProviderType {
   FACEBOOK = "Facebook",
@@ -92,6 +93,9 @@ export class User extends BaseEntity {
   self_introduce: string;
   @OneToOne((type) => Teacher, (teacher) => teacher.user)
   teacher: Teacher;
+
+  @OneToMany((type) => Payment, (payment) => payment.user)
+  payments: Payment[];
 
   @OneToMany((type) => Message, (message) => message.sender, { eager: true })
   messages: Message[];

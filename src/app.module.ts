@@ -29,6 +29,9 @@ import { ConcoursModule } from "./modules/concours/concours.module";
 import { ConcoursSignupsModule } from "./modules/concours-signups/concours-signups.module";
 import { ScheduleModule } from "@nestjs/schedule";
 import { Signup } from "./entities/signup.entity";
+import { YoutubesModule } from "./modules/youtubes/youtubes.module";
+import { ServeStaticModule } from "@nestjs/serve-static";
+import { join } from "path";
 
 @Module({
   controllers: [AppController],
@@ -62,6 +65,10 @@ import { Signup } from "./entities/signup.entity";
     PaymentsModule,
     ConcoursModule,
     ConcoursSignupsModule,
+    YoutubesModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, "..", "public"),
+    }),
   ],
 })
 export class AppModule {}

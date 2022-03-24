@@ -17,6 +17,10 @@ import { TeachersService } from "./teachers.service";
 import { getConnection } from "typeorm";
 import { TeacherDTO } from "./dto/teachers.dto";
 
+//
+import { upload } from "youtube-videos-uploader";
+//
+
 @Controller("api/teachers")
 @ApiTags("강사 API")
 export class TeachersController {
@@ -30,9 +34,40 @@ export class TeachersController {
     description: "메타 컨포저에 등록된 강사들 조회",
   })
   @ApiResponse({ status: 200, description: "강사 조회 완료", type: Teacher })
-  findAllTeachers() {
+  findAllTeachers() // @Body("video") video
+  {
+    // const credentials = {
+    //   email: process.env.G_ID,
+    //   pass: process.env.G_PASSWORD,
+    //   recoveryemail: process.env.G_RECOVEREMAIL,
+    // };
+
+    // const onVideoUploadSuccess = (videoUrl) => {
+    //   console.log(videoUrl);
+    // };
+    // console.log(video);
+    // const video1 = {
+    //   path: video,
+    //   title: "왜옹",
+    //   description: "upload test",
+    //   thumbnail:
+    //     "C:/Users/song/Desktop/bird/meta-composer-server/src/modules/teachers/cat.png",
+    //   language: "korean",
+    //   tags: ["video"],
+    //   channelName: "송재현",
+
+    //   onSuccess: onVideoUploadSuccess,
+    //   skipProcessingWait: true,
+    //   onProgress: (progress) => {
+    //     console.log("now progress ==>", progress);
+    //   },
+    // };
+
+    // upload(credentials, [video1], { headless: false }).then(console.log);
+
     return this.teachersRepository.find();
   }
+
   @UseGuards(AuthGuard("jwt"))
   @Post()
   @ApiOperation({ summary: "강사 등록", description: "강사를 등록한다" })

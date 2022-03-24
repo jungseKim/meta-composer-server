@@ -82,8 +82,8 @@ export class Assignment extends BaseEntity {
   finished_times: number;
 
   //
-  @OneToMany(() => Sheet, (sheet) => sheet.assignment, { eager: true })
-  sheets: Sheet[];
+  // @OneToMany(() => Sheet, (sheet) => sheet.assignment, { eager: true })
+  // sheets: Sheet[];
 
   @Column()
   @ApiProperty({

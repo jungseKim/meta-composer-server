@@ -20,7 +20,7 @@ export class Sheet extends BaseEntity {
   @ManyToOne((type) => Lesson, (lesson) => lesson.sheets)
   lesson: Lesson;
 
-  @Column({ unique: true })
+  @Column()
   @ApiProperty({
     example: "라흐마니노프 피아노 협주곡 2번",
     description: "악보 이름입니다.",
@@ -36,8 +36,8 @@ export class Sheet extends BaseEntity {
   isOpen: boolean;
   //0 => false   ,   1 => true
 
-  @ManyToOne((type) => Assignment, (assignment) => assignment.sheets)
-  assignment: Assignment;
+  // @ManyToOne((type) => Assignment, (assignment) => assignment.sheets)
+  // assignment: Assignment;
 
   @Column()
   @ApiProperty({
@@ -52,8 +52,8 @@ export class Sheet extends BaseEntity {
   @Column()
   lessonId: number;
 
-  @Column()
-  assignmentId: number;
+  // @Column()
+  // assignmentId: number;
 
   @CreateDateColumn()
   created_at: Date;

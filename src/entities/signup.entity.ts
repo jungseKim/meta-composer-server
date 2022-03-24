@@ -4,8 +4,10 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -98,7 +100,7 @@ export class Signup extends BaseEntity {
   )
   signuptimetables: Signuptimetable[];
 
-  @OneToMany(() => Payment, (payment) => payment.signup, { eager: true })
+  @OneToOne(() => Payment, (payment) => payment.signup)
   payment: Payment;
 
   @OneToMany(
