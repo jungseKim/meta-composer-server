@@ -3,7 +3,7 @@ import { EntityRepository, Repository } from "typeorm";
 
 @EntityRepository(Concours)
 export class ConcoursRepository extends Repository<Concours> {
-  async createConcours(updateData): Promise<Concours> {
+  async createConcours(updateData, image): Promise<Concours> {
     const concours = this.create({
       price: updateData.price,
       concoursSignupStartTime: updateData.concoursSignupStartTime,
@@ -12,7 +12,7 @@ export class ConcoursRepository extends Repository<Concours> {
       finishTime: updateData.finishTime,
       title: updateData.title,
       contents: updateData.contents,
-      coverIMG_url: updateData.coverIMG_url,
+      coverIMG_url: process.env.SERVER_ADDRESS + "/" + image.filename,
     });
 
     await this.save(concours);
