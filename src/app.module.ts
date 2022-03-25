@@ -32,6 +32,7 @@ import { Signup } from "./entities/signup.entity";
 import { YoutubesModule } from "./modules/youtubes/youtubes.module";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from "path";
+import { TimeTablesModule } from "./modules/time-tables/time-tables.module";
 
 @Module({
   controllers: [AppController],
@@ -65,10 +66,11 @@ import { join } from "path";
     PaymentsModule,
     ConcoursModule,
     ConcoursSignupsModule,
-    // YoutubesModule,
+    YoutubesModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, "..", "public"),
     }),
+    TimeTablesModule,
   ],
 })
 export class AppModule {}

@@ -45,7 +45,29 @@ export class LessonsController {
   }
   @UseGuards(AuthGuard("jwt"))
   @Post()
-  @ApiOperation({ summary: "레슨 생성", description: "레슨을 생성한다" })
+  @ApiOperation({
+    summary: "레슨 생성",
+    description: `레슨을 생성한다 <br>
+  { <br>
+  "introduce": "레슨 샘플입니다.", <br>
+  "length": "00:30:00", <br>
+  "price": 200000, <br>
+  "name": "레슨제목 입니다.", <br>
+  "type": "Sonata", <br>
+  "day": ["1","2","5","6","7"], <br>
+  //요일, 1부터 일요일 7은 토요일 <br>
+  "time":[ <br>
+            ["11:00:00"], <br>
+            ["08:00:00","10:00:00","18:00:00"], <br>
+            ["08:00:00","10:00:00"], <br>
+            ["08:00:00","10:00:00","13:00:00","14:00:00"], <br>
+            ["08:00:00","10:00:00","13:00:00"] <br>
+    ] <br>
+    //시간 양식을 지켜주세요. <br>
+} <br>
+의 양식으로 데이터 보내야함. <br>
+`,
+  })
   @ApiResponse({ status: 200, description: "레슨 생성완료", type: Lesson })
   @ApiBody({ type: Lesson })
   //type 를 entity 로

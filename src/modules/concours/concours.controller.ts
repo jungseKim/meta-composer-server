@@ -7,9 +7,14 @@ import {
   Patch,
   Post,
   Put,
+  UploadedFile,
+  UseInterceptors,
 } from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Concours } from "src/entities/concours.entity";
+import { imageOption } from "src/lib/imageOption";
+import { sheetOption } from "src/lib/sheetOption";
 import { ConcoursService } from "./concours.service";
 
 @Controller("api/concours")
@@ -46,11 +51,18 @@ export class ConcoursController {
   }
 
   @Post()
-  @ApiOperation({ summary: "콩쿠르 생성", description: "콩쿠르 생성" })
+  @ApiOperation({
+    summary: "콩쿠르 생성",
+    description: "콩쿠르 생성(form)",
+  })
   @ApiResponse({ status: 200, description: "콩쿠르 생성완료", type: Concours })
   @ApiBody({ type: Concours })
-  createConcours(@Body() updateData): Promise<Concours> {
-    return this.concoursService.createConcours(updateData);
+  @UseInterceptors(FileInterceptor("image", imageOption))
+  async createConcours(
+    @UploadedFile() image,
+    @Body() updateData,
+  ): Promise<Concours> {
+    return this.concoursService.createConcours(updateData, image);
   }
 
   @Delete("/:id")

@@ -6,17 +6,17 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
-import { Lesson } from './lesson.entity';
+} from "typeorm";
+import { Lesson } from "./lesson.entity";
 
 export enum Day {
-  SUN = 'Sun',
-  MON = 'Mon',
-  TUE = 'Tue',
-  WED = 'Wed',
-  THU = 'Thu',
-  FRI = 'Fri',
-  SAT = 'Sat',
+  SUN = "Sun",
+  MON = "Mon",
+  TUE = "Tue",
+  WED = "Wed",
+  THU = "Thu",
+  FRI = "Fri",
+  SAT = "Sat",
 }
 
 @Entity()
@@ -27,12 +27,18 @@ export class TimeTable extends BaseEntity {
   @ManyToOne((type) => Lesson, (lesson) => lesson.timeTables)
   lesson: Lesson;
 
-  @Column({ type: 'enum', enum: Day })
+  @Column()
+  lessonId: number;
+
+  @Column({ type: "enum", enum: Day })
   day: Day;
   //enum?
 
-  @Column({ type: 'time' })
-  time: number;
+  @Column({ default: true })
+  IsEmpty: boolean;
+
+  @Column({ type: "time" })
+  time: string;
 
   @CreateDateColumn()
   created_at: Date;
