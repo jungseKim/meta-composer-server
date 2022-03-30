@@ -2,7 +2,7 @@ import { type } from "os";
 import { PageValidationPipe } from "./dto/page-validation.pipe";
 import { SendMessageDto } from "./dto/send-message.dto";
 import { UserDecorator } from "src/decorators/user.decorator";
-
+import { FileInterceptor } from "@nestjs/platform-express";
 import { ChatService } from "./chat.service";
 /*
 https://docs.nestjs.com/controllers#controllers
@@ -15,6 +15,8 @@ import {
   Param,
   Post,
   Query,
+  UploadedFile,
+  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
@@ -33,6 +35,8 @@ import { Message } from "src/entities/message.entity";
 import { ChatRoomInfoDto } from "./dto/chat-info.dto";
 import { ChatRoom } from "src/entities/chatRoom.entity";
 import { JwtGuard } from "src/modules/auth/jwt.guard";
+import { imageOption } from "src/lib/imageOption";
+import ChatForm from "src/types/imageForm";
 
 @Controller("api/chat")
 @ApiTags("chat")
@@ -120,12 +124,21 @@ export class ChatController {
   })
   @Post(":chatRoomId")
   @UseGuards(JwtGuard)
-  @UseInterceptors(TransformResponseInterceptor)
+  @UseInterceptors(
+    TransformResponseInterceptor,
+    FileInterceptor("image", imageOption),
+  )
   public async sendMessage(
+    @UploadedFile() image: ChatForm,
     @UserDecorator() user: User,
     @Param("chatRoomId") chatRoomId: number,
     @Body() sendMessageDto: SendMessageDto,
   ) {
-    return this.chatService.saveMessage(user, chatRoomId, sendMessageDto);
+    return this.chatService.saveMessage(
+      user,
+      chatRoomId,
+      sendMessageDto,
+      image,
+    );
   }
 }

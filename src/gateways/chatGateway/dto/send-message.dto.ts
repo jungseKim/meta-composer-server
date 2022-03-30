@@ -10,7 +10,6 @@ import { ApiProperty } from "@nestjs/swagger";
 export class SendMessageDto {
   @ApiProperty({ example: "heelow", description: "전달할 메세지" })
   @IsString()
-  @IsNotEmpty()
   message: string; // 유저 이름
 
   @ApiProperty({

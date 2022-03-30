@@ -90,23 +90,27 @@ export class ChatService {
     user: User,
     chatRoomId: number,
     sendMessage: SendMessageDto,
+    image,
   ) {
     const senderId = user.id;
-    const message = sendMessage.message;
     const is_read = sendMessage.is_read;
 
     const chatRoom = await this.chatRoomRepository.findOneOrFail(chatRoomId);
     if (!chatRoom) {
       return false;
     }
-    const messageSend = await this.messageRepository
-      .create({
-        sender: user,
-        message,
-        chatRoomId,
-        is_read,
-      })
-      .save();
+
+    const messageSend = await this.messageRepository.create({
+      sender: user,
+      message: sendMessage?.message,
+      chatRoomId,
+      is_read,
+    });
+
+    if (image) {
+      messageSend.image = image.filename;
+    }
+    messageSend.save();
 
     if (chatRoom.userId === senderId) {
       const lesson = await chatRoom.lesson;

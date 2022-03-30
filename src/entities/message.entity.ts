@@ -44,7 +44,7 @@ export class Message extends BaseEntity {
   })
   chatRoomId: number;
 
-  @Column()
+  @Column({ nullable: true })
   @ApiProperty({
     example: "안녕나는채팅메시지",
     description: "채팅메시지 내용",
@@ -56,6 +56,9 @@ export class Message extends BaseEntity {
     description: "읽었는지 유무",
   })
   is_read: boolean;
+
+  @Column({ nullable: true })
+  image: string;
 
   @ApiProperty({
     example: "2022-03-15 10:38:40.480462",
