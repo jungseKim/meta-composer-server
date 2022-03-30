@@ -118,13 +118,14 @@ export class ChatController {
     description: "보낸메세지 리턴",
     type: Message,
   })
-  @Post(":chatRoomId/sendMessage")
+  @Post(":chatRoomId")
   @UseGuards(JwtGuard)
   @UseInterceptors(TransformResponseInterceptor)
   public async sendMessage(
     @UserDecorator() user: User,
+    @Param("chatRoomId") chatRoomId: number,
     @Body() sendMessageDto: SendMessageDto,
   ) {
-    return this.chatService.saveMessage(user, sendMessageDto);
+    return this.chatService.saveMessage(user, chatRoomId, sendMessageDto);
   }
 }

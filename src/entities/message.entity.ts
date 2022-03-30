@@ -33,6 +33,7 @@ export class Message extends BaseEntity {
     example: "1",
     description: "메시지 발신자 ID값",
   })
+  @Column()
   senderId: number;
   // 이름바꾸기3
 

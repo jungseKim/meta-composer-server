@@ -86,10 +86,13 @@ export class ChatService {
     client.to(room.id.toString()).emit("chatJoin-event");
   }
 
-  public async saveMessage(user: User, sendMessage: SendMessageDto) {
+  public async saveMessage(
+    user: User,
+    chatRoomId: number,
+    sendMessage: SendMessageDto,
+  ) {
     const senderId = user.id;
     const message = sendMessage.message;
-    const chatRoomId = sendMessage.roomId;
     const is_read = sendMessage.is_read;
 
     const chatRoom = await this.chatRoomRepository.findOneOrFail(chatRoomId);
@@ -98,7 +101,7 @@ export class ChatService {
     }
     const messageSend = await this.messageRepository
       .create({
-        senderId,
+        sender: user,
         message,
         chatRoomId,
         is_read,
@@ -110,7 +113,7 @@ export class ChatService {
       const teacher = await lesson.teacher;
       this.notificationService.pushMessage(teacher.userId, messageSend);
     } else {
-      this.notificationService.pushMessage(senderId, messageSend);
+      this.notificationService.pushMessage(chatRoom.userId, messageSend);
     }
     return messageSend;
   }
@@ -142,13 +145,13 @@ export class ChatService {
       .limit(1)
       .getMany();
 
-    const teacher = await this.teacherRepository.findOne(user.id);
+    const teacher = await this.teacherRepository.findOne({ userId: user.id });
 
     if (teacher) {
       const lessonChat = await this.lessonRepository
         .createQueryBuilder("lesson")
         .innerJoin("lesson.teacher", "teacher", "teacher.id = :id", {
-          id: user.id,
+          id: teacher.id,
         })
         .innerJoinAndSelect("lesson.chatRooms", "chatRooms")
         .innerJoinAndSelect("chatRooms.user", "user")

@@ -1,6 +1,6 @@
 import { Lesson } from "./../../entities/lesson.entity";
 import { Signup, weekDays } from "src/entities/signup.entity";
-import { createQueryBuilder } from "typeorm";
+import { createQueryBuilder, getConnection } from "typeorm";
 /*
 https://docs.nestjs.com/providers#services
 */
@@ -17,6 +17,8 @@ import { User } from "src/entities/user.entity";
 import { Repository } from "typeorm";
 import { CustomNotification } from "src/entities/custom-notification.entity";
 import { TasksService } from "src/modules/tasks/tasks.service";
+import { NotificationSocekt } from "../custom-sockets/my-socket";
+import { WsException } from "@nestjs/websockets";
 @Injectable()
 export class NotificationService {
   clients: Record<number, Socket>;
@@ -26,13 +28,15 @@ export class NotificationService {
     private userRepository: Repository<User>,
     @InjectRepository(CustomNotification)
     private CustomnotificationRepository: Repository<CustomNotification>,
+    @InjectRepository(ChatRoom)
+    private chatRoomRepository: Repository<ChatRoom>,
   ) {
     this.clients = {};
   }
 
-  public async auth(client: Socket): Promise<ChatRoom[]> {
-    // const authToken = client.handshake.auth.token?.split(" ")[1];
-    const authToken = client.handshake.headers.authorization?.split(" ")[1];
+  public async auth(client: NotificationSocekt): Promise<ChatRoom[]> {
+    const authToken = client.handshake.auth.token?.split(" ")[1];
+    // const authToken = client.handshake.headers.authorization?.split(" ")[1];
     if (!authToken) {
       client.disconnect();
       return;
@@ -48,11 +52,15 @@ export class NotificationService {
       return;
     }
     this.clients[user.id] = client;
+    client.userId = user.id;
   }
 
-  public disconnection(client: Socket) {
-    const userId: number = client.data.userId;
+  public disconnection(client: NotificationSocekt) {
+    const userId = client.userId;
     delete this.clients[userId];
+    if (client.chatRoomId) {
+      client.to(`chat-room-${client.chatRoomId}`).emit("chatLeave-event");
+    }
   }
 
   // 채팅은 알림 저장할 필요가 없음
@@ -127,5 +135,32 @@ export class NotificationService {
     }
     await this.CustomnotificationRepository.delete(notiId);
     return notification;
+  }
+
+  public async chatRoomJoin(client: NotificationSocekt, roomId: number) {
+    const userId: number = client.userId;
+
+    const room = await this.chatRoomRepository.findOneOrFail(roomId);
+
+    const teaherid = (await (await room.lesson).teacher).userId;
+
+    if (!room || (room.userId !== userId && teaherid !== userId)) {
+      console.log("Dd");
+      throw new WsException("방참가 인원이 아닙니다");
+    }
+    await getConnection()
+      .createQueryBuilder()
+      .update(Message)
+      .set({ is_read: true })
+      .where("senderId != :id", { id: userId })
+      .andWhere("chatRoomId = :id", { id: roomId })
+      .execute();
+    client.to(`chat-room-${client?.chatRoomId}`).emit("chatLeave-event");
+    client.rooms.clear();
+
+    client.chatRoomId = roomId;
+
+    client.join(`chat-room-${room.id}`);
+    client.to(`chat-room-${room.id}`).emit("chatJoin-event");
   }
 }

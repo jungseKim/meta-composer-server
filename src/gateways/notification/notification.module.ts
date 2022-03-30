@@ -1,3 +1,4 @@
+import { ChatRoom } from "./../../entities/chatRoom.entity";
 import { Signup } from "src/entities/signup.entity";
 import { NotificationController } from "./notification.controller";
 /*
@@ -14,7 +15,13 @@ import { Message } from "src/entities/message.entity";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, CustomNotification, Signup, Message]),
+    TypeOrmModule.forFeature([
+      User,
+      CustomNotification,
+      Signup,
+      Message,
+      ChatRoom,
+    ]),
   ],
   controllers: [NotificationController],
   providers: [NotificationGateway, NotificationService],

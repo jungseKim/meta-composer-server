@@ -6,3 +6,8 @@ export class ChatSocekt extends Socket {
 export class LessonSocket extends Socket {
   userId: number;
 }
+
+export class NotificationSocekt extends Socket {
+  userId: number;
+  chatRoomId: number;
+}
