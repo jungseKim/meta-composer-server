@@ -39,7 +39,7 @@ export class Message extends BaseEntity {
 
   @Column({ unique: false })
   @ApiProperty({
-    example: "1",
+    example: 1,
     description: "채팅 룸 고유 ID값",
   })
   chatRoomId: number;

@@ -66,6 +66,7 @@ export class NotificationService {
   // 채팅은 알림 저장할 필요가 없음
   public async pushMessage(userId: number, message: Message) {
     const client = this.clients[userId];
+
     client?.emit("push-message", message);
   }
 

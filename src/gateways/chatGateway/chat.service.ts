@@ -99,9 +99,9 @@ export class ChatService {
     if (!chatRoom) {
       return false;
     }
-
+    console.log(typeof chatRoomId);
     const messageSend = await this.messageRepository.create({
-      sender: user,
+      sender: user, //여기에 객체 넣으면 자동을 eger  로딩됨 야발 ㅋㅋ
       message: sendMessage?.message,
       chatRoomId,
       is_read,
@@ -145,10 +145,14 @@ export class ChatService {
       .innerJoinAndSelect("chatRoom.lesson", "lesson")
       .innerJoinAndSelect("lesson.teacher", "teacher")
       .leftJoinAndSelect("chatRoom.messages", "messages")
-      .orderBy("messages.created_at", "DESC")
+      .loadRelationCountAndMap(
+        "chatRoom.unReadCount",
+        "chatRoom.messages",
+        "unreadMessageCount",
+        (qb) => qb.where("unreadMessageCount.is_read = false"),
+      )
       .limit(1)
       .getMany();
-
     const teacher = await this.teacherRepository.findOne({ userId: user.id });
 
     if (teacher) {
@@ -160,6 +164,12 @@ export class ChatService {
         .innerJoinAndSelect("lesson.chatRooms", "chatRooms")
         .innerJoinAndSelect("chatRooms.user", "user")
         .leftJoinAndSelect("chatRooms.messages", "messages")
+        .loadRelationCountAndMap(
+          "chatRooms.unReadCount",
+          "chatRooms.messages",
+          "unreadMessageCount",
+          (qb) => qb.where("unreadMessageCount.is_read = false"),
+        )
         .orderBy("messages.created_at", "DESC")
         .limit(1)
         .getMany();

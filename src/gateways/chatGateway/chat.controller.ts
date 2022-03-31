@@ -13,6 +13,7 @@ import {
   Controller,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Query,
   UploadedFile,
@@ -131,7 +132,7 @@ export class ChatController {
   public async sendMessage(
     @UploadedFile() image: ChatForm,
     @UserDecorator() user: User,
-    @Param("chatRoomId") chatRoomId: number,
+    @Param("chatRoomId", ParseIntPipe) chatRoomId: number,
     @Body() sendMessageDto: SendMessageDto,
   ) {
     return this.chatService.saveMessage(
