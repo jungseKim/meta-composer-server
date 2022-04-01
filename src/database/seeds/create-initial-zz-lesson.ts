@@ -7,6 +7,8 @@ import { Teacher } from "../../entities/teacher.entity";
 export class CreateInitialZTeacherData implements Seeder {
   public async run(factory: Factory, connection: Connection): Promise<void> {
     for (let count = 0; count <= 3; count++) {
+      const today = new Date();
+      const mili = today.getMilliseconds();
       const alreadyUserId = await connection
         .getRepository(Teacher)
         .createQueryBuilder("teacher")
@@ -24,7 +26,7 @@ export class CreateInitialZTeacherData implements Seeder {
             introduce: faker.internet.email(),
             length: "00:30:00",
             price: faker.commerce.price(),
-            name: faker.name.findName(),
+            name: faker.name.findName() + mili,
             type: LessonType.ETUDES,
             teacherId: trueNum,
           },

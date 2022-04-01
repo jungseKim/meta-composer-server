@@ -54,7 +54,7 @@ export class CreateInitialSignupData implements Seeder {
             userId: allUsersIds[Math.floor(Math.random() * allUsersIds.length)],
             startdate: year + "-" + month + "-" + date,
             weekdays: faker.date.weekday(),
-            finishdate: year + "-" + month + "-" + date,
+            howManyMonth: 5,
             // lessonTime: randomHour + ":" + randomMin + ":" + randomMin,
             lessonTime: "14:30:00",
           },

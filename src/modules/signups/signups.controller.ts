@@ -18,7 +18,7 @@ import { User } from "src/entities/user.entity";
 import { createQueryBuilder, QueryBuilder } from "typeorm";
 import { SignupsRepository } from "./signups.repository";
 import { SignupsService } from "./signups.service";
-import { AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 
 @Controller("api/signups")
 @ApiTags("수강 등록 API")
@@ -40,12 +40,6 @@ export class SignupsController {
     @UserDecorator() user: User,
   ): Promise<Signup> {
     return this.signupsService.signup(id, updateData, user);
-
-    // await this.http.post('http://localhost:4000/api/payments',merchant_uid).pipe(
-    //   map(res=>res.data)
-    // )
-
-    // return;
   }
 
   @UseGuards(AuthGuard("jwt"))

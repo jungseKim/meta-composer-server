@@ -53,7 +53,8 @@ export class ConcoursController {
   @Post()
   @ApiOperation({
     summary: "콩쿠르 생성",
-    description: "콩쿠르 생성(form)",
+    description:
+      "콩쿠르 생성(form)price concoursSignupStartTime concoursSignupFinishTime startTime finishTime title contents (file )image  의 데이터를 보내주세요.",
   })
   @ApiResponse({ status: 200, description: "콩쿠르 생성완료", type: Concours })
   @ApiBody({ type: Concours })
@@ -62,6 +63,7 @@ export class ConcoursController {
     @UploadedFile() image,
     @Body() updateData,
   ): Promise<Concours> {
+    console.log(image);
     return this.concoursService.createConcours(updateData, image);
   }
 
