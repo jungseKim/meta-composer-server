@@ -9,6 +9,8 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import { Signup } from "./signup.entity";
+import { Teacher } from "./teacher.entity";
+import { User } from "./user.entity";
 @Entity()
 export class Signuptimetable extends BaseEntity {
   @PrimaryGeneratedColumn()
@@ -26,6 +28,20 @@ export class Signuptimetable extends BaseEntity {
     description: "레슨이 있는 날짜와 시간",
   })
   time: string;
+
+  @ManyToOne(() => User, (user) => user.attendances, { nullable: true })
+  user: User;
+
+  @Column({ nullable: true })
+  userId: number;
+
+  @ManyToOne(() => Teacher, (teacher) => teacher.attendances, {
+    nullable: true,
+  })
+  teacher: Teacher;
+
+  @Column({ nullable: true })
+  teacherId: number;
 
   @CreateDateColumn()
   created_at: Date;

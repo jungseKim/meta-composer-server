@@ -3,8 +3,7 @@ import { createParamDecorator, ExecutionContext } from "@nestjs/common";
 export const UserDecorator = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
-    // console.log(request.user);
-    //테스트로 이거 찍어보기.
+
     return request.user;
   },
 );

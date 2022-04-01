@@ -16,11 +16,19 @@ export class Attendance extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.attendances)
+  @ManyToOne(() => User, (user) => user.attendances, { nullable: true })
   user: User;
 
-  @ManyToOne(() => Teacher, (teacher) => teacher.attendances)
+  @Column({ nullable: true })
+  userId: number;
+
+  @ManyToOne(() => Teacher, (teacher) => teacher.attendances, {
+    nullable: true,
+  })
   teacher: Teacher;
+
+  @Column({ nullable: true })
+  teacherId: number;
 
   @ManyToOne(() => Signup, (signup) => signup.attendances)
   signup: Signup;

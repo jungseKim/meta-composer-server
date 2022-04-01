@@ -4,14 +4,22 @@ import { Response } from "express";
 import { ApiOperation } from "@nestjs/swagger";
 import { UserDecorator } from "./decorators/user.decorator";
 import { User } from "./entities/user.entity";
+import { TasksService } from "./modules/tasks/tasks.service";
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private tasksService: TasksService,
+  ) {}
 
-  @Get()
+  @Get("test")
   getHello() {
-    console.log();
+    this.tasksService.signupNotification(null, 0, 3);
+  }
+  @Get("test2")
+  getHell2() {
+    this.tasksService.cancleSignNotification(null);
   }
 
   @Get("lessons")

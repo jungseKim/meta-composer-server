@@ -11,13 +11,14 @@ import {
   OnGatewayDisconnect,
   OnGatewayInit,
   ConnectedSocket,
-} from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
-import { NotificationService } from './notification.service';
+} from "@nestjs/websockets";
+import { Server, Socket } from "socket.io";
+import { ChatSocekt, NotificationSocekt } from "../custom-sockets/my-socket";
+import { NotificationService } from "./notification.service";
 @WebSocketGateway({
-  namespace: 'notification',
+  namespace: "notification",
   cors: {
-    origin: 'http://localhost:3000',
+    origin: "http://localhost:3000",
   },
 })
 export class NotificationGateway
@@ -28,15 +29,24 @@ export class NotificationGateway
 
   constructor(private notificationService: NotificationService) {}
 
-  @SubscribeMessage('events')
-  handleEvent(@MessageBody() data: string) {
-    this.server.emit('events', data);
-  }
-  async handleConnection(@ConnectedSocket() client: Socket) {
-    this.notificationService.auth(client);
+  async handleConnection(@ConnectedSocket() client: NotificationSocekt) {
+    await this.notificationService.auth(client);
   }
 
-  handleDisconnect(@ConnectedSocket() client: Socket) {
-    this.notificationService.disconnection(client);
+  handleDisconnect(@ConnectedSocket() client: NotificationSocekt) {
+    this.notificationService.disconnection(client); //여기서 해당방 에 이벤트 보내기
+  }
+  @SubscribeMessage("chatJoin-emit")
+  async chatRoomJoin(client: NotificationSocekt, payload: { roomId: number }) {
+    console.log(client.userId);
+    await this.notificationService.chatRoomJoin(client, payload.roomId);
+  }
+  @SubscribeMessage("chatLeave-emit")
+  async chatRoomLeavea(client: NotificationSocekt) {
+    client.to(`chat-room-${client.chatRoomId}`).emit("chatLeave-event");
+  }
+  @SubscribeMessage("chat-current-user-emit")
+  async chatCurrentUser(client: NotificationSocekt) {
+    client.to(`chat-room-${client.chatRoomId}`).emit("chatJoin-event");
   }
 }
