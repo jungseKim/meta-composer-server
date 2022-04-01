@@ -18,7 +18,7 @@ export class ConcoursService {
   }
 
   async getConcoursById(id) {
-    return this.concoursRepository.find(id);
+    return this.concoursRepository.findOne(id);
   }
 
   async deleteConcours(id: number) {

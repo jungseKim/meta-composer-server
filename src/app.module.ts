@@ -33,6 +33,8 @@ import { YoutubesModule } from "./modules/youtubes/youtubes.module";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from "path";
 import { TimeTablesModule } from "./modules/time-tables/time-tables.module";
+import { Signuptimetable } from "./entities/signuptimetable.entity";
+import { SignupTimetablesModule } from "./modules/signup-timetables/signup-timetables.module";
 
 @Module({
   controllers: [AppController],
@@ -69,6 +71,7 @@ import { TimeTablesModule } from "./modules/time-tables/time-tables.module";
       rootPath: join(__dirname, "..", "public"),
     }),
     TimeTablesModule,
+    SignupTimetablesModule,
   ],
 })
 export class AppModule {}

@@ -27,28 +27,28 @@ export class Concours extends BaseEntity {
     example: "2023-05-17 14:00",
     description: "콩쿠르 참가자 모집 시작 시간",
   })
-  concoursSignupStartTime: number;
+  concoursSignupStartTime: string;
 
   @Column({ type: "datetime" })
   @ApiProperty({
     example: "2023-05-27 23:00",
     description: "콩쿠르 참가자 모집 종료 시간",
   })
-  concoursSignupFinishTime: number;
+  concoursSignupFinishTime: string;
 
   @Column({ type: "datetime" })
   @ApiProperty({
     example: "2023-05-28 09:00",
     description: "콩쿠르 대회 시작 시간",
   })
-  startTime: number;
+  startTime: string;
 
   @Column({ type: "datetime" })
   @ApiProperty({
     example: "2023-06-03 21:00",
     description: "콩쿠르 대회 종료 시간",
   })
-  finishTime: number;
+  finishTime: string;
 
   @Column({ unique: true })
   @ApiProperty({
@@ -67,7 +67,8 @@ export class Concours extends BaseEntity {
   @Column()
   @ApiProperty({
     example: "https://www.imgimgimg.com",
-    description: "콩쿠르 커버 이미지 저장 주소",
+    description:
+      "콩쿠르 커버 이미지 저장 주소,   요청 시에는 form 데이터로 id image 로 설정하여 이미지파일 업로드필요",
   })
   coverIMG_url: string;
 

@@ -12,4 +12,7 @@ export class TimeTablesService {
   async createTimeTable(updateData) {
     return this.timeTablesRepository.createTimeTable(updateData);
   }
+  async updateTimetable(updateData, id) {
+    return this.timeTablesRepository.updateTimetable(updateData, id);
+  }
 }

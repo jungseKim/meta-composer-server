@@ -17,6 +17,9 @@ export class Signuptimetable extends BaseEntity {
   @ManyToOne((type) => Signup, (signup) => signup.signuptimetables)
   signup: Signup;
 
+  @Column()
+  signupId: number;
+
   @Column({ type: "datetime" })
   @ApiProperty({
     example: "2022-03-17 10:40:40",
@@ -29,4 +32,7 @@ export class Signuptimetable extends BaseEntity {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @Column({ default: false })
+  Isparticipate: boolean;
 }
