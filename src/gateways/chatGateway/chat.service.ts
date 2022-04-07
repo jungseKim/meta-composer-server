@@ -213,4 +213,15 @@ export class ChatService {
         .save();
     }
   }
+  public async removeChatRoom(user: User, roomId: number) {
+    const room = await this.chatRoomRepository.findOne({ id: roomId });
+    if (!room) throw new HttpException("채팅방이 없음", 402);
+    const lesson = await room.lesson;
+    const teacher = await lesson.teacher;
+
+    if (room.userId !== user.id && teacher.userId !== user.id) {
+      throw new HttpException("채팅방에 속해있지않음", 402);
+    }
+    return await this.chatRoomRepository.delete({ id: roomId });
+  }
 }

@@ -75,15 +75,22 @@ export class NotificationService {
     console.log(userId);
 
     //안읽은게 먼저, 최근께 먼저
-    return await this.CustomnotificationRepository.createQueryBuilder("noti")
-      .where("noti.userId = :userId", {
-        userId,
-      })
-      .orderBy("noti.readTime")
-      .addOrderBy("noti.created_at", "DESC")
-      .take(perPage)
-      .skip(perPage * (page - 1))
-      .getMany();
+    const notifitionData =
+      await this.CustomnotificationRepository.createQueryBuilder("noti")
+        .where("noti.userId = :userId", {
+          userId,
+        })
+        .leftJoinAndSelect("noti.signup", "signup")
+        .leftJoinAndSelect("signup.user", "user")
+        .orderBy("noti.readTime")
+        .addOrderBy("noti.created_at", "DESC")
+        .take(perPage)
+        .skip(perPage * (page - 1))
+        .getMany();
+    const notifitionCount = await this.CustomnotificationRepository.count({
+      userId: userId,
+    });
+    return { notifitionData, notifitionCount };
   }
 
   public async getNotifitionInfo(user: User, notiId: number) {
@@ -141,12 +148,11 @@ export class NotificationService {
   public async chatRoomJoin(client: NotificationSocekt, roomId: number) {
     const userId: number = client.userId;
 
-    const room = await this.chatRoomRepository.findOneOrFail(roomId);
-
+    const room = await this.chatRoomRepository.findOne(roomId);
+    if (!room) throw new WsException("없는방입니다");
     const teaherid = (await (await room.lesson).teacher).userId;
 
-    if (!room || (room.userId !== userId && teaherid !== userId)) {
-      console.log("Dd");
+    if (room.userId !== userId && teaherid !== userId) {
       throw new WsException("방참가 인원이 아닙니다");
     }
     await getConnection()

@@ -11,6 +11,7 @@ https://docs.nestjs.com/controllers#controllers
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -109,9 +110,29 @@ export class ChatController {
   @UseInterceptors(TransformResponseInterceptor)
   public async createChatRoom(
     @UserDecorator() user: User,
-    @Param("lessonId") lessonId: number,
+    @Param("lessonId", ParseIntPipe) lessonId: number,
   ) {
     return this.chatService.createChatRoom(user.id, lessonId);
+  }
+
+  @ApiOperation({
+    summary: "채팅방 삭제 ",
+    description: "자신이 속해 있는 방만 삭제가능 ",
+  })
+  @ApiOkResponse({
+    status: 200,
+    description: "삭제되었는 정보",
+    type: ChatRoom,
+  })
+  @Delete(":roomId/chatRoom")
+  @UseGuards(JwtGuard)
+  @UseInterceptors(TransformResponseInterceptor)
+  public async removeChatRoom(
+    @UserDecorator() user: User,
+    @Param("roomId", ParseIntPipe) roomId: number,
+  ) {
+    console.log(roomId);
+    return this.chatService.removeChatRoom(user, roomId);
   }
 
   @ApiOperation({

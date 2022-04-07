@@ -1,3 +1,5 @@
+import { imageOption } from "src/lib/imageOption";
+import { FileInterceptor } from "@nestjs/platform-express";
 import { UserService } from "../user/user.service";
 import { find, retry } from "rxjs";
 import { JwtRefreshGuard } from "./jwt-refresh.guard";
@@ -6,11 +8,14 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Patch,
   Post,
+  Put,
   Redirect,
   Req,
   Request,
   Res,
+  UploadedFile,
   UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
@@ -23,6 +28,7 @@ import { JwtGuard } from "./jwt.guard";
 import { TransformResponseInterceptor } from "src/common/interceptors/transformResponse.interceptor";
 import { SetCookieInterceptor } from "src/common/interceptors/set-cookie.interceptor";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ProfileDto } from "src/types/Profile";
 
 @Controller("api/auth")
 @ApiTags("유저/인증 API")
@@ -153,5 +159,19 @@ export class AuthController {
     res.clearCookie("Refresh");
 
     return true;
+  }
+
+  @Patch("/user")
+  @UseGuards(AuthGuard("jwt"))
+  @UseInterceptors(
+    TransformResponseInterceptor,
+    FileInterceptor("image", imageOption),
+  )
+  async userProfile(
+    @UserDecorator() user: User,
+    @UploadedFile() image,
+    @Body() data: ProfileDto,
+  ) {
+    return this.authService.userProfileUpdate(user, image, data);
   }
 }

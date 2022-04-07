@@ -10,11 +10,12 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToOne,
 } from "typeorm";
 import { Message } from "./message.entity";
 import { Signup } from "./signup.entity";
 import { User } from "./user.entity";
-
+import { Comment } from "./comment.entity";
 @Entity()
 export class CustomNotification extends BaseEntity {
   @ApiProperty({ example: 1, description: "프라이머리키" })
@@ -37,11 +38,19 @@ export class CustomNotification extends BaseEntity {
 
   @ManyToOne((type) => Signup, (signup) => signup.customNotifications, {
     nullable: true,
+    eager: true,
   })
   signup: Signup;
   @ApiProperty({ example: 1, description: "알람 종류 nullable" })
   @Column({ nullable: true })
   signupId: number;
+
+  @OneToOne((type) => Comment, (comment) => comment.customNotification, {
+    nullable: true,
+  })
+  @JoinColumn()
+  commnet: Comment;
+
   @ApiProperty({
     example: "2022-03-15 10:38:40.480462",
     description: "생성날짜",
