@@ -55,7 +55,7 @@ const ORMConfig: TypeOrmModuleOptions = {
     ConcoursSignup,
     Concours,
   ],
-
+  timezone: "Z",
   synchronize: false, // false 기본값
   charset: "utf8mb4",
   autoLoadEntities: true,

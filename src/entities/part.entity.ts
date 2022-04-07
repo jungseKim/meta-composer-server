@@ -6,15 +6,17 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
-import { Lesson } from './lesson.entity';
+} from "typeorm";
+import { Lesson } from "./lesson.entity";
 
 @Entity()
 export class Part extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: string;
 
-  @ManyToOne((type) => Lesson, (lesson) => lesson.parts)
+  @ManyToOne((type) => Lesson, (lesson) => lesson.parts, {
+    onDelete: "CASCADE",
+  })
   lesson: Lesson;
 
   @Column()

@@ -18,10 +18,14 @@ export class Assignment extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.assignments)
+  @ManyToOne(() => User, (user) => user.assignments, {
+    onDelete: "CASCADE",
+  })
   user: User;
 
-  @ManyToOne(() => Lesson, (lesson) => lesson.assignments)
+  @ManyToOne(() => Lesson, (lesson) => lesson.assignments, {
+    onDelete: "CASCADE",
+  })
   lesson: Lesson;
 
   @Column({ type: "datetime" })

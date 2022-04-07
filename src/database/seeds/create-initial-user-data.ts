@@ -7,6 +7,8 @@ export class CreateInitialUserData implements Seeder {
   constructor(private userService: UserService) {}
   public async run(factory: Factory, connection: Connection): Promise<any> {
     for (let count = 0; count <= 5; count++) {
+      const today = new Date();
+      const mili = today.getMilliseconds();
       await connection
         .getRepository(User)
         .createQueryBuilder("user")
@@ -15,13 +17,16 @@ export class CreateInitialUserData implements Seeder {
         .values([
           {
             email: faker.datatype.number() + faker.internet.email(),
-            password: faker.animal.type(),
+            // password: faker.animal.type(),
             username:
               faker.name.lastName() +
               faker.name.middleName() +
-              faker.name.firstName(),
+              faker.name.firstName() +
+              mili,
             provider_id:
-              "GENERATED_BY_SEEDER_RAMDOM ID=" + faker.address.cityName(),
+              "GENERATED_BY_SEEDER_RAMDOM ID=" +
+              faker.address.cityName() +
+              mili,
           },
         ])
         .execute();

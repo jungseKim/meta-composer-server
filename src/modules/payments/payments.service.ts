@@ -23,4 +23,8 @@ export class PaymentsService {
   async createPayment(updateData, user): Promise<Payment> {
     return this.paymentsRepository.createPayment(updateData, user);
   }
+
+  async deletePayment(updateData, user): Promise<Payment> {
+    return this.paymentsRepository.deletePayment(updateData, user);
+  }
 }

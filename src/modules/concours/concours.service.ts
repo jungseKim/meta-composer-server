@@ -18,13 +18,13 @@ export class ConcoursService {
   }
 
   async getConcoursById(id) {
-    return this.concoursRepository.find(id);
+    return this.concoursRepository.findOne(id);
   }
 
   async deleteConcours(id: number) {
     await this.concoursRepository.delete(id);
   }
-  async updateConcours(id: number, updateData) {
-    await this.concoursRepository.updateConcours(id, updateData);
+  async updateConcours(id: number, updateData, image) {
+    await this.concoursRepository.updateConcours(id, updateData, image);
   }
 }

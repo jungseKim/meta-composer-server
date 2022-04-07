@@ -4,10 +4,10 @@ import { EntityRepository, Repository } from "typeorm";
 
 @EntityRepository(ConcoursSignup)
 export class ConcoursSignupsRepository extends Repository<ConcoursSignup> {
-  async participate(updateData, user): Promise<ConcoursSignup> {
+  async participate(updateData, user, id): Promise<ConcoursSignup> {
     const existence = await this.createQueryBuilder("concours_signup")
       .where("concoursId = :concoursId", {
-        concoursId: updateData.concoursId,
+        concoursId: id,
       })
       .andWhere("userId = :userid", { userid: user.id })
       .getOne();
@@ -16,7 +16,7 @@ export class ConcoursSignupsRepository extends Repository<ConcoursSignup> {
     if (!existence) {
       const signup = this.create({
         youtubeURL: updateData.youtubeURL,
-        concoursId: updateData.concoursId,
+        concoursId: id,
         merchant_uid: updateData.merchant_uid,
         participated_date: updateData.participated_date,
         userId: user.id,

@@ -16,8 +16,13 @@ export class Signuptimetable extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne((type) => Signup, (signup) => signup.signuptimetables)
+  @ManyToOne((type) => Signup, (signup) => signup.signuptimetables, {
+    onDelete: "CASCADE",
+  })
   signup: Signup;
+
+  @Column()
+  signupId: number;
 
   @Column({ type: "datetime" })
   @ApiProperty({
@@ -45,4 +50,7 @@ export class Signuptimetable extends BaseEntity {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @Column({ default: false })
+  Isparticipate: boolean;
 }

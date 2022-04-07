@@ -23,7 +23,9 @@ export class Message extends BaseEntity {
   @ManyToOne((type) => ChatRoom, (chatRoom) => chatRoom.messages)
   chatRoom: ChatRoom;
 
-  @ManyToOne((type) => User, (user) => user.messages)
+  @ManyToOne((type) => User, (user) => user.messages, {
+    onDelete: "CASCADE",
+  })
   @JoinColumn({ name: "senderId" })
   //join칼럼명 이름바꾸기1
   sender: User;

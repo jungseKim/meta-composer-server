@@ -70,12 +70,19 @@ export class Signup extends BaseEntity {
   })
   startdate: string;
 
-  @Column({ type: "date" })
+  // @Column({ type: "date" })
+  // @ApiProperty({
+  //   example: "2022-04-17",
+  //   description: "수강이 끝나는 날짜",
+  // })
+  // finishdate: string;
+
+  @Column()
   @ApiProperty({
-    example: "2022-04-17",
-    description: "수강이 끝나는 날짜",
+    example: "5",
+    description: "수강 신청 개월수",
   })
-  finishdate: string;
+  howManyMonth: number;
 
   @Column({ type: "enum", enum: weekDays })
   @ApiProperty({
@@ -100,7 +107,7 @@ export class Signup extends BaseEntity {
   )
   signuptimetables: Signuptimetable[];
 
-  @OneToOne(() => Payment, (payment) => payment.signup)
+  @OneToOne(() => Payment, (payment) => payment.signup, {})
   payment: Payment;
 
   @OneToMany(

@@ -78,13 +78,19 @@ export class Lesson extends BaseEntity {
   type: LessonType;
   //enum?
 
-  @OneToMany(() => TimeTable, (timeTable) => timeTable.lesson, { eager: true })
+  @OneToMany(() => TimeTable, (timeTable) => timeTable.lesson, {
+    cascade: true,
+    eager: true,
+  })
   timeTables: TimeTable[];
 
-  @OneToMany(() => Part, (part) => part.lesson, { eager: true })
+  @OneToMany(() => Part, (part) => part.lesson, { cascade: true, eager: true })
   parts: Part[];
 
-  @OneToMany(() => Comment, (comment) => comment.lesson, { eager: true })
+  @OneToMany(() => Comment, (comment) => comment.lesson, {
+    cascade: true,
+    eager: true,
+  })
   comments: Comment[];
 
   @OneToMany((type) => ChatRoom, (chatRoom) => chatRoom.lesson, {
@@ -92,16 +98,25 @@ export class Lesson extends BaseEntity {
   })
   chatRooms: ChatRoom[];
 
-  @OneToMany(() => Wishlist, (wishlist) => wishlist.lesson, { eager: true })
+  @OneToMany(() => Wishlist, (wishlist) => wishlist.lesson, {
+    cascade: true,
+    eager: true,
+  })
   wishlists: Wishlist[];
 
-  @OneToMany(() => Signup, (signup) => signup.lesson, { cascade: true })
+  @OneToMany(() => Signup, (signup) => signup.lesson, {
+    cascade: true,
+  })
   signups: Signup[];
 
-  @OneToMany(() => Sheet, (sheet) => sheet.lesson, { eager: true })
+  @OneToMany(() => Sheet, (sheet) => sheet.lesson, {
+    cascade: true,
+    eager: true,
+  })
   sheets: Sheet[];
 
   @OneToMany((type) => Assignment, (assignment) => assignment.lesson, {
+    cascade: true,
     eager: true,
   })
   assignments: Assignment[];

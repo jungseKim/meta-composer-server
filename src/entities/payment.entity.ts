@@ -30,7 +30,9 @@ export class Payment extends BaseEntity {
   })
   userId: number;
 
-  @OneToOne(() => Signup, (signup) => signup.payment, { eager: true })
+  @OneToOne(() => Signup, (signup) => signup.payment, {
+    eager: true,
+  })
   @JoinColumn()
   signup: Signup;
 
@@ -69,16 +71,24 @@ export class Payment extends BaseEntity {
   })
   affiliation: string;
 
-  @Column()
+  @Column({ default: false })
   @ApiProperty({
-    example: "환불 유무. 추후 추가 예정",
-    description: "환불 유무. 추후 추가 예정",
+    example: false,
+    description: "환불 유무",
   })
-  refund: string;
+  refund: boolean;
 
   @CreateDateColumn()
   created_at: Date;
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @Column()
+  @ApiProperty({
+    example:
+      "https://iniweb.inicis.com/DefaultWebApp/mall/cr/cm/mCmReceipt_head.jsp?noTid=StdpayCARDINIpayTest20220404192038705693&noMethod=1",
+    description: "영수증 조회 주소",
+  })
+  receipt_url: string;
 }

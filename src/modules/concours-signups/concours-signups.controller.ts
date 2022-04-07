@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Param, Post, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { UserDecorator } from "src/decorators/user.decorator";
@@ -12,8 +12,8 @@ export class ConcoursSignupsController {
   constructor(private concoursSignupsService: ConcoursSignupsService) {}
 
   @UseGuards(AuthGuard("jwt"))
-  @Post()
-  @ApiOperation({ summary: "콩쿠르 참가", description: "콩쿠르에 감가한다" })
+  @Post("/:id")
+  @ApiOperation({ summary: "콩쿠르 참가", description: "콩쿠르에 참가한다" })
   @ApiResponse({
     status: 200,
     description: "콩쿠르 참가 완료",
@@ -21,10 +21,11 @@ export class ConcoursSignupsController {
   })
   @ApiBody({ type: ConcoursSignup })
   //type 를 entity 로
-  participate(
+  async participate(
+    @Param("id") id: number,
     @Body() updateData,
     @UserDecorator() user: User,
   ): Promise<ConcoursSignup> {
-    return this.concoursSignupsService.participate(updateData, user);
+    return this.concoursSignupsService.participate(updateData, user, id);
   }
 }
