@@ -5,9 +5,11 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { CustomNotification } from "./custom-notification.entity";
 import { Lesson } from "./lesson.entity";
 import { User } from "./user.entity";
 
@@ -61,4 +63,11 @@ export class Comment extends BaseEntity {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @OneToOne(
+    (type) => CustomNotification,
+    (customNotification) => customNotification.commnet,
+    { nullable: true },
+  )
+  customNotification: CustomNotification;
 }

@@ -41,14 +41,13 @@ export class CreateInitialSignupData implements Seeder {
       //   randomHours[Math.floor(Math.random() * randomHours.length)];
       // const randomMin =
       //   randomMins[Math.floor(Math.random() * randomMins.length)];
-
       await connection
         .createQueryBuilder()
         .insert()
         .into(Signup)
         .values([
           {
-            merchant_uid: faker.lorem.words(),
+            // merchant_uid: faker.lorem.words(),
             lessonId:
               allLessonIds[Math.floor(Math.random() * allLessonIds.length)],
             userId: allUsersIds[Math.floor(Math.random() * allUsersIds.length)],

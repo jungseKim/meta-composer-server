@@ -59,7 +59,7 @@ const ORMConfig: TypeOrmModuleOptions = {
   synchronize: false, // false 기본값
   charset: "utf8mb4",
   autoLoadEntities: true,
-  logging: true,
+  // logging: true,
   keepConnectionAlive: true,
   migrations: [__dirname + "/./src/migrations/*.ts"],
   cli: { migrationsDir: "./src/migrations" },

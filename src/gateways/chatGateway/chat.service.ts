@@ -86,31 +86,38 @@ export class ChatService {
     client.to(room.id.toString()).emit("chatJoin-event");
   }
 
-  public async saveMessage(user: User, sendMessage: SendMessageDto) {
+  public async saveMessage(
+    user: User,
+    chatRoomId: number,
+    sendMessage: SendMessageDto,
+    image,
+  ) {
     const senderId = user.id;
-    const message = sendMessage.message;
-    const chatRoomId = sendMessage.roomId;
     const is_read = sendMessage.is_read;
 
     const chatRoom = await this.chatRoomRepository.findOneOrFail(chatRoomId);
     if (!chatRoom) {
       return false;
     }
-    const messageSend = await this.messageRepository
-      .create({
-        senderId,
-        message,
-        chatRoomId,
-        is_read,
-      })
-      .save();
+    console.log(typeof chatRoomId);
+    const messageSend = await this.messageRepository.create({
+      sender: user, //여기에 객체 넣으면 자동을 eger  로딩됨 야발 ㅋㅋ
+      message: sendMessage?.message,
+      chatRoomId,
+      is_read,
+    });
+
+    if (image) {
+      messageSend.image = image.filename;
+    }
+    messageSend.save();
 
     if (chatRoom.userId === senderId) {
       const lesson = await chatRoom.lesson;
       const teacher = await lesson.teacher;
       this.notificationService.pushMessage(teacher.userId, messageSend);
     } else {
-      this.notificationService.pushMessage(senderId, messageSend);
+      this.notificationService.pushMessage(chatRoom.userId, messageSend);
     }
     return messageSend;
   }
@@ -138,21 +145,31 @@ export class ChatService {
       .innerJoinAndSelect("chatRoom.lesson", "lesson")
       .innerJoinAndSelect("lesson.teacher", "teacher")
       .leftJoinAndSelect("chatRoom.messages", "messages")
-      .orderBy("messages.created_at", "DESC")
+      .loadRelationCountAndMap(
+        "chatRoom.unReadCount",
+        "chatRoom.messages",
+        "unreadMessageCount",
+        (qb) => qb.where("unreadMessageCount.is_read = false"),
+      )
       .limit(1)
       .getMany();
-
-    const teacher = await this.teacherRepository.findOne(user.id);
+    const teacher = await this.teacherRepository.findOne({ userId: user.id });
 
     if (teacher) {
       const lessonChat = await this.lessonRepository
         .createQueryBuilder("lesson")
         .innerJoin("lesson.teacher", "teacher", "teacher.id = :id", {
-          id: user.id,
+          id: teacher.id,
         })
         .innerJoinAndSelect("lesson.chatRooms", "chatRooms")
         .innerJoinAndSelect("chatRooms.user", "user")
         .leftJoinAndSelect("chatRooms.messages", "messages")
+        .loadRelationCountAndMap(
+          "chatRooms.unReadCount",
+          "chatRooms.messages",
+          "unreadMessageCount",
+          (qb) => qb.where("unreadMessageCount.is_read = false"),
+        )
         .orderBy("messages.created_at", "DESC")
         .limit(1)
         .getMany();
@@ -195,5 +212,16 @@ export class ChatService {
         })
         .save();
     }
+  }
+  public async removeChatRoom(user: User, roomId: number) {
+    const room = await this.chatRoomRepository.findOne({ id: roomId });
+    if (!room) throw new HttpException("채팅방이 없음", 402);
+    const lesson = await room.lesson;
+    const teacher = await lesson.teacher;
+
+    if (room.userId !== user.id && teacher.userId !== user.id) {
+      throw new HttpException("채팅방에 속해있지않음", 402);
+    }
+    return await this.chatRoomRepository.delete({ id: roomId });
   }
 }

@@ -76,8 +76,9 @@ export class NotificationController {
   @Delete(":id/remove")
   public async deleteNotification(
     @UserDecorator() user: User,
-    @Param("id") notiId: number,
+    @Param("id", ParseIntPipe) notiId: number,
   ) {
+    console.log("Dd");
     return this.notificationService.deleteNotification(user, notiId);
   }
 }

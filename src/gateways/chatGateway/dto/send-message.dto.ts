@@ -8,14 +8,8 @@ import { ApiProperty } from "@nestjs/swagger";
  * SRP란: 한 클래스는 하나의 책임만 가져야한다. (단일 책임의 원칙)
  */
 export class SendMessageDto {
-  @ApiProperty({ example: 1, description: "룸아이디" })
-  @IsNumber()
-  @IsNotEmpty()
-  roomId: number;
-
   @ApiProperty({ example: "heelow", description: "전달할 메세지" })
   @IsString()
-  @IsNotEmpty()
   message: string; // 유저 이름
 
   @ApiProperty({

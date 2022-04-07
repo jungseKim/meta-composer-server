@@ -1,4 +1,3 @@
-
 import { CustomNotification } from "./custom-notification.entity";
 
 import { Teacher } from "./teacher.entity";
@@ -99,7 +98,7 @@ export class User extends BaseEntity {
   @OneToMany((type) => Payment, (payment) => payment.user)
   payments: Payment[];
 
-  @OneToMany((type) => Message, (message) => message.sender, { eager: true })
+  @OneToMany((type) => Message, (message) => message.sender)
   messages: Message[];
   // sender
 
