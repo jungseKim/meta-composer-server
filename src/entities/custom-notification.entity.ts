@@ -49,7 +49,10 @@ export class CustomNotification extends BaseEntity {
     nullable: true,
   })
   @JoinColumn()
-  commnet: Comment;
+  comment: Comment;
+
+  @Column({ nullable: true })
+  commentId: number;
 
   @ApiProperty({
     example: "2022-03-15 10:38:40.480462",

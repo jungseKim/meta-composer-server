@@ -35,7 +35,6 @@ import { join } from "path";
 import { TimeTablesModule } from "./modules/time-tables/time-tables.module";
 import { Signuptimetable } from "./entities/signuptimetable.entity";
 import { SignupTimetablesModule } from "./modules/signup-timetables/signup-timetables.module";
-import { ScheduleModule } from "@nestjs/schedule";
 import { PartsModule } from "./modules/parts/parts.module";
 
 @Module({

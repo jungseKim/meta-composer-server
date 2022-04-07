@@ -66,7 +66,7 @@ export class Comment extends BaseEntity {
 
   @OneToOne(
     (type) => CustomNotification,
-    (customNotification) => customNotification.commnet,
+    (customNotification) => customNotification.comment,
     { nullable: true },
   )
   customNotification: CustomNotification;

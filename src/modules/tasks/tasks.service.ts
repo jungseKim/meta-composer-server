@@ -37,14 +37,14 @@ export class TasksService {
     });
 
     const currentTime = times[current];
-
+    console.log(currentTime);
     //여기서 5분 빼줘야됨 지금은 개발단계라서 이상태로 킵고잉
     const date = new Date(currentTime.time);
     if (date < new Date()) {
       return this.signupNotification(signup, current + 1, last);
     }
-    console.log(date);
-    const job = new CronJob(date, async () => {
+    console.log(date); //이부분 date 로 다시
+    const job = new CronJob(new Date(Date.now() + 10 * 1000), async () => {
       this.logger.warn(`time  for job ${current} to run!`);
 
       await this.notificationService.pushStarClass(signup);

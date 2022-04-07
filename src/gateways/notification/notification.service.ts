@@ -82,6 +82,8 @@ export class NotificationService {
         })
         .leftJoinAndSelect("noti.signup", "signup")
         .leftJoinAndSelect("signup.user", "user")
+        .leftJoinAndSelect("noti.comment", "comment")
+        .leftJoinAndSelect("comment.user", "cuser")
         .orderBy("noti.readTime")
         .addOrderBy("noti.created_at", "DESC")
         .take(perPage)
@@ -127,11 +129,11 @@ export class NotificationService {
       signupId: signup.id,
       userId: teacherUserId,
     }).save();
-
+    console.log(userId, teacherUserId);
     const user = this.clients[userId];
-    user?.emit("push-start-class", studentNotification);
+    user?.emit("notification", studentNotification);
     const teacher = this.clients[teacherUserId];
-    teacher?.emit("push-start-class", teacherNotification);
+    teacher?.emit("notification", teacherNotification);
   }
 
   public async deleteNotification(user: User, notiId: number) {

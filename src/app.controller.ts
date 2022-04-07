@@ -23,7 +23,7 @@ export class AppController {
 
   @Get("test")
   getHello() {
-    this.tasksService.signupNotification(null, 0, 3);
+    this.tasksService.signupNotification(null, 0, 1);
   }
   @Get("test2")
   getHell2() {
