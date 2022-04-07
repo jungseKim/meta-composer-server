@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   UseGuards,
 } from "@nestjs/common";
@@ -15,6 +16,7 @@ import {
   ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
+import { TeacherDecorator } from "src/decorators/teacher.decorator";
 import { UserDecorator } from "src/decorators/user.decorator";
 import { Lesson } from "src/entities/lesson.entity";
 import { User } from "src/entities/user.entity";
@@ -29,7 +31,7 @@ export class LessonsController {
 
   @Get()
   @ApiOperation({ summary: "레슨 조회", description: "전체 레슨 조회" })
-  @ApiResponse({ status: 200, description: "레슨 생성완료", type: Lesson })
+  @ApiResponse({ status: 200, description: "레슨 조회완료", type: Lesson })
   showAllLesson(): Promise<Lesson[]> {
     return this.lessonsService.showAllLesson();
   }
@@ -43,6 +45,7 @@ export class LessonsController {
   getLessonById(@Param("id") id: number): Promise<Lesson> {
     return this.lessonsService.getLessonById(id);
   }
+
   @UseGuards(AuthGuard("jwt"))
   @Post()
   @ApiOperation({
@@ -71,7 +74,11 @@ export class LessonsController {
   @ApiResponse({ status: 200, description: "레슨 생성완료", type: Lesson })
   @ApiBody({ type: Lesson })
   //type 를 entity 로
-  create(@Body() updateData, @UserDecorator() user: User): Promise<Lesson> {
+  create(
+    @Body() updateData,
+    @UserDecorator() user: User,
+    @TeacherDecorator() isTeacher: boolean,
+  ): Promise<Lesson> {
     return this.lessonsService.createLesson(updateData, user);
   }
 
@@ -79,7 +86,23 @@ export class LessonsController {
   @Delete("/:id")
   @ApiOperation({ summary: "레슨 삭제", description: "레슨을 삭제한다" })
   @ApiResponse({ status: 200, description: "레슨 삭제완료", type: Lesson })
-  deleteLessonById(@Param("id") id): Promise<void> {
+  deleteLessonById(
+    @Param("id") id,
+    @TeacherDecorator() isTeacher: boolean,
+  ): Promise<void> {
     return this.lessonsService.deleteLessonById(id);
+  }
+
+  @UseGuards(AuthGuard("jwt"))
+  @Patch("/:id")
+  @ApiOperation({ summary: "레슨 수정", description: "레슨을 수정한다" })
+  @ApiResponse({ status: 200, description: "레슨 수정완료", type: Lesson })
+  updateLessonById(
+    @Param("id") id,
+    @Body() updateData,
+    @UserDecorator() user: User,
+    @TeacherDecorator() isTeacher: boolean,
+  ): Promise<void> {
+    return this.lessonsService.updateLessonById(id, updateData, user);
   }
 }

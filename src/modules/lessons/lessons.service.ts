@@ -30,4 +30,7 @@ export class LessonsService {
   async deleteLessonById(id: number): Promise<void> {
     await this.lessonsRepository.delete(id);
   }
+  async updateLessonById(id: number, updateData, user): Promise<void> {
+    await this.lessonsRepository.updateLessonById(id, updateData, user);
+  }
 }

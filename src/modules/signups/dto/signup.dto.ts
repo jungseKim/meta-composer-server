@@ -6,5 +6,5 @@ export class SignupDto extends PickType(Signup, [
   "lessonId",
   "userId",
   "startdate",
-  "finishdate",
+  "howManyMonth",
 ] as const) {}

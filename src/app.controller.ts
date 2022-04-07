@@ -1,4 +1,4 @@
-import { Controller, Get, Res } from "@nestjs/common";
+import { Controller, Get, Param, Query, Res } from "@nestjs/common";
 import { AppService } from "./app.service";
 import { Response } from "express";
 import { ApiOperation } from "@nestjs/swagger";
@@ -22,12 +22,12 @@ export class AppController {
     this.tasksService.cancleSignNotification(null);
   }
 
-  @Get("lessons/1")
+  @Get("lessons")
   @ApiOperation({
     summary: "결제 예시",
     description: "레슨 ID값을 넣어 강의에 등록하며 결제한다. ",
   })
-  get(@Res() res: Response) {
+  get(@Res() res: Response, @Query("id") id) {
     res.sendFile("abc.html", {
       root: "./src/",
     });

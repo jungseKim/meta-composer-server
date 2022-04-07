@@ -4,6 +4,7 @@ import { Lesson, LessonType } from "src/entities/lesson.entity";
 import { Teacher } from "src/entities/teacher.entity";
 import { EntityRepository, getRepository, Repository } from "typeorm";
 import axios, { AxiosResponse } from "axios";
+import { TimeTable } from "src/entities/timeTable.entity";
 @EntityRepository(Lesson)
 export class LessonsRepository extends Repository<Lesson> {
   // @InjectRepository(TeacherRepository)private lessonsRepository : LessonsRepository,
@@ -14,13 +15,6 @@ export class LessonsRepository extends Repository<Lesson> {
       .createQueryBuilder("teacher")
       .where("teacher.userId = :id", { id: user.id })
       .getOne();
-    //  if(checkTeacher){
-    //   this.find({
-    //     where: {
-    //         project: { name: "TypeORM", initials: "TORM" },
-    //     },
-    //     relations: ["project"],
-    //  });
 
     const lesson = this.create({
       introduce: updateData.introduce,
@@ -42,5 +36,21 @@ export class LessonsRepository extends Repository<Lesson> {
     // else{
     //   return "you are not teacher"
     // }
+  }
+
+  async updateLessonById(id, updateData, user): Promise<any> {
+    this.createQueryBuilder()
+      .update(Lesson)
+      .set({
+        introduce: updateData.introduce,
+        length: updateData.length,
+        price: updateData.price,
+        name: updateData.name,
+        type: updateData.type,
+      })
+      .where("id = :id", { id: id })
+      .execute();
+
+    return;
   }
 }

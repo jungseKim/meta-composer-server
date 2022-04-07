@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Patch,
   Post,
   UseGuards,
@@ -19,6 +21,8 @@ import { TeacherDTO } from "./dto/teachers.dto";
 
 //
 import { upload } from "youtube-videos-uploader";
+import { TeacherDecorator } from "src/decorators/teacher.decorator";
+import { JwtGuard } from "../auth/jwt.guard";
 //
 
 @Controller("api/teachers")
@@ -28,14 +32,18 @@ export class TeachersController {
     private teachersSerice: TeachersService,
     private teachersRepository: TeachersRepository,
   ) {}
+  @UseGuards(AuthGuard("jwt"))
   @Get()
   @ApiOperation({
     summary: "강사 조회",
     description: "메타 컨포저에 등록된 강사들 조회",
   })
   @ApiResponse({ status: 200, description: "강사 조회 완료", type: Teacher })
-  findAllTeachers() // @Body("video") video
-  {
+  findAllTeachers() {
+    // @Body("video") video
+    // if (isTeacher == false) {
+    //   throw new HttpException("You are not teacher", HttpStatus.FORBIDDEN);
+    // }
     // const credentials = {
     //   email: process.env.G_ID,
     //   pass: process.env.G_PASSWORD,
@@ -92,6 +100,7 @@ export class TeachersController {
   async updateTeacherInfo(
     @UserDecorator() user: User,
     @Body() updateData: TeacherDTO,
+    @TeacherDecorator() isTeacher: boolean,
   ): Promise<Teacher> {
     return this.teachersSerice.updateTeacherInfo(user, updateData);
   }
@@ -104,7 +113,10 @@ export class TeachersController {
     description: "강사 등록 취소 완료",
     type: Teacher,
   })
-  async unRegisterTeacher(@UserDecorator() user: User) {
+  async unRegisterTeacher(
+    @UserDecorator() user: User,
+    @TeacherDecorator() isTeacher: boolean,
+  ) {
     await getConnection()
       .createQueryBuilder()
       .delete()
