@@ -21,7 +21,7 @@
         <input id="Lmonth" type="text" placeholder="개월수" />
         <input id="Ltime" type="text" placeholder="레슨시간" />
         <input id="startdate" type="text" placeholder="시작날짜" />
-        <button onclick="requestPay(event)">강의결제하기</button>
+        <button onclick="requestPay(event)">강의결제하기d</button>
     </form>
 
     <input id="" type="text" placeholder="주소형식 => /?id=1" />
@@ -41,6 +41,44 @@
         const params = new URLSearchParams(document.location.search);
         const urlLessonId = params.get('id');
         console.log(urlLessonId)
+        let finishss;
+
+        axios({
+                method: 'post',
+                url: `http://localhost:4000/api/signups/lessons/check/${urlLessonId}`,
+
+                headers: {
+                    Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY0ODcwNjAxMiwiZXhwIjo4ODA0ODcwNjAxMn0.-GqrKRT60Z3-wj0jeeDeNK5uiIIS3EmdHSFxctZmH6A",
+                    "Content-Type": `application/json`,
+                },
+
+
+            })
+            .then(res => {
+                if (res.data == "결제취소") {
+                    console.log("자신의 강의는 결제 불가능합니다.")
+                    alert("자신의 강의는 결제 불가능합니다.");
+                    window.location.href = `/lessons/?id=${urlLessonId}`;
+                    //결제 불가능하니 홈이던지 결제페이지 이전으로던지 다시 돌리세요.
+
+                    console.log(res);
+                    console.log("으아아아아아악");
+
+                    finishss = false;
+
+                    return finishss
+
+                    //팝업창 안뜨게 해야함..
+                }
+            });
+        // console.log(this.finishss)
+        // if (this.finishss == false) {
+
+        //     console.log(this.finishss)
+
+
+        //     return false;
+        // }
 
         const Lday = document
             .getElementById('Lday')
@@ -59,163 +97,166 @@
         event.preventDefault()
         console.log(Lday, Lmonth, Ltime, Lstartdate)
 
+        if (finishss != false) {
+            // IMP.request_pay(param, callback) 가 , 결제창 호출 메서드
+            await IMP.request_pay({ // param
+                pg: "html5_inicis",
+                //naverpay ''''''' pg사는 , https://docs.iamport.kr/implementation/payment 를 참조할것.
 
-        // IMP.request_pay(param, callback) 가 , 결제창 호출 메서드
-        await IMP.request_pay({ // param
-            pg: "html5_inicis",
-            //naverpay ''''''' pg사는 , https://docs.iamport.kr/implementation/payment 를 참조할것.
+                pay_method: "card",
+                //결제수단 merchant_uid: "ORD20180131-0000011",
 
-            pay_method: "card",
-            //결제수단 merchant_uid: "ORD20180131-0000011",
+                name: "메타컴포저 수강신청" + Lmonth + "개월분",
+                amount: 100 * Lmonth,
+                buyer_email: "scpark@gmailgmail.com",
+                buyer_name: "홍길동",
+                buyer_tel: "010-1234-1234",
+                buyer_addr: "캘리포니아 마운틴뷰",
+                buyer_postcode: "41416"
 
-            name: "메타컴포저 수강신청" + Lmonth + "개월분",
-            amount: 100 * Lmonth,
-            buyer_email: "scpark@gmailgmail.com",
-            buyer_name: "홍길동",
-            buyer_tel: "010-1234-1234",
-            buyer_addr: "캘리포니아 마운틴뷰",
-            buyer_postcode: "41416"
+            }, function (rsp) {
+                // callback임
 
-        }, function (rsp) {
-            // callback임
+                if (rsp.success) {
+                    //결제가 완료될시 반환되는 응답객체 rsp의 성공여부에 따라, callback함수에 작성.  http요청할것.
 
-            if (rsp.success) {
-                //결제가 완료될시 반환되는 응답객체 rsp의 성공여부에 따라, callback함수에 작성.  http요청할것.
+                    // const lessonId = document
+                    //     .getElementById('lessonId')
+                    //     .value;
+                    alert("결제접속");
 
-                // const lessonId = document
-                //     .getElementById('lessonId')
-                //     .value;
-                alert("결제접속");
+                    // 성공 이후의 결제정보 전달은 , https://docs.iamport.kr/implementation/payment 확인할것.
+                    console.log(rsp);
+                    console.log(rsp.merchant_uid);
 
-                // 성공 이후의 결제정보 전달은 , https://docs.iamport.kr/implementation/payment 확인할것.
-                console.log(rsp);
-                console.log(rsp.merchant_uid);
-
-                //등록하는 api
-
-
-
-
-                axios({
-                        method: 'post',
-                        url: `http://localhost:4000/api/signups/lessons/${urlLessonId}`,
-                        data: JSON.stringify({
-                            merchant_uid: rsp.merchant_uid,
-                            startdate: Lstartdate,
-                            howManyMonth: Lmonth,
-                            lessonTime: Ltime,
-                            weekdays: Lday
-                        }),
-                        headers: {
-                            Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY0ODcwNjAxMiwiZXhwIjo4ODA0ODcwNjAxMn0.-GqrKRT60Z3-wj0jeeDeNK5uiIIS3EmdHSFxctZmH6A",
-                            "Content-Type": `application/json`,
-                        },
-
-
-                    })
-                    .then(res => {
-                        console.log(JSON.stringify(res.data));
-                        const signupsId = res.data.id;
-                        console.log(res.data.id);
-
-                        axios({
-                                method: 'post',
-                                url: 'http://localhost:4000/api/payments',
-                                data: JSON.stringify({
-                                    merchant_uid: res.data.merchant_uid,
-                                    card_name: rsp.card_name,
-                                    signupId: signupsId,
-                                }),
-                                headers: {
-                                    Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY0ODcwNjAxMiwiZXhwIjo4ODA0ODcwNjAxMn0.-GqrKRT60Z3-wj0jeeDeNK5uiIIS3EmdHSFxctZmH6A",
-                                    "Content-Type": `application/json`,
-                                },
-
-
-                            })
-                            .then(res => {
-
-                                console.log(res.data);
-                            })
-                            .catch(error => {
-
-                                console.log("등록 취소되었습니다.")
-                            })
-
-                    })
-                    .catch(error => {
-
-                        console.log("등록 취소되었습니다.")
-                    })
+                    //등록하는 api
 
 
 
 
+                    axios({
+                            method: 'post',
+                            url: `http://localhost:4000/api/signups/lessons/${urlLessonId}`,
+                            data: JSON.stringify({
+                                merchant_uid: rsp.merchant_uid,
+                                startdate: Lstartdate,
+                                howManyMonth: Lmonth,
+                                lessonTime: Ltime,
+                                weekdays: Lday
+                            }),
+                            headers: {
+                                Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY0ODcwNjAxMiwiZXhwIjo4ODA0ODcwNjAxMn0.-GqrKRT60Z3-wj0jeeDeNK5uiIIS3EmdHSFxctZmH6A",
+                                "Content-Type": `application/json`,
+                            },
 
 
-                // $.ajax({
-                //     url: `http://localhost:4000/api/signups/lessons/${urlLessonId}`,
-                //     type: "post",
+                        })
+                        .then(res => {
+                            console.log(JSON.stringify(res.data));
+                            const signupsId = res.data.id;
+                            console.log(res.data.id);
 
-                //     headers: {
-                //         Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjksImlhdCI6MTY0NjcxNzkwMiwiZXhwIjoxNjUwMzE3OTAyfQ.EAkMNHGJcf2R-UuNWhFZYrlPQaejpldBUGakj-cta7Q",
-
-                //     },
-                //     //테스트를위해 임시로 넣은 JWT토큰 , 실제로는 지워야함.
-
-                //     data: JSON.stringify({
-                //         merchant_uid: rsp.merchant_uid,
-                //         startdate: "2022-03-17",
-                //         howManyMonth: Lmonth,
-                //         lessonTime: "14:22:33",
-                //         weekdays: "Friday"
-
-                //     }),
-                //     dataType: "json",
-                //     contentType: "application/json",
-                //     error: function (e) {
-                //         console.log("등록 취소되었습니다.")
-                //     },
-                //     success: function (data) {
-                //         console.log(JSON.stringify(data) + "등록 성공했다")
-                //         const signupsId = data.id;
-
-                //         $.ajax({
-
-                //             //결제정보 저장하는 api
-                //             url: `http://localhost:4000/api/payments`,
-                //             type: "post",
-
-                //             headers: {
-                //                 Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjksImlhdCI6MTY0NjcxNzkwMiwiZXhwIjoxNjUwMzE3OTAyfQ.EAkMNHGJcf2R-UuNWhFZYrlPQaejpldBUGakj-cta7Q",
+                            axios({
+                                    method: 'post',
+                                    url: 'http://localhost:4000/api/payments',
+                                    data: JSON.stringify({
+                                        merchant_uid: res.data.merchant_uid,
+                                        card_name: rsp.card_name,
+                                        signupId: signupsId,
+                                        receipt_url: rsp.receipt_url
+                                    }),
+                                    headers: {
+                                        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY0ODcwNjAxMiwiZXhwIjo4ODA0ODcwNjAxMn0.-GqrKRT60Z3-wj0jeeDeNK5uiIIS3EmdHSFxctZmH6A",
+                                        "Content-Type": `application/json`,
+                                    },
 
 
-                //             },
-                //             //테스트를위해 임시로 넣은 JWT토큰 , 실제로는 지워야함.
+                                })
+                                .then(res => {
 
-                //             data: JSON.stringify({
-                //                 merchant_uid: rsp.merchant_uid,
-                //                 card_name: rsp.card_name,
-                //                 signupId: signupsId
+                                    console.log(res.data);
+                                })
+                                .catch(error => {
 
-                //             }),
+                                    console.log("등록 취소되었습니다.")
+                                })
 
-                //             dataType: "json",
-                //             contentType: "application/json",
-                //             error: function (e) {
-                //                 console.log(this.data + "에러1234")
-                //             },
-                //             success: function (data) {
-                //                 console.log(data + "성공성공")
-                //             }
-                //         })
-                //     }
-                // })
+                        })
+                        .catch(error => {
 
-            }
-        });
+                            console.log("등록 취소되었습니다.")
+                        })
+
+
+
+
+
+                    // $.ajax({
+                    //     url: `http://localhost:4000/api/signups/lessons/${urlLessonId}`,
+                    //     type: "post",
+
+                    //     headers: {
+                    //         Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjksImlhdCI6MTY0NjcxNzkwMiwiZXhwIjoxNjUwMzE3OTAyfQ.EAkMNHGJcf2R-UuNWhFZYrlPQaejpldBUGakj-cta7Q",
+
+                    //     },
+                    //     //테스트를위해 임시로 넣은 JWT토큰 , 실제로는 지워야함.
+
+                    //     data: JSON.stringify({
+                    //         merchant_uid: rsp.merchant_uid,
+                    //         startdate: "2022-03-17",
+                    //         howManyMonth: Lmonth,
+                    //         lessonTime: "14:22:33",
+                    //         weekdays: "Friday"
+
+                    //     }),
+                    //     dataType: "json",
+                    //     contentType: "application/json",
+                    //     error: function (e) {
+                    //         console.log("등록 취소되었습니다.")
+                    //     },
+                    //     success: function (data) {
+                    //         console.log(JSON.stringify(data) + "등록 성공했다")
+                    //         const signupsId = data.id;
+
+                    //         $.ajax({
+
+                    //             //결제정보 저장하는 api
+                    //             url: `http://localhost:4000/api/payments`,
+                    //             type: "post",
+
+                    //             headers: {
+                    //                 Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjksImlhdCI6MTY0NjcxNzkwMiwiZXhwIjoxNjUwMzE3OTAyfQ.EAkMNHGJcf2R-UuNWhFZYrlPQaejpldBUGakj-cta7Q",
+
+
+                    //             },
+                    //             //테스트를위해 임시로 넣은 JWT토큰 , 실제로는 지워야함.
+
+                    //             data: JSON.stringify({
+                    //                 merchant_uid: rsp.merchant_uid,
+                    //                 card_name: rsp.card_name,
+                    //                 signupId: signupsId
+
+                    //             }),
+
+                    //             dataType: "json",
+                    //             contentType: "application/json",
+                    //             error: function (e) {
+                    //                 console.log(this.data + "에러1234")
+                    //             },
+                    //             success: function (data) {
+                    //                 console.log(data + "성공성공")
+                    //             }
+
+                    //         })
+                    //     }
+                    // })
+                }
+
+
+            });
+        }
+
     }
-
     //이 함수는 콩쿠르 수강용, 수정할예정
     async function requestPay2() {
 
@@ -254,7 +295,7 @@
 
                 // 성공 이후의 결제정보 전달은 ,             https://docs.iamport.kr/implementation/payment 확인할것.
 
-                console.log(rsp);
+                console.log(rsp + "zzzzzzzzzzzzzzz");
                 console.log(rsp.merchant_uid);
 
 
@@ -278,13 +319,14 @@
                             "youtubeURL": "test",
                             "concoursId": URLconcoursId,
                             "merchant_uid": rsp.merchant_uid,
-                            "participated_date": year + "-" + month + "-" + date + " " +
+                            "participated_date": year + "-" + month + "-" + date +
+                                " " +
                                 hours +
                                 ":" + minutes + ":" + seconds
                             // // "2022-03-09 14:00:00"
                         }),
                         headers: {
-                            Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY0ODcwNjAxMiwiZXhwIjo4ODA0ODcwNjAxMn0.-GqrKRT60Z3-wj0jeeDeNK5uiIIS3EmdHSFxctZmH6A",
+                            Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY0OTIwNjQ5MiwiZXhwIjo4ODA0OTIwNjQ5Mn0.HrmjHSJe32-PhfEAAaADTBhL2gfi5uljF3QRP0nTWIk",
                             "Content-Type": `application/json`,
                         },
 
@@ -292,18 +334,20 @@
                     })
                     .then(response => {
                         console.log(JSON.stringify(response.data) + "콩쿠르 등록 성공했다")
-                        const signupsId = response.data.id;
-                        console.log(response.data.id + "<<<- signup id");
+                        const concoursSignupId = response.data.id;
+                        console.log(response.data.id + "<<<- concoursSignupId ");
                         axios({
                                 method: 'post',
                                 url: 'http://localhost:4000/api/payments',
                                 data: JSON.stringify({
-                                    merchant_uid: response.data.merchant_uid,
+                                    payment_number: response.data.merchant_uid,
                                     card_name: rsp.card_name,
-                                    signupId: signupsId
+                                    concoursSignupId: concoursSignupId,
+                                    receipt_url: rsp.receipt_url
                                 }),
+
                                 headers: {
-                                    Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY0ODcwNjAxMiwiZXhwIjo4ODA0ODcwNjAxMn0.-GqrKRT60Z3-wj0jeeDeNK5uiIIS3EmdHSFxctZmH6A",
+                                    Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY0OTIwNjQ5MiwiZXhwIjo4ODA0OTIwNjQ5Mn0.HrmjHSJe32-PhfEAAaADTBhL2gfi5uljF3QRP0nTWIk",
                                     "Content-Type": `application/json`,
                                 },
                             }).then(response => {

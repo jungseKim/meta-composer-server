@@ -72,6 +72,13 @@ export class Concours extends BaseEntity {
   })
   coverIMG_url: string;
 
+  @Column()
+  @ApiProperty({
+    example: 9,
+    description: "콩쿠르 시작하는 최소인원",
+  })
+  minimum_starting_people: number;
+
   @OneToMany(
     () => ConcoursSignup,
     (concoursSignup) => concoursSignup.concours,

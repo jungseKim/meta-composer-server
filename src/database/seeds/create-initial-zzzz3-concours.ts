@@ -29,6 +29,7 @@ export class CreateInitialConcoursData implements Seeder {
         .into(Concours)
         .values([
           {
+            minimum_starting_people: +9,
             coverIMG_url: faker.image.avatar(),
             title: faker.company.companyName() + mili,
             contents: faker.lorem.words(),

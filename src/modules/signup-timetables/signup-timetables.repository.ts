@@ -3,10 +3,12 @@ import { Signup } from "../../entities/signup.entity";
 import { EntityRepository, Repository } from "typeorm";
 import { delay } from "rxjs";
 import { json } from "stream/consumers";
+import { getConnection } from "typeorm";
+import { TimeTable } from "src/entities/timeTable.entity";
 
 @EntityRepository(Signuptimetable)
 export class SignuptimetablesRepository extends Repository<Signuptimetable> {
-  createTimeTable(updateData) {
+  async createTimeTable(updateData) {
     //분해해서, 하나하나 저장
 
     console.log(updateData);
@@ -20,6 +22,51 @@ export class SignuptimetablesRepository extends Repository<Signuptimetable> {
       delay(0.00000001);
       timetable.save();
     }
+    //1.요일을 가져온다 시간을가져온다
+
+    //2.timetable 에서 시간과 요일으로 검색한다
+    console.log(updateData.day);
+    console.log(updateData.time);
+    let day;
+
+    switch (updateData.day) {
+      case 1:
+        day = "Sun";
+        break;
+      case 2:
+        day = "Mon";
+        break;
+      case 3:
+        day = "Tue";
+        break;
+      case 4:
+        day = "Wed";
+        break;
+      case 5:
+        day = "Thu";
+        break;
+      case 6:
+        day = "Fri";
+        break;
+      case 7:
+        day = "Sat";
+        break;
+    }
+    console.log(day);
+    console.log(updateData.id + "<<<-- 레슨아이디 ");
+    this.createQueryBuilder()
+      .update(TimeTable)
+      .set({
+        IsEmpty: false,
+      })
+      .where("time_table.day = :day", { day: day })
+      .andWhere("time_table.time = :time", { time: updateData.time })
+      .andWhere("time_table.lessonId = :lessonId", {
+        lessonId: +updateData.id,
+      })
+      .execute();
+
+    //3.timetable 에 isempty false한다.
   }
 
   async getMyTimeTable(user): Promise<Signuptimetable[]> {
@@ -68,6 +115,7 @@ export class SignuptimetablesRepository extends Repository<Signuptimetable> {
     //   // mySignupIdArray.push(result);
     //   //2
     // });
+
     console.log("끝났노");
 
     // return json으로.

@@ -13,7 +13,7 @@ export class ConcoursSignupsController {
 
   @UseGuards(AuthGuard("jwt"))
   @Post("/:id")
-  @ApiOperation({ summary: "콩쿠르 참가", description: "콩쿠르에 감가한다" })
+  @ApiOperation({ summary: "콩쿠르 참가", description: "콩쿠르에 참가한다" })
   @ApiResponse({
     status: 200,
     description: "콩쿠르 참가 완료",

@@ -17,7 +17,7 @@ export class CreateInitialUserData implements Seeder {
         .values([
           {
             email: faker.datatype.number() + faker.internet.email(),
-            password: faker.animal.type(),
+            // password: faker.animal.type(),
             username:
               faker.name.lastName() +
               faker.name.middleName() +

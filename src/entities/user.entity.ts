@@ -47,12 +47,12 @@ export class User extends BaseEntity {
   })
   email: string;
 
-  @Column({ nullable: true })
-  @ApiProperty({
-    example: "password123",
-    description: "비밀번호, nullable ",
-  })
-  password: string;
+  // @Column({ nullable: true })
+  // @ApiProperty({
+  //   example: "password123",
+  //   description: "비밀번호, nullable ",
+  // })
+  // password: string;
   @ApiProperty({ example: "김정세", description: "유저닉네임" })
   @Column()
   @ApiProperty({
@@ -89,7 +89,9 @@ export class User extends BaseEntity {
 
   @Column({ nullable: true })
   self_introduce: string;
-  @OneToOne((type) => Teacher, (teacher) => teacher.user)
+  @OneToOne((type) => Teacher, (teacher) => teacher.user, {
+    cascade: true,
+  })
   teacher: Teacher;
 
   @OneToMany((type) => Payment, (payment) => payment.user)
@@ -102,18 +104,29 @@ export class User extends BaseEntity {
   @OneToMany((type) => Notification, (notification) => notification.user)
   notifications: Notification[];
 
-  @OneToMany((type) => Comment, (comment) => comment.user)
+  @OneToMany((type) => Comment, (comment) => comment.user, {
+    cascade: true,
+  })
   comment: Comment;
 
-  @OneToMany((type) => Comment, (comment) => comment.user, { eager: true })
+  @OneToMany((type) => Comment, (comment) => comment.user, {
+    cascade: true,
+    eager: true,
+  })
   comments: Comment[];
 
   @OneToMany((type) => ChatRoom, (chatRoom) => chatRoom.user, { eager: true })
   chatRooms: ChatRoom[];
 
-  @OneToMany((type) => Wishlist, (wishlist) => wishlist.user, { eager: true })
+  @OneToMany((type) => Wishlist, (wishlist) => wishlist.user, {
+    cascade: true,
+    eager: true,
+  })
   wishlists: Wishlist[];
-  @OneToMany((type) => Signup, (signup) => signup.user, { eager: true })
+  @OneToMany((type) => Signup, (signup) => signup.user, {
+    cascade: true,
+    eager: true,
+  })
   signups: Signup[];
   @OneToMany((type) => Attendance, (attendance) => attendance.user, {
     eager: true,
@@ -123,6 +136,7 @@ export class User extends BaseEntity {
   sheets: Sheet[];
 
   @OneToMany((type) => Assignment, (assignment) => assignment.user, {
+    cascade: true,
     eager: true,
   })
   assignments: Assignment[];
@@ -131,7 +145,7 @@ export class User extends BaseEntity {
     (type) => ConcoursSignup,
     (concoursSignup) => concoursSignup.user,
 
-    { onDelete: "CASCADE", eager: true },
+    { cascade: true, eager: true },
   )
   concoursSignups: ConcoursSignup[];
 

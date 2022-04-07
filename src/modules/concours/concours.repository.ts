@@ -13,13 +13,14 @@ export class ConcoursRepository extends Repository<Concours> {
       title: updateData.title,
       contents: updateData.contents,
       coverIMG_url: process.env.SERVER_ADDRESS + "/" + image.filename,
+      minimum_starting_people: updateData.minimum_starting_people,
     });
 
     await this.save(concours);
     return concours;
   }
 
-  async updateConcours(id, updateData): Promise<void> {
+  async updateConcours(id, updateData, image): Promise<void> {
     this.createQueryBuilder()
       .update(Concours)
       .set({
@@ -30,7 +31,7 @@ export class ConcoursRepository extends Repository<Concours> {
         finishTime: updateData.finishTime,
         title: updateData.title,
         contents: updateData.contents,
-        coverIMG_url: updateData.coverIMG_url,
+        coverIMG_url: process.env.SERVER_ADDRESS + "/" + image.filename,
       })
       .where("id = :id", { id: id })
       .execute();

@@ -145,6 +145,8 @@ WHERE  DateWD IN(${day});
       datesArray: datesArray,
       signup: signup,
       time: time,
+      day: day,
+      id: id,
     });
 
     // .andWhere("signup.merchant_uid =:mid",{mid:merchant_uid})

@@ -32,7 +32,9 @@ export class Signup extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne((type) => User, (user) => user.signups)
+  @ManyToOne((type) => User, (user) => user.signups, {
+    onDelete: "CASCADE",
+  })
   user: User;
 
   @ManyToOne((type) => Lesson, (lesson) => lesson.signups, {
@@ -105,7 +107,7 @@ export class Signup extends BaseEntity {
   )
   signuptimetables: Signuptimetable;
 
-  @OneToOne(() => Payment, (payment) => payment.signup)
+  @OneToOne(() => Payment, (payment) => payment.signup, {})
   payment: Payment;
 
   @OneToMany(() => Attendance, (attendance) => attendance.signup, {

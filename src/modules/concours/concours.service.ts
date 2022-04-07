@@ -24,7 +24,7 @@ export class ConcoursService {
   async deleteConcours(id: number) {
     await this.concoursRepository.delete(id);
   }
-  async updateConcours(id: number, updateData) {
-    await this.concoursRepository.updateConcours(id, updateData);
+  async updateConcours(id: number, updateData, image) {
+    await this.concoursRepository.updateConcours(id, updateData, image);
   }
 }

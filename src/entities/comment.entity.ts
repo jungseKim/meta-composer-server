@@ -28,10 +28,15 @@ export class Comment extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.comments, { nullable: false })
+  @ManyToOne(() => User, (user) => user.comments, {
+    nullable: false,
+    onDelete: "CASCADE",
+  })
   user: User;
 
-  @ManyToOne(() => Lesson, (lesson) => lesson.comments)
+  @ManyToOne(() => Lesson, (lesson) => lesson.comments, {
+    onDelete: "CASCADE",
+  })
   lesson: Lesson;
 
   @Column()

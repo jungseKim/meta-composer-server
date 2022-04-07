@@ -81,11 +81,17 @@ export class ConcoursController {
   })
   @ApiResponse({
     status: 200,
-    description: "콩쿠르 정보 업데이트완료",
+    description:
+      "콩쿠르 수정(form)price concoursSignupStartTime concoursSignupFinishTime startTime finishTime title contents (file )image  의 데이터를 보내주세요.",
     type: Concours,
   })
   @ApiBody({ type: Concours })
-  updateConcours(@Param("id") id: number, @Body() updateData) {
-    return this.concoursService.updateConcours(id, updateData);
+  @UseInterceptors(FileInterceptor("image", imageOption))
+  async updateConcours(
+    @Param("id") id: number,
+    @UploadedFile() image,
+    @Body() updateData,
+  ) {
+    return this.concoursService.updateConcours(id, updateData, image);
   }
 }

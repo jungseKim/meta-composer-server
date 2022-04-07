@@ -4,7 +4,14 @@ import { Response } from "express";
 import { ApiOperation } from "@nestjs/swagger";
 import { UserDecorator } from "./decorators/user.decorator";
 import { User } from "./entities/user.entity";
-
+import { Cron, Interval, Timeout } from "@nestjs/schedule";
+import moment from "moment";
+import { createQueryBuilder } from "typeorm";
+import { Concours } from "./entities/concours.entity";
+import { ConcoursSignup } from "./entities/concoursSignup.entity";
+import axios, { AxiosResponse } from "axios";
+import { Payment } from "./entities/payment.entity";
+import { rm, unlinkSync } from "fs";
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
@@ -12,6 +19,11 @@ export class AppController {
   @Get()
   getHello() {
     console.log();
+  }
+  // @Cron("48 * * * * *")
+  // @Timeout("timeoutTask", 200)
+  async handleCron() {
+    return this.appService.handleCorn();
   }
 
   @Get("lessons")

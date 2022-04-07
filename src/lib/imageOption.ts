@@ -5,7 +5,7 @@ import { v4 } from "uuid";
 
 export const imageOption = {
   fileFilter: (request, file, callback) => {
-    if (file.mimetype.match("jpg") || file.mimetype.match("png")) {
+    if (file.mimetype.match("jpeg") || file.mimetype.match("png")) {
       callback(null, true);
     } else {
       callback("파일형식잘못됨", false);
