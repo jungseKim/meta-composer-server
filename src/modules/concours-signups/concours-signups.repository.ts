@@ -4,15 +4,14 @@ import { EntityRepository, Repository } from "typeorm";
 
 @EntityRepository(ConcoursSignup)
 export class ConcoursSignupsRepository extends Repository<ConcoursSignup> {
-  async participate(updateData, user, id): Promise<ConcoursSignup> {
+  async participate(updateData, user, id) {
     const existence = await this.createQueryBuilder("concours_signup")
-      .where("concoursId = :concoursId", {
+      .where("concours_signup.concoursId = :concoursId", {
         concoursId: id,
       })
-      .andWhere("userId = :userid", { userid: user.id })
+      .andWhere("concours_signup.userId = :userid", { userid: user.id })
       .getOne();
 
-    console.log(existence);
     if (!existence) {
       const signup = this.create({
         youtubeURL: updateData.youtubeURL,
@@ -24,7 +23,22 @@ export class ConcoursSignupsRepository extends Repository<ConcoursSignup> {
       await this.save(signup);
       return signup;
     }
+  }
 
-    return;
+  async check(user, id) {
+    const existence = await this.createQueryBuilder("concours_signup")
+      .where("concours_signup.concoursId = :concoursId", {
+        concoursId: id,
+      })
+      .andWhere("concours_signup.userId = :userid", { userid: user.id })
+      .getOne();
+
+    if (existence) {
+      console.log("불가능");
+      return "결제취소";
+    } else {
+      console.log("가능");
+      return;
+    }
   }
 }

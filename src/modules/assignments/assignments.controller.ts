@@ -6,10 +6,12 @@ import {
   Param,
   Post,
   UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { identity } from "rxjs";
+import { TransformResponseInterceptor } from "src/common/interceptors/transformResponse.interceptor";
 import { UserDecorator } from "src/decorators/user.decorator";
 import { Assignment } from "src/entities/assignment.entity";
 import { User } from "src/entities/user.entity";
@@ -28,6 +30,7 @@ export class AssignmentsController {
     type: Assignment,
   })
   @ApiBody({ type: Assignment })
+  @UseInterceptors(TransformResponseInterceptor)
   createAssignment(@Body() updatedData): Promise<Assignment> {
     return this.assignmentsService.createAssignment(updatedData);
   }
@@ -39,6 +42,7 @@ export class AssignmentsController {
     description: "과제 삭제 완료",
     type: Assignment,
   })
+  @UseInterceptors(TransformResponseInterceptor)
   deleteAssignment(@Param("id") id: number) {
     return this.assignmentsService.deleteAssignment(id);
   }
@@ -54,6 +58,7 @@ export class AssignmentsController {
     description: "과제 조회 완료",
     type: Assignment,
   })
+  @UseInterceptors(TransformResponseInterceptor)
   getAllAssignmentbyUserId(@UserDecorator() user: User): Promise<Assignment[]> {
     return this.assignmentsService.getAllMyAssignment(user);
   }

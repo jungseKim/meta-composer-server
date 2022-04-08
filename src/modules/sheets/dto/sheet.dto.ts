@@ -8,5 +8,6 @@ export class SheetDto extends PickType(Sheet, [
   "storedURL",
   "userId",
   "lessonId",
+  "user",
   // 'assignmentId'
 ] as const) {}

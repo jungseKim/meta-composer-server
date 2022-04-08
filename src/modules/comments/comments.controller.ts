@@ -6,9 +6,11 @@ import {
   Patch,
   Post,
   UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { TransformResponseInterceptor } from "src/common/interceptors/transformResponse.interceptor";
 import { UserDecorator } from "src/decorators/user.decorator";
 
 import { Comment } from "src/entities/comment.entity";
@@ -28,6 +30,7 @@ export class CommentsController {
     description: "전체 코멘트 조회완료",
     type: Comment,
   })
+  @UseInterceptors(TransformResponseInterceptor)
   getAllComments(): Promise<Comment[]> {
     return this.commentService.getAllComments();
   }
@@ -37,6 +40,7 @@ export class CommentsController {
   @ApiOperation({ summary: "코멘트 작성", description: "코멘트 작성" })
   @ApiResponse({ status: 200, description: "코멘트 작성 완료", type: Comment })
   @ApiBody({ type: Comment })
+  @UseInterceptors(TransformResponseInterceptor)
   createComment(
     @Param("id") lessonId: number,
     @UserDecorator() user: User,
@@ -52,6 +56,7 @@ export class CommentsController {
     description: "특정 코멘트를 조회한다",
   })
   @ApiResponse({ status: 200, description: "코멘트 조회 완료", type: Comment })
+  @UseInterceptors(TransformResponseInterceptor)
   getCommentById(
     @Param("id") lessonId: number,
     @Param("cid") commentId: number,
@@ -67,6 +72,7 @@ export class CommentsController {
   })
   @ApiResponse({ status: 200, description: "코멘트 수정 완료", type: Comment })
   @ApiBody({ type: Comment })
+  @UseInterceptors(TransformResponseInterceptor)
   updateComment(
     @Param("id") lessonId: number,
     @Param("cid") commentId: number,

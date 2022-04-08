@@ -23,7 +23,7 @@ export class PaymentsController {
   @UseGuards(AuthGuard("jwt"))
   @Get()
   @ApiOperation({
-    summary: "나의결제내역 조회",
+    summary: "나의결제내역 조회 payment적용 X",
     description: "결제내역을 조회한다",
   })
   @ApiResponse({

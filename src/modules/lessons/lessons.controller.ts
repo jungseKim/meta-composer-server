@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import {
@@ -16,6 +17,7 @@ import {
   ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
+import { TransformResponseInterceptor } from "src/common/interceptors/transformResponse.interceptor";
 import { TeacherDecorator } from "src/decorators/teacher.decorator";
 import { UserDecorator } from "src/decorators/user.decorator";
 import { Lesson } from "src/entities/lesson.entity";
@@ -32,6 +34,7 @@ export class LessonsController {
   @Get()
   @ApiOperation({ summary: "레슨 조회", description: "전체 레슨 조회" })
   @ApiResponse({ status: 200, description: "레슨 조회완료", type: Lesson })
+  @UseInterceptors(TransformResponseInterceptor)
   showAllLesson(): Promise<Lesson[]> {
     return this.lessonsService.showAllLesson();
   }
@@ -42,6 +45,7 @@ export class LessonsController {
     description: "레슨의 ID값으로 특정레슨을 조회한다",
   })
   @ApiResponse({ status: 200, description: "특정 레슨 조회완료", type: Lesson })
+  @UseInterceptors(TransformResponseInterceptor)
   getLessonById(@Param("id") id: number): Promise<Lesson> {
     return this.lessonsService.getLessonById(id);
   }
@@ -74,6 +78,7 @@ export class LessonsController {
   @ApiResponse({ status: 200, description: "레슨 생성완료", type: Lesson })
   @ApiBody({ type: Lesson })
   //type 를 entity 로
+  @UseInterceptors(TransformResponseInterceptor)
   create(
     @Body() updateData,
     @UserDecorator() user: User,
@@ -86,6 +91,7 @@ export class LessonsController {
   @Delete("/:id")
   @ApiOperation({ summary: "레슨 삭제", description: "레슨을 삭제한다" })
   @ApiResponse({ status: 200, description: "레슨 삭제완료", type: Lesson })
+  @UseInterceptors(TransformResponseInterceptor)
   deleteLessonById(
     @Param("id") id,
     @TeacherDecorator() isTeacher: boolean,
@@ -97,6 +103,7 @@ export class LessonsController {
   @Patch("/:id")
   @ApiOperation({ summary: "레슨 수정", description: "레슨을 수정한다" })
   @ApiResponse({ status: 200, description: "레슨 수정완료", type: Lesson })
+  @UseInterceptors(TransformResponseInterceptor)
   updateLessonById(
     @Param("id") id,
     @Body() updateData,

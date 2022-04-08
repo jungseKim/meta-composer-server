@@ -1,6 +1,14 @@
-import { Controller, Delete, Param, Post, UseGuards } from "@nestjs/common";
+import {
+  Controller,
+  Delete,
+  Param,
+  Post,
+  UseGuards,
+  UseInterceptors,
+} from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { TransformResponseInterceptor } from "src/common/interceptors/transformResponse.interceptor";
 import { UserDecorator } from "src/decorators/user.decorator";
 import { User } from "src/entities/user.entity";
 import { Wishlist } from "src/entities/wishlist.entity";
@@ -24,6 +32,7 @@ export class WishlistsController {
     type: Wishlist,
   })
   @ApiBody({ type: Wishlist })
+  @UseInterceptors(TransformResponseInterceptor)
   createWishList(@UserDecorator() user: User, @Param("lid") lid: number) {
     return this.wishlistsService.createWishList(user, lid);
   }
@@ -40,6 +49,7 @@ export class WishlistsController {
     description: "WishList 삭제완료",
     type: Wishlist,
   })
+  @UseInterceptors(TransformResponseInterceptor)
   deleteWishList(@UserDecorator() user: User, @Param("lid") lid: number) {
     return this.wishlistsService.deleteWishList(user, lid);
   }

@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
@@ -23,6 +24,7 @@ import { TeacherDTO } from "./dto/teachers.dto";
 import { upload } from "youtube-videos-uploader";
 import { TeacherDecorator } from "src/decorators/teacher.decorator";
 import { JwtGuard } from "../auth/jwt.guard";
+import { TransformResponseInterceptor } from "src/common/interceptors/transformResponse.interceptor";
 //
 
 @Controller("api/teachers")
@@ -39,6 +41,7 @@ export class TeachersController {
     description: "메타 컨포저에 등록된 강사들 조회",
   })
   @ApiResponse({ status: 200, description: "강사 조회 완료", type: Teacher })
+  @UseInterceptors(TransformResponseInterceptor)
   findAllTeachers() {
     // @Body("video") video
     // if (isTeacher == false) {
@@ -81,6 +84,7 @@ export class TeachersController {
   @ApiOperation({ summary: "강사 등록", description: "강사를 등록한다" })
   @ApiResponse({ status: 200, description: "강사 등록 완료", type: Teacher })
   @ApiBody({ type: Teacher })
+  @UseInterceptors(TransformResponseInterceptor)
   registerTeacher(
     @UserDecorator() user: User,
     @Body() updateData: TeacherDTO,
@@ -97,6 +101,7 @@ export class TeachersController {
     type: Teacher,
   })
   @ApiBody({ type: Teacher })
+  @UseInterceptors(TransformResponseInterceptor)
   async updateTeacherInfo(
     @UserDecorator() user: User,
     @Body() updateData: TeacherDTO,
@@ -113,6 +118,7 @@ export class TeachersController {
     description: "강사 등록 취소 완료",
     type: Teacher,
   })
+  @UseInterceptors(TransformResponseInterceptor)
   async unRegisterTeacher(
     @UserDecorator() user: User,
     @TeacherDecorator() isTeacher: boolean,

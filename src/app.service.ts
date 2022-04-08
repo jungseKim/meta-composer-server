@@ -115,9 +115,8 @@ export class AppService {
                 );
                 axios
                   .post("https://api.iamport.kr/users/getToken", {
-                    imp_key: "0501959503151293",
-                    imp_secret:
-                      "493baa18b82f32c26b6f538216303edf1c250ce0f93558ff83859bd8728669d0b86f4f95e3c39985",
+                    imp_key: process.env.IAMPORT_API_KEY + "",
+                    imp_secret: process.env.IAMPORT_API_SECRET + "",
                     merchant_uid: Object.values(
                       finishedConcoursMerchantUid[b],
                     )[0],

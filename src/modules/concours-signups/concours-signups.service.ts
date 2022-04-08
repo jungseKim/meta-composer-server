@@ -8,11 +8,14 @@ import { ConcoursSignupsRepository } from "./concours-signups.repository";
 export class ConcoursSignupsService {
   constructor(
     @InjectRepository(ConcoursSignupsRepository)
-    private concoursSignupsRepository: ConcoursSignupsRepository,
-  ) //
-  {}
+    private concoursSignupsRepository: ConcoursSignupsRepository, //
+  ) {}
 
-  async participate(updateData, user, id): Promise<ConcoursSignup> {
+  async participate(updateData, user, id) {
     return this.concoursSignupsRepository.participate(updateData, user, id);
+  }
+
+  async check(user, id) {
+    return this.concoursSignupsRepository.check(user, id);
   }
 }
