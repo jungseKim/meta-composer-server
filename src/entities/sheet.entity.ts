@@ -15,8 +15,9 @@ import { User } from "./user.entity";
 export class Sheet extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
+
   @ManyToOne((type) => User, (user) => user.sheets)
-  user: User;
+  user: Promise<User>;
   @ManyToOne((type) => Lesson, (lesson) => lesson.sheets)
   lesson: Lesson;
 
@@ -29,9 +30,9 @@ export class Sheet extends BaseEntity {
 
   @Column({ type: "boolean" })
   @ApiProperty({
-    example: true,
+    example: 1,
     description:
-      "악보 공개 유무입니다. 비공개시 해당 레슨의 user 만 조회가능합니다",
+      "악보 공개 유무입니다. 비공개시 해당 레슨의 user 만 조회가능합니다  0 => false   ,   1 => true",
   })
   isOpen: boolean;
   //0 => false   ,   1 => true
@@ -50,6 +51,10 @@ export class Sheet extends BaseEntity {
   userId: number;
 
   @Column()
+  @ApiProperty({
+    example: 1,
+    description: "악보가 사용될 레슨의 ID값입니다",
+  })
   lessonId: number;
 
   // @Column()

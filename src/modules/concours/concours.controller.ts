@@ -12,6 +12,7 @@ import {
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { TransformResponseInterceptor } from "src/common/interceptors/transformResponse.interceptor";
 import { Concours } from "src/entities/concours.entity";
 import { imageOption } from "src/lib/imageOption";
 import { sheetOption } from "src/lib/sheetOption";
@@ -32,6 +33,7 @@ export class ConcoursController {
     description: "콩쿠르 전체 조회완료",
     type: Concours,
   })
+  @UseInterceptors(TransformResponseInterceptor)
   showAllConcours() {
     return this.concoursService.showAllConcours();
   }
@@ -46,6 +48,7 @@ export class ConcoursController {
     description: "특정 콩쿠르 조회완료",
     type: Concours,
   })
+  @UseInterceptors(TransformResponseInterceptor)
   getConcoursById(@Param("id") id: number) {
     return this.concoursService.getConcoursById(id);
   }
@@ -59,6 +62,7 @@ export class ConcoursController {
   @ApiResponse({ status: 200, description: "콩쿠르 생성완료", type: Concours })
   @ApiBody({ type: Concours })
   @UseInterceptors(FileInterceptor("image", imageOption))
+  @UseInterceptors(TransformResponseInterceptor)
   async createConcours(
     @UploadedFile() image,
     @Body() updateData,
@@ -70,6 +74,7 @@ export class ConcoursController {
   @Delete("/:id")
   @ApiOperation({ summary: "콩쿠르 삭제", description: "콩쿠르 삭제한다" })
   @ApiResponse({ status: 200, description: "콩쿠르 삭제완료", type: Concours })
+  @UseInterceptors(TransformResponseInterceptor)
   deleteConcours(@Param("id") id: number) {
     return this.concoursService.deleteConcours(id);
   }
@@ -87,6 +92,7 @@ export class ConcoursController {
   })
   @ApiBody({ type: Concours })
   @UseInterceptors(FileInterceptor("image", imageOption))
+  @UseInterceptors(TransformResponseInterceptor)
   async updateConcours(
     @Param("id") id: number,
     @UploadedFile() image,

@@ -22,6 +22,7 @@ import axios, { AxiosResponse } from "axios";
 import { youtubeInfo } from "youtube-info";
 import { response } from "express";
 import { fstat, unlinkSync } from "fs";
+import { TransformResponseInterceptor } from "src/common/interceptors/transformResponse.interceptor";
 
 @Controller("api/youtubes")
 @ApiTags("유튜브 API")
@@ -102,6 +103,7 @@ export class YoutubesController {
     description: "유튜브에서 하나의 영상의 정보만 가져오기 완료",
     type: YoutubeUploadDto,
   })
+  @UseInterceptors(TransformResponseInterceptor)
   getvideoInfo(@Body() updateData) {
     //하나의 영상의 정보만 가져옴
     console.log("선택된 영상의 정보 출력완료.");
@@ -117,7 +119,6 @@ export class YoutubesController {
         return videoInfo;
       });
   }
-
   @Get("/all")
   @ApiOperation({
     summary: "유튜브에서 채널 전체의 정보를 가져옴",
@@ -128,6 +129,7 @@ export class YoutubesController {
     description: "유튜브에서 채널 전체의 정보 가져오기 완료",
     type: YoutubeUploadDto,
   })
+  @UseInterceptors(TransformResponseInterceptor)
   async getAllvideosFromChannel() {
     //해당 채널의 모든 영상 목록을 가져옴.
     const videoInfos = await axios

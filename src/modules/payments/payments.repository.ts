@@ -7,7 +7,7 @@ import { EntityRepository, Repository } from "typeorm";
 export class PaymentsRepository extends Repository<Payment> {
   async createPayment(updateData, user): Promise<Payment> {
     const payments = this.create({
-      payment_number: updateData.payment_number,
+      payment_number: updateData.merchant_uid,
       affiliation: updateData.card_name,
       signupId: updateData.signupId,
       concoursSignupId: updateData.concoursSignupId,

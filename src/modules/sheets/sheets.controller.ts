@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -10,6 +11,7 @@ import {
 import { AuthGuard } from "@nestjs/passport";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { TransformResponseInterceptor } from "src/common/interceptors/transformResponse.interceptor";
 import { UserDecorator } from "src/decorators/user.decorator";
 import { Sheet } from "src/entities/sheet.entity";
 import { User } from "src/entities/user.entity";
@@ -25,13 +27,13 @@ export class SheetsController {
     private sheetsService: SheetsService,
     private sheetsRepository: SheetsRepository,
   ) {}
-
-  @UseGuards(AuthGuard("jwt"))
   @Post()
+  @UseGuards(AuthGuard("jwt"))
   @ApiOperation({ summary: "악보 업로드", description: "악보를 업로드 한다." })
   @ApiResponse({ status: 200, description: "악보를 업로드 완료", type: Sheet })
   @ApiBody({ type: Sheet })
   @UseInterceptors(FileInterceptor("sheet", sheetOption))
+  @UseInterceptors(TransformResponseInterceptor)
   async uploadSheets(
     @UploadedFile() sheet,
     @UserDecorator() user: User,
@@ -41,14 +43,26 @@ export class SheetsController {
 
     return this.sheetsService.uploadSheets(user, sheet, updateData);
   }
-
-  @UseGuards(AuthGuard("jwt"))
   @Get()
+  @UseGuards(AuthGuard("jwt"))
   @ApiOperation({
     summary: "공개 악보 모두 조회",
     description: "isOpen이 true 인 악보만 모두 조회한다.",
   })
-  async showPublicSheets(): Promise<Sheet[]> {
-    return this.sheetsRepository.find({ where: [{ isOpen: true }] });
+  @UseInterceptors(TransformResponseInterceptor)
+  async showPublicSheets(
+    @Query("page") page: number,
+    @Query("perPage") perPage: number,
+  ): Promise<Sheet[]> {
+    return this.sheetsRepository
+      .createQueryBuilder("sheet")
+      .leftJoinAndSelect("sheet.user", "user")
+      .where({ isOpen: true })
+      .orderBy("sheet.id", "DESC")
+      .take(perPage)
+      .skip(perPage * (page - 1))
+      .getMany();
+
+    // return this.sheetsRepository.find({ where: [{ isOpen: true }] });
   }
 }
