@@ -15,6 +15,7 @@ import { Assignment } from "./assignment.entity";
 import { ChatRoom } from "./chatRoom.entity";
 import { Comment } from "./comment.entity";
 import { Part } from "./part.entity";
+import { SearchHistory } from "./searchHistory.entiry";
 import { Sheet } from "./sheet.entity";
 import { Signup } from "./signup.entity";
 import { Teacher } from "./teacher.entity";
@@ -141,6 +142,11 @@ export class Lesson extends BaseEntity {
   })
   @UpdateDateColumn()
   updated_at: Date;
+
+  @OneToMany(() => SearchHistory, (searchHistory) => searchHistory.lesson, {
+    cascade: true,
+  })
+  searchHistories: SearchHistory[];
 }
 // number will be converted into integer, string into varchar, boolean into bool, etc. But you can use any column type your database supports by explicitly specifying a column type into the @Column decorator.  from typeorm.io
 

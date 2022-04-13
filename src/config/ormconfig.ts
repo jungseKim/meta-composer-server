@@ -20,6 +20,8 @@ import { Comment } from "../entities/comment.entity";
 import { Notification } from "../entities/notification.entity";
 import { ConcoursSignup } from "../entities/concoursSignup.entity";
 import { Concours } from "../entities/concours.entity";
+import { ViewCount } from "../entities/viewCount.entity";
+import { SearchHistory } from "../entities/searchHistory.entiry";
 
 dotenv.config();
 
@@ -55,6 +57,8 @@ const ORMConfig: TypeOrmModuleOptions = {
     ConcoursSignup,
     Concours,
     Notification,
+    ViewCount,
+    SearchHistory,
   ],
   timezone: "Z",
   synchronize: false, // false 기본값
