@@ -43,4 +43,12 @@ export class AppController {
   async tensorflow(@UserDecorator() user: User) {
     return this.appService.tensorflow(user);
   }
+
+  @Get("piano")
+  //이미지테스트
+  hi() {
+    axios.get("https://source.unsplash.com/featured/?piano").then((data) => {
+      console.log(data.request.res.req._redirectable._options.href);
+    });
+  }
 }

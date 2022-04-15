@@ -38,8 +38,11 @@ export class LessonsController {
   @ApiOperation({ summary: "전체레슨 조회", description: "전체 레슨 조회" })
   @ApiResponse({ status: 200, description: "레슨 조회완료", type: Lesson })
   @UseInterceptors(TransformResponseInterceptor)
-  showAllLesson(): Promise<Lesson[]> {
-    return this.lessonsService.showAllLesson();
+  showAllLesson(
+    @Query("page") page: number,
+    @Query("perPage") perPage: number,
+  ): Promise<Lesson[]> {
+    return this.lessonsService.showAllLesson(page, perPage);
   }
 
   @Get("search")
@@ -51,9 +54,11 @@ export class LessonsController {
   @UseInterceptors(TransformResponseInterceptor)
   searchLesson(
     @UserDecorator() user: User,
-    @Query("searchKeyword") searchKeyword,
+    @Query("searchKeyword") searchKeyword: string,
+    @Query("page") page: number,
+    @Query("perPage") perPage: number,
   ): Promise<Lesson[]> {
-    return this.lessonsService.searchLesson(searchKeyword, user);
+    return this.lessonsService.searchLesson(searchKeyword, user, page, perPage);
   }
 
   @UseGuards(AuthGuard("jwt"))

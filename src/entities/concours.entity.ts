@@ -57,14 +57,14 @@ export class Concours extends BaseEntity {
   })
   title: string;
 
-  @Column()
+  @Column("longtext")
   @ApiProperty({
     example: "콩쿠르 합시다.",
     description: "콩쿠르 설명",
   })
   contents: string;
 
-  @Column()
+  @Column("longtext")
   @ApiProperty({
     example: "https://www.imgimgimg.com",
     description:
