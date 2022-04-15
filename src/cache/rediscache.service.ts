@@ -1,58 +1,59 @@
-import { Room } from './../types/redis';
+import { PublicRoom } from "../types/public-room";
 /*
 https://docs.nestjs.com/providers#services
 */
 
-import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
-import { Cache } from 'cache-manager';
-import { timingSafeEqual } from 'crypto';
+import { CACHE_MANAGER, Inject, Injectable } from "@nestjs/common";
+import { Cache } from "cache-manager";
+import { timingSafeEqual } from "crypto";
+import { LessonAttendanceDto } from "src/types/lesson-class";
 
 @Injectable()
 export class RedisCacheService {
   constructor(@Inject(CACHE_MANAGER) private readonly cache: Cache) {
-    this.cache.set('roomList', []);
+    this.cache.set("roomList", []);
   }
 
-  public async addUser(key: string, value: string): Promise<void> {
+  public async addUser(key: string, value: number): Promise<void> {
     await this.cache.set(key, value, {
-      ttl: 60 * 60 * 1000,
+      ttl: 60 * 60,
     });
-    console.log('저장');
+    console.log("저장");
   }
 
-  public async getUser(key: string): Promise<string> {
-    const redisValue: string = await this.cache.get(key);
-    console.log('꺼냄');
+  public async getUser(key: string): Promise<number> {
+    const redisValue: number = await this.cache.get(key);
+    console.log("꺼냄");
     return redisValue;
   }
 
   public async removeUser(key: string): Promise<void> {
     await this.cache.del(key);
-    console.log('삭제');
+    console.log("삭제");
   }
 
-  public async privateRooms(): Promise<Room[]> {
-    return this.cache.get('roomList');
+  public async privateRooms(): Promise<PublicRoom[]> {
+    return this.cache.get("roomList");
   }
 
   public async addRoom(
     id: string,
-    roomId: string,
+    roomKey: string,
     userId: string,
     title: string,
-  ): Promise<Room | boolean> {
-    const roomList: Room[] = await this.cache.get('roomList');
-    if (id && userId && roomId && title) {
-      const room: Room = { id, userId, roomId, title, onAir: true };
+  ): Promise<PublicRoom | boolean> {
+    const roomList: PublicRoom[] = await this.cache.get("roomList");
+    if (id && userId && roomKey && title) {
+      const room: PublicRoom = { id, userId, roomKey, title, onAir: true };
       roomList.push(room);
-      await this.cache.set('roomList', roomList);
+      await this.cache.set("roomList", roomList);
       return room;
     }
     return false;
   }
 
   public async removeRoom(userId: string): Promise<void> {
-    const roomList: Room[] = await this.cache.get('roomList');
+    const roomList: PublicRoom[] = await this.cache.get("roomList");
 
     if (roomList) {
       const newRoomList = roomList.filter((room) => {
@@ -64,13 +65,13 @@ export class RedisCacheService {
           return { room };
         }
       });
-      await this.cache.set('roomList', newRoomList);
+      await this.cache.set("roomList", newRoomList);
     }
   }
 
   public async roomList() {
-    const roomList: Room[] = await this.cache.get('roomList');
-    console.log(roomList, 'dfdf'); //이게 왜 null임?
+    const roomList: PublicRoom[] = await this.cache.get("roomList");
+    console.log(roomList, "dfdf"); //이게 왜 null임?
 
     if (roomList !== [null]) {
       const sendList = roomList.map((room) => {
@@ -82,7 +83,7 @@ export class RedisCacheService {
   }
 
   public async roomStateChage(roomId: string, userId: string) {
-    const roomList: Room[] = await this.cache.get('roomList');
+    const roomList: PublicRoom[] = await this.cache.get("roomList");
     console.log({ roomList });
     const newRoomList = roomList.map((room) => {
       if (room.id === roomId) {
@@ -90,6 +91,21 @@ export class RedisCacheService {
         return room;
       }
     });
-    await this.cache.set('roomList', newRoomList);
+    await this.cache.set("roomList", newRoomList);
+  }
+
+  public async addLessonRoom(
+    key: number,
+    value: LessonAttendanceDto,
+  ): Promise<void> {
+    await this.cache.set(`lesson-${key}`, value, {
+      ttl: 20 * 60,
+    });
+  }
+  public async getLessonRoom(key: number): Promise<LessonAttendanceDto> {
+    return await this.cache.get(`lesson-${key}`);
+  }
+  public async removeLessonRoom(key: number) {
+    await this.cache.del(`lesson-${key}`);
   }
 }

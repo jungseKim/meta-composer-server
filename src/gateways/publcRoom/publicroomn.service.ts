@@ -1,16 +1,18 @@
-import { RedisCacheService } from 'src/cache/rediscache.service';
-import { Socket } from 'socket.io';
-import { RedisCacheModule } from 'src/cache/rediscache.module';
+import { WsException } from "@nestjs/websockets";
+import { RedisCacheService } from "src/cache/rediscache.service";
+import { Server, Socket } from "socket.io";
+import { RedisCacheModule } from "src/cache/rediscache.module";
 /*
 https://docs.nestjs.com/providers#services
 */
 
-import { Injectable } from '@nestjs/common';
-import { registerEnumType } from '@nestjs/graphql';
-import { UAParser } from 'ua-parser-js';
-import { nanoid } from 'nanoid';
-import { Room } from 'src/types/redis';
-import e from 'express';
+import { Injectable } from "@nestjs/common";
+import { registerEnumType } from "@nestjs/graphql";
+import { UAParser } from "ua-parser-js";
+import { nanoid } from "nanoid";
+import { PublicRoom } from "src/types/public-room";
+import e from "express";
+import { LessonSocket } from "../custom-sockets/my-socket";
 
 @Injectable()
 export class PublicRoomnService {
@@ -18,40 +20,60 @@ export class PublicRoomnService {
     this.check = true;
   }
   check: boolean;
-  public async auth(client: Socket): Promise<void> {
-    const token = client.handshake.auth.token.split(' ')[1];
-    const userId = await this.RedisCacheService.getUser(token);
 
-    const agent = new UAParser(client.handshake.headers['user-agent']);
-    const check = agent.getBrowser().name === 'Oculus Browser' ? true : false;
+  public async auth(client: Socket): Promise<void> {
+    // const token = client.handshake.auth?.token?.split(" ")[1];
+    const token = client.handshake.headers.authorization?.split(" ")[1];
+    const userId = await this.RedisCacheService.getUser(token);
+    console.log(userId);
+
+    const agent = new UAParser(client.handshake.headers["user-agent"]);
+    const check = agent.getBrowser().name === "Oculus Browser" ? true : false;
     console.log(token, userId, check);
+    //이부분 배포때 바꾸기
     if (!token || !userId || check) {
       client.disconnect();
       return;
     }
 
     client.data.userId = userId;
+
+    console.log("dddd", client.data.userId);
   }
 
   public async create(
-    id: string,
     client: Socket,
-    roomId: string,
     title: string,
-  ): Promise<Room | boolean> {
-    return await this.RedisCacheService.addRoom(
+    server: Server,
+  ): Promise<PublicRoom | boolean> {
+    const exist = await this.existRoom(client.data.userId);
+    if (exist) {
+      throw new WsException("이미 참가하고있는방 있습니다");
+    }
+
+    const roomId = nanoid(10);
+    const id = nanoid(5);
+    const room = await this.RedisCacheService.addRoom(
       id,
       roomId,
       client.data.userId,
       title,
     );
+    await this.roomListchange(server);
+    return room;
   }
 
-  public async leaveRoom(client: Socket, roomId: string): Promise<void> {
+  public async leaveRoom(
+    client: Socket,
+    roomId: string,
+    server: Server,
+  ): Promise<void> {
     await this.RedisCacheService.removeRoom(client.data.userId);
     client.leave(roomId);
+    await this.roomListchange(server);
   }
-  public async existRoom(userId: string): Promise<Room> {
+
+  public async existRoom(userId: string): Promise<PublicRoom> {
     const roomList = await this.RedisCacheService.privateRooms();
 
     const existRoom = roomList.find((room) => {
@@ -67,9 +89,11 @@ export class PublicRoomnService {
     const existRoom = await this.existRoom(id);
 
     if (existRoom && existRoom.userId === id) {
-      client.to(existRoom.roomId).to('RoomRemove');
+      client.to(existRoom.roomKey).to("RoomRemove");
     }
-    const token = client.handshake.auth.token.split(' ')[1];
+    // const token = client.handshake.auth?.token?.split(" ")[1];
+
+    const token = client.handshake.headers.authorization?.split(" ")[1];
     await this.RedisCacheService.removeUser(token);
     await this.RedisCacheService.removeRoom(client.data.userId);
   }
@@ -81,20 +105,35 @@ export class PublicRoomnService {
   public async joinRoom(
     client: Socket,
     roomId: string,
-  ): Promise<boolean | Room> {
+    server: Server,
+  ): Promise<PublicRoom> {
+    const exist = await this.existRoom(client.data.userId);
+    if (exist) {
+      throw new WsException("There's a room that's already participating.");
+    }
+
     const roomList = await this.RedisCacheService.privateRooms();
+
     const room = roomList.find((room) => {
       if (room.id === roomId) {
         return room;
       }
     });
-    if (room.onAir) {
+
+    if (room && room.onAir) {
       await this.RedisCacheService.roomStateChage(roomId, client.data.userId);
-      // client.join(roomId);
-      // client.to(roomId).emit('sendOffer');
+      //여기서는 룸 key 가 담긴 room정보만 줌
+
+      await this.roomListchange(server);
       return room;
     } else {
-      return false;
+      throw new WsException("The room is not on standby.");
     }
+  }
+
+  public async roomListchange(server: Server) {
+    const roomList = await this.roomList();
+    console.log("public roomList", roomList);
+    server.emit("listChange", roomList);
   }
 }

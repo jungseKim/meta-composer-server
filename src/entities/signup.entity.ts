@@ -12,6 +12,9 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import { Attendance } from "./attendance.entity";
+
+import { CustomNotification } from "./custom-notification.entity";
+
 import { Lesson } from "./lesson.entity";
 import { Payment } from "./payment.entity";
 import { Signuptimetable } from "./signuptimetable.entity";
@@ -32,17 +35,14 @@ export class Signup extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne((type) => User, (user) => user.signups, {
-    onDelete: "CASCADE",
-  })
-  user: User;
+  @ManyToOne((type) => User, (user) => user.signups)
+  user: Promise<User>;
 
   @ManyToOne((type) => Lesson, (lesson) => lesson.signups, {
     onDelete: "CASCADE",
   })
-  lesson: Lesson;
+  lesson: Promise<Lesson>;
 
-  @Column()
   @ApiProperty({
     example: "merchant_12345",
     description: "수강 등록시 결제하면 자동으로 들어가는 결제고유ID",
@@ -105,10 +105,16 @@ export class Signup extends BaseEntity {
       eager: true,
     },
   )
-  signuptimetables: Signuptimetable;
+  signuptimetables: Signuptimetable[];
 
   @OneToOne(() => Payment, (payment) => payment.signup, {})
   payment: Payment;
+
+  @OneToMany(
+    () => CustomNotification,
+    (customNotifications) => customNotifications.signup,
+  )
+  customNotifications: CustomNotification[];
 
   @OneToMany(() => Attendance, (attendance) => attendance.signup, {
     eager: true,

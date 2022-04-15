@@ -41,7 +41,6 @@ export class CreateInitialSignupData implements Seeder {
       //   randomHours[Math.floor(Math.random() * randomHours.length)];
       // const randomMin =
       //   randomMins[Math.floor(Math.random() * randomMins.length)];
-
       await connection
         .createQueryBuilder()
         .insert()

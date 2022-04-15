@@ -52,7 +52,7 @@ export class SetupService {
       client.disconnect();
       return false;
     }
-    client.data.userId = user.id.toString();
+    client.data.userId = user.id;
 
     client.data.userAgent =
       agent.getBrowser().name === "Oculus Browser" ? "vr" : "pc";

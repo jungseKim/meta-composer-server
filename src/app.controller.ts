@@ -4,6 +4,8 @@ import { Response } from "express";
 import { ApiOperation } from "@nestjs/swagger";
 import { UserDecorator } from "./decorators/user.decorator";
 import { User } from "./entities/user.entity";
+import { TasksService } from "./modules/tasks/tasks.service";
+
 import { Cron, Interval, Timeout } from "@nestjs/schedule";
 import moment from "moment";
 import { createQueryBuilder } from "typeorm";
@@ -15,11 +17,18 @@ import { AuthGuard } from "@nestjs/passport";
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private tasksService: TasksService,
+  ) {}
 
-  @Get()
+  @Get("test")
   getHello() {
-    console.log();
+    this.tasksService.signupNotification(null, 0, 1);
+  }
+  @Get("test2")
+  getHell2() {
+    this.tasksService.cancleSignNotification(null);
   }
   // @Cron("48 * * * * *")
   // @Timeout("timeoutTask", 200)

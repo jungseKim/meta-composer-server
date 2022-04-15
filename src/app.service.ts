@@ -1,4 +1,9 @@
 import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Signup } from "./entities/signup.entity";
+import { SignupsRepository } from "./modules/signups/signups.repository";
+import { TasksService } from "./modules/tasks/tasks.service";
 import moment from "moment";
 import { createQueryBuilder, getRepository } from "typeorm";
 import { Controller, Get, Param, Query, Res } from "@nestjs/common";
@@ -18,6 +23,7 @@ import { ViewCount } from "./entities/viewCount.entity";
 import { Wishlist } from "./entities/wishlist.entity";
 @Injectable()
 export class AppService {
+  constructor() {}
   getHello(): string {
     return "1234";
   }
@@ -315,4 +321,7 @@ export class AppService {
     const ranResult = model.predict(xxxy);
     console.log(ranResult.toString());
   }
+
+  public async test() {}
+
 }
