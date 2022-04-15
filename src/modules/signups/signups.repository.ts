@@ -141,6 +141,8 @@ WHERE  DateWD IN(${day});
 
     ///
     delay(1);
+    delay(10);
+    delay(10);
     axios.post("http://localhost:4000/api/signup-timetables", {
       datesArray: datesArray,
       signup: signup,
@@ -149,6 +151,15 @@ WHERE  DateWD IN(${day});
       id: id,
     });
 
+    // const aa = axios.post("http://localhost:4000/api/signup-timetables", {
+    //   datesArray: datesArray,
+    //   signup: signup,
+    //   time: time,
+    //   day: day,
+    //   id: id,
+    // });
+
+    // console.log(aa);
     // .andWhere("signup.merchant_uid =:mid",{mid:merchant_uid})
 
     return signup;

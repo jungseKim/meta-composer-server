@@ -2,7 +2,7 @@ import { Concours } from "../../entities/concours.entity";
 import { Connection } from "typeorm";
 import { Factory, Seeder } from "typeorm-seeding";
 import { faker } from "@faker-js/faker";
-
+import axios, { AxiosResponse } from "axios";
 export class CreateInitialConcoursData implements Seeder {
   public async run(factory: Factory, connection: Connection): Promise<any> {
     const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
@@ -23,6 +23,13 @@ export class CreateInitialConcoursData implements Seeder {
       const today = new Date();
       const mili = today.getMilliseconds();
 
+      const ImageURL = await axios
+        .get("https://source.unsplash.com/featured/?piano")
+        .then((data) => {
+          console.log(data.request.res.req._redirectable._options.href);
+          return data.request.res.req._redirectable._options.href;
+        });
+
       await connection
         .createQueryBuilder()
         .insert()
@@ -30,9 +37,9 @@ export class CreateInitialConcoursData implements Seeder {
         .values([
           {
             minimum_starting_people: +9,
-            coverIMG_url: faker.image.avatar(),
-            title: faker.company.companyName() + mili,
-            contents: faker.lorem.words(),
+            coverIMG_url: ImageURL + "",
+            title: faker.lorem.words(),
+            contents: faker.lorem.sentences(),
             concoursSignupStartTime:
               "2022-" + month + "-" + day + " " + hour + ":" + min + ":00",
             concoursSignupFinishTime:

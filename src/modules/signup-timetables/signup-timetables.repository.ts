@@ -12,6 +12,7 @@ export class SignuptimetablesRepository extends Repository<Signuptimetable> {
     //분해해서, 하나하나 저장
 
     console.log(updateData);
+
     for (const date in updateData.datesArray) {
       const timetable = this.create({
         signupId: updateData.signup.id,
