@@ -13,6 +13,7 @@ export class LessonsService {
   async showAllLesson(page, perPage): Promise<Lesson[]> {
     return this.lessonsRepository
       .createQueryBuilder("lesson")
+      .leftJoinAndSelect("lesson.teacher", "teacher")
       .orderBy("lesson.id", "DESC")
       .take(perPage)
       .skip(perPage * (page - 1))
@@ -33,6 +34,7 @@ export class LessonsService {
       .leftJoinAndSelect("lesson.chatRooms", "chatRooms")
       .leftJoinAndSelect("lesson.wishlists", "wishlists")
       .leftJoinAndSelect("lesson.sheets", "sheets")
+      .leftJoinAndSelect("lesson.teacher", "teacher")
       // .leftJoinAndSelect("lesson.sheets", "signups");
       .getMany();
 
