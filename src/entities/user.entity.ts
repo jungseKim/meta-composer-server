@@ -27,6 +27,7 @@ import { LessonRoom } from "./lessonRoom.entity";
 import { Message } from "./message.entity";
 import { ApiProperty } from "@nestjs/swagger";
 import { Payment } from "./payment.entity";
+import { SearchHistory } from "./searchHistory.entiry";
 
 export enum ProviderType {
   FACEBOOK = "Facebook",
@@ -158,4 +159,9 @@ export class User extends BaseEntity {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @OneToMany(() => SearchHistory, (searchHistory) => searchHistory.user, {
+    cascade: true,
+  })
+  searchHistories: SearchHistory[];
 }

@@ -53,4 +53,21 @@ export class LessonsRepository extends Repository<Lesson> {
 
     return;
   }
+
+  async searchLesson(searchKeyword, user): Promise<Lesson[]> {
+    const result = await this.createQueryBuilder("lesson")
+
+      .where("lesson.introduce LIKE (:searchKeyword)", {
+        searchKeyword: `%${searchKeyword}%`,
+      })
+      .orWhere("lesson.name LIKE (:searchKeyword)", {
+        searchKeyword: `%${searchKeyword}%`,
+      })
+      .orWhere("lesson.type LIKE (:searchKeyword)", {
+        searchKeyword: `%${searchKeyword}%`,
+      })
+      .getMany();
+    return result;
+    //엔티티, 모듈, tensorflow 에 보내기
+  }
 }

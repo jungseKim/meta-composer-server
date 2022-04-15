@@ -33,4 +33,8 @@ export class LessonsService {
   async updateLessonById(id: number, updateData, user): Promise<void> {
     await this.lessonsRepository.updateLessonById(id, updateData, user);
   }
+
+  async searchLesson(searchKeyword, user): Promise<Lesson[]> {
+    return this.lessonsRepository.searchLesson(searchKeyword, user);
+  }
 }
