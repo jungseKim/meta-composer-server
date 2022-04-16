@@ -22,37 +22,21 @@ export class CustomNotification extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // @Column()
-  // type: string;
-  //enum?
   @ApiProperty({ example: true, description: "읽으면 날짜  default false" })
   @Column({ type: "datetime", default: false })
   readTime: string | boolean;
-  //nullbale
 
-  // @Column()
-  // notifiable: string;
+  @Column()
+  type: "commnet" | "signup" | "classStart";
 
-  // @Column()
-  // data: Signup | Message;
+  @Column()
+  typeId: number;
 
-  @ManyToOne((type) => Signup, (signup) => signup.customNotifications, {
-    nullable: true,
-    eager: true,
-  })
-  signup: Signup;
-  @ApiProperty({ example: 1, description: "알람 종류 nullable" })
-  @Column({ nullable: true })
-  signupId: number;
-
-  @OneToOne((type) => Comment, (comment) => comment.customNotification, {
-    nullable: true,
-  })
-  @JoinColumn()
-  comment: Comment;
+  @Column()
+  content: string;
 
   @Column({ nullable: true })
-  commentId: number;
+  url: string;
 
   @ApiProperty({
     example: "2022-03-15 10:38:40.480462",

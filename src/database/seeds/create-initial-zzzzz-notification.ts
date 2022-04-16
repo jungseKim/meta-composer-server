@@ -33,7 +33,9 @@ export class Notification implements Seeder {
           .values([
             {
               userId: user.id,
-              signupId: signup.id,
+              type: "signup",
+              typeId: signup.id,
+              content: `${user.username} 님이 강의를 수강했습니다.`,
             },
           ])
           .execute();
@@ -53,7 +55,9 @@ export class Notification implements Seeder {
           .values([
             {
               userId: user.id,
-              commentId: comment.id,
+              type: "commnet",
+              typeId: comment.id,
+              content: `${user.username} 님이 댓글을 달았습니다.`,
             },
           ])
           .execute();

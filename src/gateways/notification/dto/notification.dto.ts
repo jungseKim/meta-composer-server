@@ -5,7 +5,6 @@ import { CustomNotification } from "src/entities/custom-notification.entity";
 export class NotificationInfoDto extends PickType(CustomNotification, [
   "id",
   "readTime",
-  "signupId",
   "readTime",
   "created_at",
   "userId",

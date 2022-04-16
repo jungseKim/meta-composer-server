@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -63,11 +64,4 @@ export class Comment extends BaseEntity {
 
   @UpdateDateColumn()
   updated_at: Date;
-
-  @OneToOne(
-    (type) => CustomNotification,
-    (customNotification) => customNotification.comment,
-    { nullable: true },
-  )
-  customNotification: CustomNotification;
 }

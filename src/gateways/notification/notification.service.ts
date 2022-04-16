@@ -1,6 +1,6 @@
 import { Lesson } from "./../../entities/lesson.entity";
 import { Signup, weekDays } from "src/entities/signup.entity";
-import { createQueryBuilder, getConnection } from "typeorm";
+import { createQueryBuilder, getConnection, Not } from "typeorm";
 /*
 https://docs.nestjs.com/providers#services
 */
@@ -30,6 +30,8 @@ export class NotificationService {
     private CustomnotificationRepository: Repository<CustomNotification>,
     @InjectRepository(ChatRoom)
     private chatRoomRepository: Repository<ChatRoom>,
+    @InjectRepository(Message)
+    private messageRepository: Repository<Message>,
   ) {
     this.clients = {};
   }
@@ -80,10 +82,6 @@ export class NotificationService {
         .where("noti.userId = :userId", {
           userId,
         })
-        .leftJoinAndSelect("noti.signup", "signup")
-        .leftJoinAndSelect("signup.user", "user")
-        .leftJoinAndSelect("noti.comment", "comment")
-        .leftJoinAndSelect("comment.user", "cuser")
         .orderBy("noti.readTime")
         .addOrderBy("noti.created_at", "DESC")
         .take(perPage)
@@ -91,6 +89,7 @@ export class NotificationService {
         .getMany();
     const notifitionCount = await this.CustomnotificationRepository.count({
       userId: userId,
+      readTime: false,
     });
     return { notifitionData, notifitionCount };
   }
@@ -109,7 +108,6 @@ export class NotificationService {
     notification.readTime = new Date().toDateString();
     await notification.save();
 
-    //여기서 레프트 조인 계속 하면됨
     return await this.CustomnotificationRepository.createQueryBuilder("noti")
       .where("noti.Id = :notiId", {
         notiId,
@@ -119,15 +117,20 @@ export class NotificationService {
   }
   public async pushStarClass(signup: Signup) {
     const userId = signup.userId;
-    const teacherUserId = await (await (await signup.lesson).teacher).userId;
+    const lesson = await signup.lesson;
+    const teacherUserId = await (await lesson.teacher).userId;
     console.log(teacherUserId);
     const studentNotification = await this.CustomnotificationRepository.create({
-      signupId: signup.id,
+      type: "classStart",
+      typeId: lesson.id,
       userId,
+      content: `${lesson.name} 수업이 시작되었습니다.`,
     }).save();
     const teacherNotification = await this.CustomnotificationRepository.create({
-      signupId: signup.id,
+      type: "classStart",
+      typeId: lesson.id,
       userId: teacherUserId,
+      content: `${lesson.name} 수업이 시작되었습니다.`,
     }).save();
     console.log(userId, teacherUserId);
     const user = this.clients[userId];
@@ -157,13 +160,21 @@ export class NotificationService {
     if (room.userId !== userId && teaherid !== userId) {
       throw new WsException("방참가 인원이 아닙니다");
     }
-    await getConnection()
-      .createQueryBuilder()
-      .update(Message)
-      .set({ is_read: true })
-      .where("senderId != :id", { id: userId })
-      .andWhere("chatRoomId = :id", { id: roomId })
-      .execute();
+    const messages = await this.messageRepository.find({
+      chatRoomId: roomId,
+      senderId: Not(userId),
+    });
+    messages.map(async (msg) => {
+      msg.is_read = true;
+      await msg.save();
+    });
+    // await getConnection()
+    //   .createQueryBuilder()
+    //   .update(Message)
+    //   .set({ is_read: true })
+    //   .where("chatRoomId = :id", { id: roomId })
+    //   .andWhere("senderId != :id", { id: userId })
+    //   .execute();
     client.to(`chat-room-${client?.chatRoomId}`).emit("chatLeave-event");
     client.rooms.clear();
 

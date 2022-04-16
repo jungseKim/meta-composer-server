@@ -110,12 +110,6 @@ export class Signup extends BaseEntity {
   @OneToOne(() => Payment, (payment) => payment.signup, {})
   payment: Payment;
 
-  @OneToMany(
-    () => CustomNotification,
-    (customNotifications) => customNotifications.signup,
-  )
-  customNotifications: CustomNotification[];
-
   @OneToMany(() => Attendance, (attendance) => attendance.signup, {
     eager: true,
   })

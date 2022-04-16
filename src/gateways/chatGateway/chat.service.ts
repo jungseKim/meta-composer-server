@@ -1,3 +1,4 @@
+import { Message } from "./../../entities/message.entity";
 import { WsException } from "@nestjs/websockets";
 import { find } from "rxjs";
 import { Lesson } from "./../../entities/lesson.entity";
@@ -14,14 +15,14 @@ import { InjectRepository } from "@nestjs/typeorm";
 
 import * as jwt from "jsonwebtoken";
 import { ChatRoom } from "src/entities/chatRoom.entity";
-import { Message } from "src/entities/message.entity";
 import { MAX } from "class-validator";
-import ChatList from "src/types/ChatList";
+import ChatList, { CustomChatRoom } from "src/types/ChatList";
 import { NotificationService } from "src/gateways/notification/notification.service";
 import { Signup } from "src/entities/signup.entity";
 import { TokenPayload } from "src/modules/auth/token-payload.interface";
 import { SendMessageDto } from "./dto/send-message.dto";
 import { ChatSocekt } from "../custom-sockets/my-socket";
+import { query } from "express";
 @Injectable()
 export class ChatService {
   constructor(
@@ -99,7 +100,6 @@ export class ChatService {
     if (!chatRoom) {
       return false;
     }
-    console.log(typeof chatRoomId);
     const messageSend = await this.messageRepository.create({
       sender: user, //여기에 객체 넣으면 자동을 eger  로딩됨 야발 ㅋㅋ
       message: sendMessage?.message,
@@ -144,15 +144,29 @@ export class ChatService {
       .where("chatRoom.userId = :id", { id: user.id })
       .innerJoinAndSelect("chatRoom.lesson", "lesson")
       .innerJoinAndSelect("lesson.teacher", "teacher")
-      .leftJoinAndSelect("chatRoom.messages", "messages")
+      // .leftJoinAndSelect("chatRoom.messages", "messages")
+      // .leftJoinAndSelect(
+      //   (subQuery) => {
+      //     return subQuery.select().from(Message, "message");
+      //     // .orderBy({ "message.created_at": "DESC" })
+      //     // .limit();
+      //   },
+      //   "message",
+      //   "message.chatRoomId = chatRoom.id",
+      // )
       .loadRelationCountAndMap(
         "chatRoom.unReadCount",
         "chatRoom.messages",
         "unreadMessageCount",
-        (qb) => qb.where("unreadMessageCount.is_read = false"),
+        (qb) =>
+          qb
+            .where("unreadMessageCount.is_read = false")
+            .andWhere("unreadMessageCount.senderId != :id", { id: user.id }),
       )
-      .limit(1)
+      // .limit(1)
       .getMany();
+    //get entrise
+
     const teacher = await this.teacherRepository.findOne({ userId: user.id });
 
     if (teacher) {
@@ -163,15 +177,16 @@ export class ChatService {
         })
         .innerJoinAndSelect("lesson.chatRooms", "chatRooms")
         .innerJoinAndSelect("chatRooms.user", "user")
-        .leftJoinAndSelect("chatRooms.messages", "messages")
+        // .leftJoinAndSelect("chatRooms.messages", "messages")
         .loadRelationCountAndMap(
           "chatRooms.unReadCount",
           "chatRooms.messages",
           "unreadMessageCount",
-          (qb) => qb.where("unreadMessageCount.is_read = false"),
+          (qb) =>
+            qb
+              .where("unreadMessageCount.is_read = false")
+              .andWhere("unreadMessageCount.senderId != :id", { id: user.id }),
         )
-        .orderBy("messages.created_at", "DESC")
-        .limit(1)
         .getMany();
 
       const chatList: ChatList = { lessonChat, userChatList };

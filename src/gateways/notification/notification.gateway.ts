@@ -38,7 +38,6 @@ export class NotificationGateway
   }
   @SubscribeMessage("chatJoin-emit")
   async chatRoomJoin(client: NotificationSocekt, payload: { roomId: number }) {
-    console.log(client.userId);
     await this.notificationService.chatRoomJoin(client, payload.roomId);
   }
   @SubscribeMessage("chatLeave-emit")
