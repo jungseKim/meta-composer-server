@@ -1,16 +1,24 @@
+import { type } from "os";
+import { PageValidationPipe } from "./dto/page-validation.pipe";
+import { SendMessageDto } from "./dto/send-message.dto";
 import { UserDecorator } from "src/decorators/user.decorator";
-
+import { FileInterceptor } from "@nestjs/platform-express";
 import { ChatService } from "./chat.service";
 /*
 https://docs.nestjs.com/controllers#controllers
 */
 
 import {
+  Body,
   Controller,
+  Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Query,
+  UploadedFile,
+  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
@@ -18,6 +26,7 @@ import { User } from "src/entities/user.entity";
 import { TransformResponseInterceptor } from "src/common/interceptors/transformResponse.interceptor";
 import {
   ApiBasicAuth,
+  ApiBody,
   ApiOkResponse,
   ApiOperation,
   ApiResponse,
@@ -28,6 +37,8 @@ import { Message } from "src/entities/message.entity";
 import { ChatRoomInfoDto } from "./dto/chat-info.dto";
 import { ChatRoom } from "src/entities/chatRoom.entity";
 import { JwtGuard } from "src/modules/auth/jwt.guard";
+import { imageOption } from "src/lib/imageOption";
+import ChatForm from "src/types/imageForm";
 
 @Controller("api/chat")
 @ApiTags("chat")
@@ -60,26 +71,29 @@ export class ChatController {
   @UseInterceptors(TransformResponseInterceptor)
   public async getChatRoomMessage(
     @Param("roomId") roomId: number,
-    @Query("page") page: number,
-    @Query("perPage") perPage: number,
+    @Query("page", PageValidationPipe) page: number,
+    @Query("perPage", PageValidationPipe) perPage: number,
   ) {
     return this.chatService.getChatRoomMeesage(roomId, page, perPage);
   }
 
   @ApiOperation({
     summary: "chatting room 에 대한 정보 ",
-    description: "(강사, 유저) join 한 값",
+    description: "(강사, 유저) join 한 값 방",
   })
   @ApiOkResponse({
     status: 200,
     description: "page별로",
     type: ChatRoomInfoDto,
   })
-  @Get(":roomId/chatRoom")
+  @Get(":roomId/chatRoomInfo")
   @UseGuards(JwtGuard)
   @UseInterceptors(TransformResponseInterceptor)
-  public async getChatRoomInfo(@Param("roomId") roomId: number) {
-    return this.chatService.getChatRoomInfo(roomId);
+  public async getChatRoomInfo(
+    @UserDecorator() user: User,
+    @Param("roomId") roomId: number,
+  ) {
+    return this.chatService.getChatRoomInfo(user, roomId);
   }
 
   @ApiOperation({
@@ -96,8 +110,57 @@ export class ChatController {
   @UseInterceptors(TransformResponseInterceptor)
   public async createChatRoom(
     @UserDecorator() user: User,
-    @Param("lessonId") lessonId: number,
+    @Param("lessonId", ParseIntPipe) lessonId: number,
   ) {
     return this.chatService.createChatRoom(user.id, lessonId);
+  }
+
+  @ApiOperation({
+    summary: "채팅방 삭제 ",
+    description: "자신이 속해 있는 방만 삭제가능 ",
+  })
+  @ApiOkResponse({
+    status: 200,
+    description: "삭제되었는 정보",
+    type: ChatRoom,
+  })
+  @Delete(":roomId/chatRoom")
+  @UseGuards(JwtGuard)
+  @UseInterceptors(TransformResponseInterceptor)
+  public async removeChatRoom(
+    @UserDecorator() user: User,
+    @Param("roomId", ParseIntPipe) roomId: number,
+  ) {
+    console.log(roomId);
+    return this.chatService.removeChatRoom(user, roomId);
+  }
+
+  @ApiOperation({
+    summary: "메세지 보내기 ",
+    description: "없는 룸 일경우 false 리턴",
+  })
+  @ApiOkResponse({
+    status: 200,
+    description: "보낸메세지 리턴",
+    type: Message,
+  })
+  @Post(":chatRoomId")
+  @UseGuards(JwtGuard)
+  @UseInterceptors(
+    TransformResponseInterceptor,
+    FileInterceptor("image", imageOption),
+  )
+  public async sendMessage(
+    @UploadedFile() image: ChatForm,
+    @UserDecorator() user: User,
+    @Param("chatRoomId", ParseIntPipe) chatRoomId: number,
+    @Body() sendMessageDto: SendMessageDto,
+  ) {
+    return this.chatService.saveMessage(
+      user,
+      chatRoomId,
+      sendMessageDto,
+      image,
+    );
   }
 }
