@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
@@ -24,6 +25,8 @@ import { Lesson } from "src/entities/lesson.entity";
 import { User } from "src/entities/user.entity";
 // import { TeacherGuard } from 'src/guards/teacherGuard';
 import { LessonsService } from "./lessons.service";
+import axios from "axios";
+import { query } from "express";
 
 @Controller("api/lessons")
 @ApiTags("레슨 API")
@@ -32,12 +35,32 @@ export class LessonsController {
   // @UseGuards(AuthGuard('jwt'))
 
   @Get()
-  @ApiOperation({ summary: "레슨 조회", description: "전체 레슨 조회" })
+  @ApiOperation({ summary: "전체레슨 조회", description: "전체 레슨 조회" })
   @ApiResponse({ status: 200, description: "레슨 조회완료", type: Lesson })
   @UseInterceptors(TransformResponseInterceptor)
-  showAllLesson(): Promise<Lesson[]> {
-    return this.lessonsService.showAllLesson();
+  showAllLesson(
+    @Query("page") page: number,
+    @Query("perPage") perPage: number,
+  ): Promise<Lesson[]> {
+    return this.lessonsService.showAllLesson(page, perPage);
   }
+
+  @Get("search")
+  @ApiOperation({
+    summary: "레슨 검색",
+    description: "Query 파라미터 명은 -> searchKeyword  로 해주세요.",
+  })
+  @ApiResponse({ status: 200, description: "레슨 검색완료", type: Lesson })
+  @UseInterceptors(TransformResponseInterceptor)
+  searchLesson(
+    @UserDecorator() user: User,
+    @Query("searchKeyword") searchKeyword: string,
+    @Query("page") page: number,
+    @Query("perPage") perPage: number,
+  ): Promise<Lesson[]> {
+    return this.lessonsService.searchLesson(searchKeyword, user, page, perPage);
+  }
+
   @UseGuards(AuthGuard("jwt"))
   @Get("/:id")
   @ApiOperation({
@@ -46,7 +69,15 @@ export class LessonsController {
   })
   @ApiResponse({ status: 200, description: "특정 레슨 조회완료", type: Lesson })
   @UseInterceptors(TransformResponseInterceptor)
-  getLessonById(@Param("id") id: number): Promise<Lesson> {
+  getLessonById(
+    @UserDecorator() user: User,
+    @Param("id") id: number,
+  ): Promise<Lesson> {
+    axios.post("http://localhost:4000/api/viewcounts", {
+      user,
+      id,
+    });
+
     return this.lessonsService.getLessonById(id);
   }
 

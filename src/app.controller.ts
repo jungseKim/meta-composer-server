@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, Res } from "@nestjs/common";
+import { Controller, Get, Param, Query, Res, UseGuards } from "@nestjs/common";
 import { AppService } from "./app.service";
 import { Response } from "express";
 import { ApiOperation } from "@nestjs/swagger";
@@ -13,7 +13,8 @@ import { Concours } from "./entities/concours.entity";
 import { ConcoursSignup } from "./entities/concoursSignup.entity";
 import axios, { AxiosResponse } from "axios";
 import { Payment } from "./entities/payment.entity";
-import { rm, unlinkSync } from "fs";
+import { AuthGuard } from "@nestjs/passport";
+
 @Controller()
 export class AppController {
   constructor(
@@ -43,6 +44,20 @@ export class AppController {
   get(@Res() res: Response, @Query("id") id) {
     res.sendFile("abc.html", {
       root: "./src/",
+    });
+  }
+
+  @UseGuards(AuthGuard("jwt"))
+  @Get("tensorflow")
+  async tensorflow(@UserDecorator() user: User) {
+    return this.appService.tensorflow(user);
+  }
+
+  @Get("piano")
+  //이미지테스트
+  hi() {
+    axios.get("https://source.unsplash.com/featured/?piano").then((data) => {
+      console.log(data.request.res.req._redirectable._options.href);
     });
   }
 }

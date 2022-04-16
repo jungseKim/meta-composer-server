@@ -15,6 +15,7 @@ import { Assignment } from "./assignment.entity";
 import { ChatRoom } from "./chatRoom.entity";
 import { Comment } from "./comment.entity";
 import { Part } from "./part.entity";
+import { SearchHistory } from "./searchHistory.entiry";
 import { Sheet } from "./sheet.entity";
 import { Signup } from "./signup.entity";
 import { Teacher } from "./teacher.entity";
@@ -41,7 +42,7 @@ export class Lesson extends BaseEntity {
   })
   teacher: Promise<Teacher>;
 
-  @Column()
+  @Column("longtext")
   @ApiProperty({
     example: "레슨 샘플입니다.",
     description: "레슨 소개",
@@ -62,6 +63,13 @@ export class Lesson extends BaseEntity {
   })
   price: number;
 
+  @Column("longtext")
+  @ApiProperty({
+    example: "https://....",
+    description: "이미지 주소",
+  })
+  imageURL: string;
+
   @Column({ unique: true })
   @ApiProperty({
     example: "레슨 샘플 이름입니다.",
@@ -80,11 +88,14 @@ export class Lesson extends BaseEntity {
 
   @OneToMany(() => TimeTable, (timeTable) => timeTable.lesson, {
     cascade: true,
-    eager: true,
+    // eager: true,
   })
   timeTables: TimeTable[];
 
-  @OneToMany(() => Part, (part) => part.lesson, { cascade: true, eager: true })
+  @OneToMany(() => Part, (part) => part.lesson, {
+    cascade: true,
+    // eager: true
+  })
   parts: Part[];
 
   @OneToMany(() => Comment, (comment) => comment.lesson, {
@@ -100,7 +111,7 @@ export class Lesson extends BaseEntity {
 
   @OneToMany(() => Wishlist, (wishlist) => wishlist.lesson, {
     cascade: true,
-    eager: true,
+    // eager: true,
   })
   wishlists: Wishlist[];
 
@@ -111,13 +122,13 @@ export class Lesson extends BaseEntity {
 
   @OneToMany(() => Sheet, (sheet) => sheet.lesson, {
     cascade: true,
-    eager: true,
+    // eager: true,
   })
   sheets: Sheet[];
 
   @OneToMany((type) => Assignment, (assignment) => assignment.lesson, {
     cascade: true,
-    eager: true,
+    // eager: true,
   })
   assignments: Assignment[];
 
@@ -141,6 +152,11 @@ export class Lesson extends BaseEntity {
   })
   @UpdateDateColumn()
   updated_at: Date;
+
+  @OneToMany(() => SearchHistory, (searchHistory) => searchHistory.lesson, {
+    cascade: true,
+  })
+  searchHistories: SearchHistory[];
 }
 // number will be converted into integer, string into varchar, boolean into bool, etc. But you can use any column type your database supports by explicitly specifying a column type into the @Column decorator.  from typeorm.io
 

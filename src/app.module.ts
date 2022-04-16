@@ -36,6 +36,8 @@ import { TimeTablesModule } from "./modules/time-tables/time-tables.module";
 import { Signuptimetable } from "./entities/signuptimetable.entity";
 import { SignupTimetablesModule } from "./modules/signup-timetables/signup-timetables.module";
 import { PartsModule } from "./modules/parts/parts.module";
+import { ViewcountsModule } from "./modules/viewcounts/viewcounts.module";
+import { SearchHistoriesModule } from "./modules/search-histories/search-histories.module";
 
 @Module({
   controllers: [AppController],
@@ -77,6 +79,8 @@ import { PartsModule } from "./modules/parts/parts.module";
     SignupTimetablesModule,
     ScheduleModule.forRoot(),
     PartsModule,
+    ViewcountsModule,
+    SearchHistoriesModule,
   ],
 })
 export class AppModule {}

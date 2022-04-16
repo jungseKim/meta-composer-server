@@ -53,4 +53,25 @@ export class LessonsRepository extends Repository<Lesson> {
 
     return;
   }
+
+  async searchLesson(searchKeyword, user, page, perPage): Promise<Lesson[]> {
+    const result = await this.createQueryBuilder("lesson")
+
+      .where("lesson.introduce LIKE (:searchKeyword)", {
+        searchKeyword: `%${searchKeyword}%`,
+      })
+      .orWhere("lesson.name LIKE (:searchKeyword)", {
+        searchKeyword: `%${searchKeyword}%`,
+      })
+      .orWhere("lesson.type LIKE (:searchKeyword)", {
+        searchKeyword: `%${searchKeyword}%`,
+      })
+      .orderBy("lesson.id", "DESC")
+      .take(perPage)
+      .skip(perPage * (page - 1))
+      .getMany();
+
+    return result;
+    //엔티티, 모듈, tensorflow 에 보내기
+  }
 }

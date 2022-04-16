@@ -10,8 +10,14 @@ export class LessonsService {
     private lessonsRepository: LessonsRepository, //
   ) {}
 
-  async showAllLesson(): Promise<Lesson[]> {
-    return this.lessonsRepository.find();
+  async showAllLesson(page, perPage): Promise<Lesson[]> {
+    return this.lessonsRepository
+      .createQueryBuilder("lesson")
+      .leftJoinAndSelect("lesson.teacher", "teacher")
+      .orderBy("lesson.id", "DESC")
+      .take(perPage)
+      .skip(perPage * (page - 1))
+      .getMany();
     //findAll
   }
 
@@ -19,8 +25,20 @@ export class LessonsService {
     return this.lessonsRepository.createLesson(updateData, user);
   }
 
-  async getLessonById(id: number): Promise<Lesson> {
-    const lesson = await this.lessonsRepository.findOne(id);
+  async getLessonById(id: number): Promise<any> {
+    const lesson = await this.lessonsRepository
+      .createQueryBuilder("lesson")
+      .where("lesson.id = :id", { id: id })
+      .leftJoinAndSelect("lesson.timeTables", "timeTables")
+      .leftJoinAndSelect("lesson.comments", "comments")
+      .leftJoinAndSelect("lesson.chatRooms", "chatRooms")
+      .leftJoinAndSelect("lesson.wishlists", "wishlists")
+      .leftJoinAndSelect("lesson.sheets", "sheets")
+      .leftJoinAndSelect("lesson.teacher", "teacher")
+      // .leftJoinAndSelect("lesson.sheets", "signups");
+      .getMany();
+
+    //join 댓글, 악보 등등
     if (!lesson) {
       throw new NotFoundException(`can't find lesson id ${id}`);
     }
@@ -32,5 +50,14 @@ export class LessonsService {
   }
   async updateLessonById(id: number, updateData, user): Promise<void> {
     await this.lessonsRepository.updateLessonById(id, updateData, user);
+  }
+
+  async searchLesson(searchKeyword, user, page, perPage): Promise<Lesson[]> {
+    return this.lessonsRepository.searchLesson(
+      searchKeyword,
+      user,
+      page,
+      perPage,
+    );
   }
 }
