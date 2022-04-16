@@ -237,91 +237,89 @@ export class AppService {
     // }
   }
 
-  async tensorflow(user) {
-    const viewCount = await getRepository(ViewCount)
-      .createQueryBuilder("view_count")
-      .select("viewCount")
-      .addSelect("lessonId")
-      .where("view_count.userId = :id", { id: user.id })
-      .getRawMany();
+  // async tensorflow(user) {
+  //   const viewCount = await getRepository(ViewCount)
+  //     .createQueryBuilder("view_count")
+  //     .select("viewCount")
+  //     .addSelect("lessonId")
+  //     .where("view_count.userId = :id", { id: user.id })
+  //     .getRawMany();
 
-    console.log(viewCount);
-    //1. [레슨아이디:조회수],[레슨아이디:조회수] 로 형식 변경
-    //2. 위에형식에서 조회수 순서대로정렬
+  //   console.log(viewCount);
+  //   //1. [레슨아이디:조회수],[레슨아이디:조회수] 로 형식 변경
+  //   //2. 위에형식에서 조회수 순서대로정렬
 
-    // viewCount int 값의 크기순으로 정렬
-    const result = viewCount.sort(function (a, b) {
-      if (a.viewCount < b.viewCount) {
-        return 1;
-      }
-      if (a.viewCount > b.viewCount) {
-        return -1;
-      }
-      return 0;
-    });
+  //   // viewCount int 값의 크기순으로 정렬
+  //   const result = viewCount.sort(function (a, b) {
+  //     if (a.viewCount < b.viewCount) {
+  //       return 1;
+  //     }
+  //     if (a.viewCount > b.viewCount) {
+  //       return -1;
+  //     }
+  //     return 0;
+  //   });
 
-    console.log(result);
-    console.log("조회수 출력완료");
-    // viewCount.sort(function (a, b) {
-    //   if (a > b) return 1;
-    //   if (a === b) return 0;
-    //   if (a < b) return -1;
-    // });
-    // console.log(viewCount);
-    // for (const viewCount0 in viewCount) {
-    //   console.log(viewCount0);
-    // }
+  //   console.log(result);
+  //   console.log("조회수 출력완료");
+  //   // viewCount.sort(function (a, b) {
+  //   //   if (a > b) return 1;
+  //   //   if (a === b) return 0;
+  //   //   if (a < b) return -1;
+  //   // });
+  //   // console.log(viewCount);
+  //   // for (const viewCount0 in viewCount) {
+  //   //   console.log(viewCount0);
+  //   // }
 
-    //2.1 레슨 아이디별로 배열에 가중치 적용 ex) 어떤거 90퍼 어떤거 10퍼
+  //   //2.1 레슨 아이디별로 배열에 가중치 적용 ex) 어떤거 90퍼 어떤거 10퍼
 
-    //3. 조회수 높은쪽이 결과 순위 높게 ex) 1
+  //   //3. 조회수 높은쪽이 결과 순위 높게 ex) 1
 
-    //4. 좋아요리스트
+  //   //4. 좋아요리스트
 
-    const wishListCount = await getRepository(Wishlist)
-      .createQueryBuilder("wishlist")
-      .select("lessonId")
-      .where("wishlist.userId = :id", { id: user.id })
-      .getRawMany();
+  //   const wishListCount = await getRepository(Wishlist)
+  //     .createQueryBuilder("wishlist")
+  //     .select("lessonId")
+  //     .where("wishlist.userId = :id", { id: user.id })
+  //     .getRawMany();
 
-    console.log(wishListCount);
+  //   console.log(wishListCount);
 
-    return;
-    const model = tf.sequential();
-    model.add(
-      tf.layers.dense({ units: 100, activation: "relu", inputShape: [2] }),
-    );
-    model.add(tf.layers.dense({ units: 1, activation: "linear" }));
-    model.compile({ optimizer: "sgd", loss: "meanSquaredError" });
+  //   return;
+  //   const model = tf.sequential();
+  //   model.add(
+  //     tf.layers.dense({ units: 100, activation: "relu", inputShape: [2] }),
+  //   );
+  //   model.add(tf.layers.dense({ units: 1, activation: "linear" }));
+  //   model.compile({ optimizer: "sgd", loss: "meanSquaredError" });
 
-    const xxs = tf.tensor([
-      [1, 2],
-      [1, 2],
-    ]);
-    const yys = tf.tensor([[1], [1]]);
+  //   const xxs = tf.tensor([
+  //     [1, 2],
+  //     [1, 2],
+  //   ]);
+  //   const yys = tf.tensor([[1], [1]]);
 
-    await model
-      .fit(xxs, yys, {
-        epochs: 1000,
-        callbacks: {
-          onEpochEnd: (epoch, log) =>
-            console.log(`Epoch ${epoch}: loss = ${log.loss}`),
-        },
-      })
-      .then(function (res) {
-        const result = model.predict(xxs);
-        console.log(result);
-      });
+  //   await model
+  //     .fit(xxs, yys, {
+  //       epochs: 1000,
+  //       callbacks: {
+  //         onEpochEnd: (epoch, log) =>
+  //           console.log(`Epoch ${epoch}: loss = ${log.loss}`),
+  //       },
+  //     })
+  //     .then(function (res) {
+  //       const result = model.predict(xxs);
+  //       console.log(result);
+  //     });
 
-    const xxxs = [
-      [1, 3],
-      [1, 3],
-    ];
-    const xxxy = tf.tensor(xxxs);
-    const ranResult = model.predict(xxxy);
-    console.log(ranResult.toString());
-  }
-
-  public async test() {}
+  //   const xxxs = [
+  //     [1, 3],
+  //     [1, 3],
+  //   ];
+  //   const xxxy = tf.tensor(xxxs);
+  //   const ranResult = model.predict(xxxy);
+  //   console.log(ranResult.toString());
+  // }
 
 }

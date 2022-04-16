@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
   UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
@@ -27,6 +28,8 @@ import { User } from "src/entities/user.entity";
 import { LessonsService } from "./lessons.service";
 import axios from "axios";
 import { query } from "express";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { imageOption } from "src/lib/imageOption";
 
 @Controller("api/lessons")
 @ApiTags("레슨 API")
@@ -48,7 +51,8 @@ export class LessonsController {
   @Get("search")
   @ApiOperation({
     summary: "레슨 검색",
-    description: "Query 파라미터 명은 -> searchKeyword  로 해주세요.",
+    description:
+      "Query 파라미터 명은 -> searchKeyword  로 해주세요. page 는, 원하는 페이지 perPage는 한페이지에 얼마나 보여줄지 정합니다.",
   })
   @ApiResponse({ status: 200, description: "레슨 검색완료", type: Lesson })
   @UseInterceptors(TransformResponseInterceptor)
@@ -59,6 +63,28 @@ export class LessonsController {
     @Query("perPage") perPage: number,
   ): Promise<Lesson[]> {
     return this.lessonsService.searchLesson(searchKeyword, user, page, perPage);
+  }
+
+  @Get("type")
+  @ApiOperation({
+    summary: "레슨 타입으로 검색",
+    description:
+      "Query 파라미터 명은 -> searchKeyword  로 해주세요. 가능한 파라미터- Sonata  Etudes Waltzes Nocturnes Marches . page 는, 원하는 페이지 perPage는 한페이지에 얼마나 보여줄지 정합니다.",
+  })
+  @ApiResponse({ status: 200, description: "레슨 검색완료", type: Lesson })
+  @UseInterceptors(TransformResponseInterceptor)
+  searchLessonbyType(
+    @UserDecorator() user: User,
+    @Query("searchKeyword") searchKeyword: string,
+    @Query("page") page: number,
+    @Query("perPage") perPage: number,
+  ): Promise<Lesson[]> {
+    return this.lessonsService.searchLessonbyType(
+      searchKeyword,
+      user,
+      page,
+      perPage,
+    );
   }
 
   @UseGuards(AuthGuard("jwt"))
@@ -109,13 +135,15 @@ export class LessonsController {
   @ApiResponse({ status: 200, description: "레슨 생성완료", type: Lesson })
   @ApiBody({ type: Lesson })
   //type 를 entity 로
+  @UseInterceptors(FileInterceptor("image", imageOption))
   @UseInterceptors(TransformResponseInterceptor)
   create(
+    @UploadedFile() image,
     @Body() updateData,
     @UserDecorator() user: User,
     @TeacherDecorator() isTeacher: boolean,
   ): Promise<Lesson> {
-    return this.lessonsService.createLesson(updateData, user);
+    return this.lessonsService.createLesson(updateData, user, image);
   }
 
   @UseGuards(AuthGuard("jwt"))
