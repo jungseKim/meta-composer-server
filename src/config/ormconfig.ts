@@ -56,13 +56,12 @@ const ORMConfig: TypeOrmModuleOptions = {
     LessonRoom,
     ConcoursSignup,
     Concours,
-    Notification,
+    // Notification,
     ViewCount,
     SearchHistory,
-
   ],
   timezone: "Z",
-  synchronize: true, // false 기본값
+  synchronize: false, // false 기본값
   charset: "utf8mb4",
   autoLoadEntities: true,
   // logging: true,

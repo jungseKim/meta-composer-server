@@ -17,7 +17,7 @@ import { Concours } from "./entities/concours.entity";
 import { ConcoursSignup } from "./entities/concoursSignup.entity";
 import axios, { AxiosResponse } from "axios";
 import { Payment } from "./entities/payment.entity";
-import * as tf from "@tensorflow/tfjs-node";
+// import * as tf from "@tensorflow/tfjs-node";
 import { readFile } from "fs";
 import { ViewCount } from "./entities/viewCount.entity";
 import { Wishlist } from "./entities/wishlist.entity";
@@ -321,5 +321,4 @@ export class AppService {
   //   const ranResult = model.predict(xxxy);
   //   console.log(ranResult.toString());
   // }
-
 }
