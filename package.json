@@ -41,8 +41,7 @@
     "@nestjs/swagger": "^5.2.0",
     "@nestjs/typeorm": "^8.0.3",
     "@nestjs/websockets": "^8.3.1",
-    "@tensorflow/tfjs": "^3.15.0",
-    "@tensorflow/tfjs-node": "^3.15.0",
+  
     "@types/gapi": "^0.0.41",
     "@types/passport-facebook": "^2.1.11",
     "@types/passport-jwt": "^3.0.6",

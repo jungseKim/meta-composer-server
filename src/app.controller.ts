@@ -38,11 +38,11 @@ export class AppController {
     });
   }
 
-  @UseGuards(AuthGuard("jwt"))
-  @Get("tensorflow")
-  async tensorflow(@UserDecorator() user: User) {
-    return this.appService.tensorflow(user);
-  }
+  // @UseGuards(AuthGuard("jwt"))
+  // @Get("tensorflow")
+  // async tensorflow(@UserDecorator() user: User) {
+  //   return this.appService.tensorflow(user);
+  // }
 
   @Get("piano")
   //이미지테스트
