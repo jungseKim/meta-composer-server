@@ -7,7 +7,6 @@ import { User } from "./entities/user.entity";
 import { TasksService } from "./modules/tasks/tasks.service";
 
 import { Cron, Interval, Timeout } from "@nestjs/schedule";
-import moment from "moment";
 import { createQueryBuilder } from "typeorm";
 import { Concours } from "./entities/concours.entity";
 import { ConcoursSignup } from "./entities/concoursSignup.entity";
@@ -50,7 +49,7 @@ export class AppController {
   @UseGuards(AuthGuard("jwt"))
   @Get("tensorflow")
   async tensorflow(@UserDecorator() user: User) {
-    return this.appService.tensorflow(user);
+    // return this.appService.tensorflow(user);
   }
 
   @Get("piano")

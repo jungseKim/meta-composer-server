@@ -14,6 +14,7 @@ export class LessonsService {
     return this.lessonsRepository
       .createQueryBuilder("lesson")
       .leftJoinAndSelect("lesson.teacher", "teacher")
+      .leftJoinAndSelect("teacher.user", "user")
       .orderBy("lesson.id", "DESC")
       .take(perPage)
       .skip(perPage * (page - 1))
@@ -35,8 +36,9 @@ export class LessonsService {
       .leftJoinAndSelect("lesson.wishlists", "wishlists")
       .leftJoinAndSelect("lesson.sheets", "sheets")
       .leftJoinAndSelect("lesson.teacher", "teacher")
+      .leftJoinAndSelect("teacher.user", "user")
       // .leftJoinAndSelect("lesson.sheets", "signups");
-      .getMany();
+      .getOne();
 
     //join 댓글, 악보 등등
     if (!lesson) {

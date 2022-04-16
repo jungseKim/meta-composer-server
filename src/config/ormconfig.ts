@@ -56,7 +56,6 @@ const ORMConfig: TypeOrmModuleOptions = {
     LessonRoom,
     ConcoursSignup,
     Concours,
-    Notification,
     ViewCount,
     SearchHistory,
 

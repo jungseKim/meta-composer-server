@@ -69,11 +69,11 @@ export class LessonsController {
   })
   @ApiResponse({ status: 200, description: "특정 레슨 조회완료", type: Lesson })
   @UseInterceptors(TransformResponseInterceptor)
-  getLessonById(
+  async getLessonById(
     @UserDecorator() user: User,
     @Param("id") id: number,
   ): Promise<Lesson> {
-    axios.post("http://localhost:4000/api/viewcounts", {
+    await axios.post("http://localhost:4000/api/viewcounts", {
       user,
       id,
     });
