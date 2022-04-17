@@ -1,12 +1,15 @@
 import { Connection } from "typeorm";
 import { Factory, Seeder } from "typeorm-seeding";
 import { faker } from "@faker-js/faker";
-import { Lesson, LessonType } from "../../entities/lesson.entity";
+import { Lesson } from "../../entities/lesson.entity";
 import { Teacher } from "../../entities/teacher.entity";
 import axios, { AxiosResponse } from "axios";
 export class CreateInitialZTeacherData implements Seeder {
   public async run(factory: Factory, connection: Connection): Promise<void> {
-    for (let count = 0; count <= 3; count++) {
+    const LessonType = ["Sonata", "Etudes", "Waltzes", "Nocturnes", "Marches"];
+    for (let count = 0; count <= 10; count++) {
+      const pick = Math.floor(Math.random() * LessonType.length);
+
       const ImageURL = await axios
         .get("https://source.unsplash.com/featured/?piano")
         .then((data) => {
@@ -35,7 +38,7 @@ export class CreateInitialZTeacherData implements Seeder {
             length: "00:50:00",
             price: faker.commerce.price(),
             name: faker.lorem.words(),
-            type: LessonType.ETUDES,
+            type: LessonType[pick],
             teacherId: trueNum,
           },
         ])

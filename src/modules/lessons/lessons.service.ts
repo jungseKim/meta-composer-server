@@ -22,8 +22,8 @@ export class LessonsService {
     //findAll
   }
 
-  async createLesson(updateData, user): Promise<Lesson> {
-    return this.lessonsRepository.createLesson(updateData, user);
+  async createLesson(updateData, user, image): Promise<Lesson> {
+    return this.lessonsRepository.createLesson(updateData, user, image);
   }
 
   async getLessonById(id: number): Promise<any> {
@@ -56,6 +56,19 @@ export class LessonsService {
 
   async searchLesson(searchKeyword, user, page, perPage): Promise<Lesson[]> {
     return this.lessonsRepository.searchLesson(
+      searchKeyword,
+      user,
+      page,
+      perPage,
+    );
+  }
+  async searchLessonbyType(
+    searchKeyword,
+    user,
+    page,
+    perPage,
+  ): Promise<Lesson[]> {
+    return this.lessonsRepository.searchLessonbyType(
       searchKeyword,
       user,
       page,

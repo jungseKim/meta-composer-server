@@ -141,8 +141,8 @@ WHERE  DateWD IN(${day});
 
     ///
     delay(1);
-    delay(10);
-    delay(10);
+    delay(100);
+    delay(100);
     axios.post("http://localhost:4000/api/signup-timetables", {
       datesArray: datesArray,
       signup: signup,

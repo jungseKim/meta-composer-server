@@ -10,7 +10,7 @@ export class LessonsRepository extends Repository<Lesson> {
   // @InjectRepository(TeacherRepository)private lessonsRepository : LessonsRepository,
 
   // const teacherId = Repository<Teacher>.find(user.id);
-  async createLesson(updateData, user): Promise<any> {
+  async createLesson(updateData, user, image): Promise<any> {
     const checkTeacher = await getRepository(Teacher)
       .createQueryBuilder("teacher")
       .where("teacher.userId = :id", { id: user.id })
@@ -18,6 +18,7 @@ export class LessonsRepository extends Repository<Lesson> {
 
     const lesson = this.create({
       introduce: updateData.introduce,
+      imageURL: process.env.SERVER_ADDRESS + "/" + image.filename,
       length: updateData.length,
       price: updateData.price,
       name: updateData.name,
@@ -65,6 +66,24 @@ export class LessonsRepository extends Repository<Lesson> {
       })
       .orWhere("lesson.type LIKE (:searchKeyword)", {
         searchKeyword: `%${searchKeyword}%`,
+      })
+      .orderBy("lesson.id", "DESC")
+      .take(perPage)
+      .skip(perPage * (page - 1))
+      .getMany();
+
+    return result;
+    //엔티티, 모듈, tensorflow 에 보내기
+  }
+  async searchLessonbyType(
+    searchKeyword,
+    user,
+    page,
+    perPage,
+  ): Promise<Lesson[]> {
+    const result = await this.createQueryBuilder("lesson")
+      .where("lesson.type = :searchKeyword", {
+        searchKeyword: searchKeyword,
       })
       .orderBy("lesson.id", "DESC")
       .take(perPage)

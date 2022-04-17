@@ -321,7 +321,4 @@ export class AppService {
   //   const ranResult = model.predict(xxxy);
   //   console.log(ranResult.toString());
   // }
-
-  public async test() {}
-
 }
