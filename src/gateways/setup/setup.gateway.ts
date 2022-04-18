@@ -56,10 +56,10 @@ export class SetupGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const auth = await this.setupService.connected(this.sockets, client);
     if (!auth) return;
 
-    const id = client.data.userId;
+    const id: number = client.data.userId;
 
-    client.join(id);
-    client.to(id).emit("sendOffer");
+    client.join(id.toString());
+    client.to(id.toString()).emit("sendOffer");
   }
 
   handleDisconnect(@ConnectedSocket() client: Socket) {
