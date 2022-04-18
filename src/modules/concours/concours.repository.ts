@@ -12,7 +12,7 @@ export class ConcoursRepository extends Repository<Concours> {
       finishTime: updateData.finishTime,
       title: updateData.title,
       contents: updateData.contents,
-      coverIMG_url: process.env.SERVER_ADDRESS + "/" + image.filename,
+      coverIMG_url: image.filename,
       minimum_starting_people: updateData.minimum_starting_people,
     });
 

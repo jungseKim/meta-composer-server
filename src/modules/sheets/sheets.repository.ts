@@ -8,7 +8,7 @@ export default class SheetsRepository extends Repository<Sheet> {
     const createdSheet = this.create({
       sheetName: updateData.sheetName,
       isOpen: updateData.isOpen,
-      storedURL: process.env.SERVER_ADDRESS + "/" + sheet.filename,
+      storedURL: sheet.filename,
       userId: user.id,
       lessonId: updateData.lessonId,
       //   assignmentId: updateData.assignmentId,
