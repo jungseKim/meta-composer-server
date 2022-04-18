@@ -15,7 +15,7 @@ export class CreateInitialZTeacherData implements Seeder {
     //    })
     //    .getOne();
 
-    for (let count = 0; count <= 3; count++) {
+    for (let count = 0; count <= 6; count++) {
       // await connection
       // .createQueryBuilder()
       // .insert()

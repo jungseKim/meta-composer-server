@@ -15,7 +15,7 @@ export class CreateInitialConcoursData implements Seeder {
       22, 23,
     ];
     const mins = [10, 40];
-    for (let count = 0; count <= 3; count++) {
+    for (let count = 0; count <= 10; count++) {
       const month = months[Math.floor(Math.random() * months.length)];
       const day = days[Math.floor(Math.random() * days.length)];
       const hour = hours[Math.floor(Math.random() * hours.length)];

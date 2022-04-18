@@ -36,7 +36,7 @@ export class LessonsService {
       .leftJoinAndSelect("lesson.sheets", "sheets")
       .leftJoinAndSelect("lesson.teacher", "teacher")
       // .leftJoinAndSelect("lesson.sheets", "signups");
-      .getMany();
+      .getOne();
 
     //join 댓글, 악보 등등
     if (!lesson) {
