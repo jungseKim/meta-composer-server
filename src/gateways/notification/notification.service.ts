@@ -107,13 +107,13 @@ export class NotificationService {
     }
     notification.readTime = new Date().toDateString();
     await notification.save();
-
-    return await this.CustomnotificationRepository.createQueryBuilder("noti")
-      .where("noti.Id = :notiId", {
-        notiId,
-      })
-      .leftJoinAndSelect("noti.signup", "signup")
-      .getOne();
+    return;
+    // return await this.CustomnotificationRepository.createQueryBuilder("noti")
+    //   .where("noti.Id = :notiId", {
+    //     notiId,
+    //   })
+    //   .leftJoinAndSelect("noti.signup", "signup")
+    //   .getOne();
   }
   public async pushStarClass(signup: Signup) {
     const userId = signup.userId;
@@ -125,12 +125,14 @@ export class NotificationService {
       typeId: lesson.id,
       userId,
       content: `${lesson.name} 수업이 시작되었습니다.`,
+      url: `/lessons/${lesson.id}`,
     }).save();
     const teacherNotification = await this.CustomnotificationRepository.create({
       type: "classStart",
       typeId: lesson.id,
       userId: teacherUserId,
       content: `${lesson.name} 수업이 시작되었습니다.`,
+      url: `/lessons/${lesson.id}`,
     }).save();
     console.log(userId, teacherUserId);
     const user = this.clients[userId];
