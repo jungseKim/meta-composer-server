@@ -10,7 +10,7 @@ export class SearchHistoriesService {
     private searchHistoriesRepository: SearchHistoriesRepository, //
   ) {}
 
-  async saveSearchHistory(): Promise<SearchHistory[]> {
-    return this.searchHistoriesRepository.saveSearchHistory();
-  }
+  // async saveSearchHistory(): Promise<SearchHistory[]> {
+  //   return this.searchHistoriesRepository.saveSearchHistory();
+  // }
 }

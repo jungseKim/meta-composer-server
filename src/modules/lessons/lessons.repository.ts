@@ -5,9 +5,12 @@ import { Teacher } from "src/entities/teacher.entity";
 import { EntityRepository, getRepository, Repository } from "typeorm";
 import axios, { AxiosResponse } from "axios";
 import { TimeTable } from "src/entities/timeTable.entity";
+import { SearchHistoriesRepository } from "../search-histories/search-histories.repository";
+import { SearchHistory } from "src/entities/searchHistory.entiry";
 @EntityRepository(Lesson)
 export class LessonsRepository extends Repository<Lesson> {
-  // @InjectRepository(TeacherRepository)private lessonsRepository : LessonsRepository,
+  @InjectRepository(SearchHistory)
+  private readonly searchHistoriesRepository: Repository<SearchHistory>;
 
   // const teacherId = Repository<Teacher>.find(user.id);
   async createLesson(updateData, user, image): Promise<any> {
@@ -19,11 +22,16 @@ export class LessonsRepository extends Repository<Lesson> {
     updateData.time = JSON.parse(
       "[" + updateData.time.replace(/'/g, '"') + "]",
     );
+    console.log(updateData.day);
+    updateData.day = JSON.parse("[" + updateData.day.replace(/'/g, '"') + "]");
+
+    console.log(updateData.day);
 
     console.log(updateData.time);
 
     const lesson = this.create({
       introduce: updateData.introduce,
+
       imageURL: image.filename,
       length: updateData.length,
       price: +updateData.price,
@@ -81,6 +89,15 @@ export class LessonsRepository extends Repository<Lesson> {
       .skip(perPage * (page - 1))
       .getMany();
 
+    const ArrayOFresult = [];
+    result.forEach((x) => {
+      console.log(x.id);
+      ArrayOFresult.push(x.id);
+    });
+    console.log(ArrayOFresult);
+    ////////////////////
+    // this.searchHistoriesRepository.saveSearchHistory(user, 22, searchKeyword);
+    //////////////this makes error
     return result;
     //엔티티, 모듈, tensorflow 에 보내기
   }
