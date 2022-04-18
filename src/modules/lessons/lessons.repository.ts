@@ -24,7 +24,7 @@ export class LessonsRepository extends Repository<Lesson> {
 
     const lesson = this.create({
       introduce: updateData.introduce,
-      imageURL: process.env.SERVER_ADDRESS + "/" + image.filename,
+      imageURL: image.filename,
       length: updateData.length,
       price: +updateData.price,
       name: updateData.name,
