@@ -14,7 +14,8 @@ export class ConcoursSignupsRepository extends Repository<ConcoursSignup> {
 
     if (!existence) {
       const signup = this.create({
-        youtubeURL: updateData.youtubeURL,
+        youtubeURL: "",
+        // updateData.youtubeURL
         concoursId: id,
         merchant_uid: updateData.merchant_uid,
         participated_date: updateData.participated_date,
