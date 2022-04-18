@@ -86,7 +86,7 @@ export class YoutubesController {
         "public/" + generatedFiles[1].filename,
       language: "korean",
       tags: ["cat"],
-      channelName: "송재현",
+      channelName: process.env.YOUTUBE_CHANNEL_NAME,
 
       onSuccess: onVideoUploadSuccess,
 
