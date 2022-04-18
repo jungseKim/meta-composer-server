@@ -151,6 +151,8 @@ WHERE  DateWD IN(${day});
       id: id,
     });
 
+    //위
+
     // const aa = axios.post("http://localhost:4000/api/signup-timetables", {
     //   datesArray: datesArray,
     //   signup: signup,

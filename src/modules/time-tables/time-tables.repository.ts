@@ -7,7 +7,9 @@ import { ConsoleLogger } from "@nestjs/common";
 export class TimeTablesRepository extends Repository<TimeTable> {
   async createTimeTable(updateData) {
     console.log(JSON.stringify(updateData.updateData) + "떳나ㅋㅋ");
+    console.log(updateData.updateData.time[0]);
 
+    console.log(updateData.updateData.time);
     //for of문
     // for (const i of updateData.updateData.day) {
     //   let k = 0;
@@ -35,9 +37,12 @@ export class TimeTablesRepository extends Repository<TimeTable> {
     for (let i = 0; i < updateData.updateData.day.length; i++) {
       const day = updateData.updateData.day[i];
       console.log(day + "====>>  updateData.day[i]");
-      for (let j = 0; j < updateData.updateData.time[i].length; j++) {
-        const time = updateData.updateData.time[i][j];
-
+      for (let j = 0; j < updateData.updateData.time[0][i].length; j++) {
+        const time = updateData.updateData.time[0][i][j];
+        console.log(
+          updateData.updateData.time[0][i] +
+            "====>>  updateData.updateData.time[i][j]",
+        );
         const existence = await this.createQueryBuilder("time_table")
           .where("time_table.lessonId = :lessonid", {
             lessonid: updateData.lessonId,

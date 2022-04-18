@@ -30,6 +30,7 @@ import axios from "axios";
 import { query } from "express";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { imageOption } from "src/lib/imageOption";
+import { AppService } from "src/app.service";
 
 @Controller("api/lessons")
 @ApiTags("레슨 API")

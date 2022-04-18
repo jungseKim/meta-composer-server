@@ -16,11 +16,17 @@ export class LessonsRepository extends Repository<Lesson> {
       .where("teacher.userId = :id", { id: user.id })
       .getOne();
 
+    updateData.time = JSON.parse(
+      "[" + updateData.time.replace(/'/g, '"') + "]",
+    );
+
+    console.log(updateData.time);
+
     const lesson = this.create({
       introduce: updateData.introduce,
       imageURL: process.env.SERVER_ADDRESS + "/" + image.filename,
       length: updateData.length,
-      price: updateData.price,
+      price: +updateData.price,
       name: updateData.name,
       type: updateData.type,
       teacherId: checkTeacher.id,
