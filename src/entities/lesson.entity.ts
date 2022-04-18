@@ -30,6 +30,12 @@ export enum LessonType {
   MARCHES = "Marches",
 }
 
+export enum Difficulty {
+  BIGINNER = "beginner",
+  INTERMEDIATE = "intermediate",
+  ADVANCED = "advanced",
+}
+
 @Entity()
 @Unique(["id"])
 export class Lesson extends BaseEntity {
@@ -157,6 +163,29 @@ export class Lesson extends BaseEntity {
     cascade: true,
   })
   searchHistories: SearchHistory[];
+
+  @Column({ type: "enum", enum: Difficulty })
+  @ApiProperty({
+    example: Difficulty.ADVANCED,
+    description: "레슨의 난이도입니다 beginner intermediate advanced 선택가능",
+  })
+  difficulty: Difficulty;
+
+  @Column("longtext", { nullable: true })
+  @ApiProperty({
+    example:
+      "이런걸 배워요 이런걸 배워요 이런걸 배워요 이런걸 배워요 이런걸 배워요 .",
+    description: "이런걸 배워요 이런걸 배워요  ",
+  })
+  weLearnThis: string;
+  //enum?
+
+  @Column({ nullable: true })
+  @ApiProperty({
+    example: "확인해 주세요 확인해 주세요확인해 주세요 확인해 주세요 .",
+    description: "확인해 주세요 확인해 주세요  ",
+  })
+  checkPlease: string;
 }
 // number will be converted into integer, string into varchar, boolean into bool, etc. But you can use any column type your database supports by explicitly specifying a column type into the @Column decorator.  from typeorm.io
 

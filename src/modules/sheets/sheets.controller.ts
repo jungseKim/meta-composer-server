@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  ParseIntPipe,
   Post,
   Query,
   UploadedFile,
@@ -51,8 +52,8 @@ export class SheetsController {
   })
   @UseInterceptors(TransformResponseInterceptor)
   async showPublicSheets(
-    @Query("page") page: number,
-    @Query("perPage") perPage: number,
+    @Query("page", ParseIntPipe) page: number,
+    @Query("perPage", ParseIntPipe) perPage: number,
   ): Promise<Sheet[]> {
     return this.sheetsRepository
       .createQueryBuilder("sheet")

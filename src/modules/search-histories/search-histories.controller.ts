@@ -7,9 +7,9 @@ import { SearchHistoriesService } from "./search-histories.service";
 export class SearchHistoriesController {
   constructor(private searchHistoriesService: SearchHistoriesService) {}
 
-  @Post()
-  @UseInterceptors(TransformResponseInterceptor)
-  saveSearchHistory(): Promise<SearchHistory[]> {
-    return this.searchHistoriesService.saveSearchHistory();
-  }
+  // @Post()
+  // @UseInterceptors(TransformResponseInterceptor)
+  // saveSearchHistory(): Promise<SearchHistory[]> {
+  //   return this.searchHistoriesService.saveSearchHistory();
+  // }
 }

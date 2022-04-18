@@ -34,8 +34,8 @@ export class TimeTablesRepository extends Repository<TimeTable> {
 
     //just for loop
 
-    for (let i = 0; i < updateData.updateData.day.length; i++) {
-      const day = updateData.updateData.day[i];
+    for (let i = 0; i < updateData.updateData.day[0].length; i++) {
+      const day = updateData.updateData.day[0][i];
       console.log(day + "====>>  updateData.day[i]");
       for (let j = 0; j < updateData.updateData.time[0][i].length; j++) {
         const time = updateData.updateData.time[0][i][j];
