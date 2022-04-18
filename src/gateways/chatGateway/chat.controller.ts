@@ -70,7 +70,7 @@ export class ChatController {
   @UseGuards(JwtGuard)
   @UseInterceptors(TransformResponseInterceptor)
   public async getChatRoomMessage(
-    @Param("roomId") roomId: number,
+    @Param("roomId", ParseIntPipe) roomId: number,
     @Query("page", PageValidationPipe) page: number,
     @Query("perPage", PageValidationPipe) perPage: number,
   ) {

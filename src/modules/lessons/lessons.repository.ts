@@ -30,6 +30,9 @@ export class LessonsRepository extends Repository<Lesson> {
       name: updateData.name,
       type: updateData.type,
       teacherId: checkTeacher.id,
+      checkPlease: updateData.checkPlease,
+      weLearnThis: updateData.weLearnThis,
+      difficulty: updateData.difficulty,
     });
 
     await this.save(lesson);

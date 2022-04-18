@@ -44,8 +44,8 @@ export class LessonsController {
   @ApiResponse({ status: 200, description: "레슨 조회완료", type: Lesson })
   @UseInterceptors(TransformResponseInterceptor)
   showAllLesson(
-    @Query("page") page: number,
-    @Query("perPage") perPage: number,
+    @Query("page", ParseIntPipe) page: number,
+    @Query("perPage", ParseIntPipe) perPage: number,
   ): Promise<Lesson[]> {
     return this.lessonsService.showAllLesson(page, perPage);
   }
@@ -61,8 +61,8 @@ export class LessonsController {
   searchLesson(
     @UserDecorator() user: User,
     @Query("searchKeyword") searchKeyword: string,
-    @Query("page") page: number,
-    @Query("perPage") perPage: number,
+    @Query("page", ParseIntPipe) page: number,
+    @Query("perPage", ParseIntPipe) perPage: number,
   ): Promise<Lesson[]> {
     return this.lessonsService.searchLesson(searchKeyword, user, page, perPage);
   }
@@ -78,8 +78,8 @@ export class LessonsController {
   searchLessonbyType(
     @UserDecorator() user: User,
     @Query("searchKeyword") searchKeyword: string,
-    @Query("page") page: number,
-    @Query("perPage") perPage: number,
+    @Query("page", ParseIntPipe) page: number,
+    @Query("perPage", ParseIntPipe) perPage: number,
   ): Promise<Lesson[]> {
     return this.lessonsService.searchLessonbyType(
       searchKeyword,

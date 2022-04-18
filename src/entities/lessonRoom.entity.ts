@@ -9,10 +9,10 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
-import { Lesson } from './lesson.entity';
-import { Message } from './message.entity';
-import { User } from './user.entity';
+} from "typeorm";
+import { Lesson } from "./lesson.entity";
+import { Message } from "./message.entity";
+import { User } from "./user.entity";
 
 @Entity()
 export class LessonRoom extends BaseEntity {

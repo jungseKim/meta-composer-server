@@ -9,4 +9,7 @@ export class LessonDTO extends PickType(Lesson, [
   "type",
   "teacherId",
   "imageURL",
+  "difficulty",
+  "weLearnThis",
+  "checkPlease",
 ] as const) {}

@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  ParseIntPipe,
   Post,
   Query,
   UploadedFile,
@@ -51,7 +52,7 @@ export class YoutubesController {
   async uploadYoutubeVideo(
     @Body() updateData,
     @UploadedFiles() files: Array<Express.Multer.File>,
-    @Query("id") id: number,
+    @Query("id", ParseIntPipe) id: number,
     @UserDecorator() user: User,
   ): Promise<any> {
     const videoTitle = updateData.videoTitle;
@@ -190,7 +191,7 @@ export class YoutubesController {
     // console.log(videoIds);
   }
 
-  @Get("/top3")
+  @Get("/top3view")
   @ApiOperation({
     summary: "유튜브에서 채널 전체의 정보를 가져와서 조회수3위까지",
     description: "유튜브에서 채널 전체의 정보를 가져와서 조회수3위까지",
