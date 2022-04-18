@@ -17,7 +17,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
       callbackURL:
         process.env.NODE_ENV === "dev"
           ? "http://localhost:4000/api/auth/google/redirect"
-          : "http://jungse.shop/api/auth/google/redirect",
+          : "https://jungse.shop/api/auth/google/redirect",
       scope: ["email", "profile"],
     });
   }
