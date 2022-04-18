@@ -34,8 +34,8 @@ export class LessonClassGateway
   constructor(private lessonClassService: LessonClassService) {}
 
   @SubscribeMessage("setInit")
-  firstConnection(client: LessonSocket, payload: { lessonId: number }) {
-    return this.lessonClassService.setInit(client, payload.lessonId);
+  firstConnection(client: LessonSocket, lessonId: number) {
+    return this.lessonClassService.setInit(client, lessonId);
   }
 
   @SubscribeMessage("retry")

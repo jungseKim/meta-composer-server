@@ -40,7 +40,10 @@ export class LessonClassService {
 
     client.rooms.clear();
     client.userId = userId;
-    return this.LessonConnection(client, lessonId);
+
+    //원래 이걸로
+    // return this.LessonConnection(client, lessonId);
+    return this.TestLessonConnection(client, lessonId);
   }
 
   public async clasStart(signup: Signup, signuptimetableId: number) {
@@ -76,6 +79,10 @@ export class LessonClassService {
       tiemTable.teacherId = client.data.userId;
     }
     await tiemTable.save();
+    client.join(`lesson-${signupId}`);
+    client.to(`lesson-${signupId}`).emit("sendOffer");
+  }
+  public async TestLessonConnection(client: LessonSocket, signupId: number) {
     client.join(`lesson-${signupId}`);
     client.to(`lesson-${signupId}`).emit("sendOffer");
   }

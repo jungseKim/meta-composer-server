@@ -84,6 +84,8 @@ export class LessonsRepository extends Repository<Lesson> {
       .orWhere("lesson.type LIKE (:searchKeyword)", {
         searchKeyword: `%${searchKeyword}%`,
       })
+      .leftJoinAndSelect("lesson.teacher", "teacher")
+      .leftJoinAndSelect("teacher.user", "user")
       .orderBy("lesson.id", "DESC")
       .take(perPage)
       .skip(perPage * (page - 1))
