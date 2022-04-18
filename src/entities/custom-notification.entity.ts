@@ -35,7 +35,7 @@ export class CustomNotification extends BaseEntity {
   @Column()
   content: string;
 
-  @Column({ nullable: true })
+  @Column()
   url: string;
 
   @ApiProperty({

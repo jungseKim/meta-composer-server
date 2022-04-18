@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -98,7 +99,7 @@ export class LessonsController {
   @UseInterceptors(TransformResponseInterceptor)
   async getLessonById(
     @UserDecorator() user: User,
-    @Param("id") id: number,
+    @Param("id", ParseIntPipe) id: number,
   ): Promise<Lesson> {
     await axios.post("http://localhost:4000/api/viewcounts", {
       user,

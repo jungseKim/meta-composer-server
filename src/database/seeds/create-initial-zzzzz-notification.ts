@@ -36,6 +36,7 @@ export class Notification implements Seeder {
               type: "signup",
               typeId: signup.id,
               content: `${user.username} 님이 강의를 수강했습니다.`,
+              url: `/lessons/${signup.lessonId}`,
             },
           ])
           .execute();
@@ -58,6 +59,7 @@ export class Notification implements Seeder {
               type: "commnet",
               typeId: comment.id,
               content: `${user.username} 님이 댓글을 달았습니다.`,
+              url: `/lessons/${comment.lessonId}`,
             },
           ])
           .execute();
