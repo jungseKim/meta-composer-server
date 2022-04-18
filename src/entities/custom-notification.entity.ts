@@ -23,8 +23,8 @@ export class CustomNotification extends BaseEntity {
   id: number;
 
   @ApiProperty({ example: true, description: "읽으면 날짜  default false" })
-  @Column({ type: "datetime", default: false })
-  readTime: string | boolean;
+  @Column({ type: "datetime", nullable: true })
+  readTime: string;
 
   @Column()
   type: "commnet" | "signup" | "classStart";

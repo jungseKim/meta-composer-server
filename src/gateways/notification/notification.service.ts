@@ -89,7 +89,7 @@ export class NotificationService {
         .getMany();
     const notifitionCount = await this.CustomnotificationRepository.count({
       userId: userId,
-      readTime: false,
+      readTime: null,
     });
     return { notifitionData, notifitionCount };
   }
