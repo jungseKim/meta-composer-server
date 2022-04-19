@@ -210,23 +210,24 @@ export class ChatService {
   }
 
   public async createChatRoom(userId: number, lessonId: number) {
-    const chatRoom = await this.chatRoomRepository.findOneOrFail({
+    const chatRoom = await this.chatRoomRepository.findOne({
       userId,
       lessonId,
     });
     if (chatRoom) {
       return chatRoom;
-    } else {
-      if (!(await this.signupRepository.findOneOrFail({ userId, lessonId }))) {
-        throw new HttpException("수강한 학생들만 채팅신청 가능", 402);
-      }
-      return await this.chatRoomRepository
-        .create({
-          userId,
-          lessonId,
-        })
-        .save();
     }
+    // } else {
+    //   if (!(await this.signupRepository.findOneOrFail({ userId, lessonId }))) {
+    //     throw new HttpException("수강한 학생들만 채팅신청 가능", 402);
+    //   }
+    return await this.chatRoomRepository
+      .create({
+        userId,
+        lessonId,
+      })
+      .save();
+    // }
   }
   public async removeChatRoom(user: User, roomId: number) {
     const room = await this.chatRoomRepository.findOne({ id: roomId });
