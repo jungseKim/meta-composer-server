@@ -16,6 +16,7 @@ export class UserService {
     // const user = await this.userRepository.findOne(userId);
     const user = await this.userRepository
       .createQueryBuilder("user")
+      .where("user.id = :id", { id: userId })
       .leftJoinAndSelect("user.teacher", "teacher")
       .getOne();
     return user;
