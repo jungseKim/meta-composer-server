@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/entities/user.entity';
-import { Repository } from 'typeorm';
-import { JoinFacebookDto } from './dto/join-facebook-user.dto';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { User } from "src/entities/user.entity";
+import { Repository } from "typeorm";
+import { JoinFacebookDto } from "./dto/join-facebook-user.dto";
 @Injectable()
 export class UserService {
   constructor(
@@ -13,7 +13,11 @@ export class UserService {
     return users;
   }
   async findOne(userId: number): Promise<User> {
-    const user = await this.userRepository.findOne(userId);
+    // const user = await this.userRepository.findOne(userId);
+    const user = await this.userRepository
+      .createQueryBuilder("user")
+      .leftJoinAndSelect("user.teacher", "teacher")
+      .getOne();
     return user;
   }
   async findOrCreate(joinFacebookDto: JoinFacebookDto) {
@@ -30,8 +34,7 @@ export class UserService {
         provider: joinFacebookDto.provider,
         username: joinFacebookDto.username,
         email: joinFacebookDto.email,
-        profile_image : joinFacebookDto.profile_image,
-
+        profile_image: joinFacebookDto.profile_image,
       },
       { reload: false },
     );
