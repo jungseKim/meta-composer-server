@@ -1,3 +1,4 @@
+import { TasksModule } from "./../tasks/tasks.module";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { SignupsController } from "./signups.controller";
@@ -5,7 +6,7 @@ import { SignupsRepository } from "./signups.repository";
 import { SignupsService } from "./signups.service";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([SignupsRepository])],
+  imports: [TypeOrmModule.forFeature([SignupsRepository]), TasksModule],
   providers: [SignupsService],
   controllers: [SignupsController],
 })

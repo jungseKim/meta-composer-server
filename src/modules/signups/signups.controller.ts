@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpService,
   Param,
+  ParseIntPipe,
   Post,
   Req,
   UseGuards,
@@ -37,8 +38,8 @@ export class SignupsController {
     description: "수강등록을 한다. id 는 레슨의 id값",
   })
   async signup(
-    @Param("id") id: number,
-    @Body() updateData,
+    @Param("id", ParseIntPipe) id: number,
+    @Body("data") updateData,
     @UserDecorator() user: User,
   ): Promise<Signup> {
     return this.signupsService.signup(id, updateData, user);

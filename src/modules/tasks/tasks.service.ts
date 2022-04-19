@@ -58,6 +58,14 @@ export class TasksService {
     job.start();
   }
 
+  public async signupNotificationTest(signup: Signup) {
+    const job = new CronJob(new Date(Date.now() + 10 * 1000), async () => {
+      await this.notificationService.pushStarClass(signup);
+    });
+
+    job.start();
+  }
+
   //만약 레슨 시간 변경시에는 취소한다음 다시 수강
   public async cancleSignNotification(signup: Signup) {
     if (signup == null) {

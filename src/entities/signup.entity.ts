@@ -21,13 +21,13 @@ import { Signuptimetable } from "./signuptimetable.entity";
 import { User } from "./user.entity";
 
 export enum weekDays {
-  Sunday = "Sunday",
-  Monday = "Monday",
-  Tuesday = "Tuesday",
-  Wednesday = "Wednesday",
-  Thursday = "Thursday",
-  Friday = "Friday",
-  Saturday = "Saturday",
+  SUN = "Sun",
+  MON = "Mon",
+  TUE = "Tue",
+  WED = "Wed",
+  THU = "Thu",
+  FRI = "Fri",
+  SAT = "Sat",
 }
 
 @Entity()
@@ -86,7 +86,7 @@ export class Signup extends BaseEntity {
 
   @Column({ type: "enum", enum: weekDays })
   @ApiProperty({
-    example: weekDays.Monday,
+    example: weekDays.MON,
     description: "사용자가 수강 신청한 요일",
   })
   weekdays: string;

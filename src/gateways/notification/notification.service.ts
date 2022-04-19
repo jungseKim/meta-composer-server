@@ -125,14 +125,14 @@ export class NotificationService {
       typeId: lesson.id,
       userId,
       content: `${lesson.name} 수업이 시작되었습니다.`,
-      url: `/lessons/${lesson.id}`,
+      url: `/link`,
     }).save();
     const teacherNotification = await this.CustomnotificationRepository.create({
       type: "classStart",
       typeId: lesson.id,
       userId: teacherUserId,
       content: `${lesson.name} 수업이 시작되었습니다.`,
-      url: `/lessons/${lesson.id}`,
+      url: `/link`,
     }).save();
     console.log(userId, teacherUserId);
     const user = this.clients[userId];
