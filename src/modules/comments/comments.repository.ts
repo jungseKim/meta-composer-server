@@ -1,9 +1,14 @@
 import { Comment } from "src/entities/comment.entity";
+import { User } from "src/entities/user.entity";
 import { EntityRepository, Repository } from "typeorm";
 
 @EntityRepository(Comment)
 export class CommentsRepository extends Repository<Comment> {
-  async createComment(user, updateData, lessonId): Promise<Comment> {
+  async createComment(
+    user,
+    updateData: Comment,
+    lessonId: number,
+  ): Promise<Comment> {
     const comment = this.create({
       contents: updateData.contents,
       rating: updateData.rating,
@@ -28,7 +33,7 @@ export class CommentsRepository extends Repository<Comment> {
     lessonId: number,
     commentId: number,
     user,
-    updateData,
+    updateData: Comment,
   ): Promise<any> {
     this.createQueryBuilder()
       .update(Comment)

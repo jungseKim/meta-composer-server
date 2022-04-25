@@ -31,7 +31,7 @@ export class AssignmentsController {
   })
   @ApiBody({ type: Assignment })
   @UseInterceptors(TransformResponseInterceptor)
-  createAssignment(@Body() updatedData): Promise<Assignment> {
+  createAssignment(@Body() updatedData: Assignment): Promise<Assignment> {
     return this.assignmentsService.createAssignment(updatedData);
   }
 

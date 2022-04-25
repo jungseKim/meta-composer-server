@@ -28,7 +28,7 @@ export class TimeTablesController {
   @Patch("/:id")
   async updateTimetable(
     @Body() updateData,
-    @Param("id") id,
+    @Param("id") id: number,
     // @TeacherDecorator() isTeacher: boolean,
   ) {
     return this.timeTablesService.updateTimetable(updateData, id);

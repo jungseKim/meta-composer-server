@@ -44,7 +44,7 @@ export class CommentsController {
   createComment(
     @Param("id") lessonId: number,
     @UserDecorator() user: User,
-    @Body() updateData,
+    @Body() updateData: Comment,
   ): Promise<Comment> {
     return this.commentService.createComment(user, updateData, lessonId);
   }
@@ -77,7 +77,7 @@ export class CommentsController {
     @Param("id") lessonId: number,
     @Param("cid") commentId: number,
     @UserDecorator() user: User,
-    @Body() updateData,
+    @Body() updateData: Comment,
   ): Promise<Comment> {
     return this.commentService.updateComment(
       lessonId,

@@ -11,11 +11,11 @@ export class ConcoursSignupsService {
     private concoursSignupsRepository: ConcoursSignupsRepository, //
   ) {}
 
-  async participate(updateData, user, id) {
+  async participate(updateData: ConcoursSignup, user: User, id: number) {
     return this.concoursSignupsRepository.participate(updateData, user, id);
   }
 
-  async check(user, id) {
+  async check(user: User, id: number) {
     return this.concoursSignupsRepository.check(user, id);
   }
 }

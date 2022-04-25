@@ -11,6 +11,7 @@ import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { TransformResponseInterceptor } from "src/common/interceptors/transformResponse.interceptor";
 import { UserDecorator } from "src/decorators/user.decorator";
 import { ConcoursSignup } from "src/entities/concoursSignup.entity";
+import { Signup } from "src/entities/signup.entity";
 import { User } from "src/entities/user.entity";
 import { ConcoursSignupsService } from "./concours-signups.service";
 
@@ -31,7 +32,7 @@ export class ConcoursSignupsController {
   //type 를 entity 로
   async participate(
     @Param("id") id: number,
-    @Body() updateData,
+    @Body() updateData: ConcoursSignup,
     @UserDecorator() user: User,
   ) {
     return this.concoursSignupsService.participate(updateData, user, id);

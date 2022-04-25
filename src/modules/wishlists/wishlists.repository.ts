@@ -1,10 +1,11 @@
+import { User } from "src/entities/user.entity";
 import { Wishlist } from "src/entities/wishlist.entity";
 import { EntityRepository, Repository } from "typeorm";
 import { WishListDto } from "./dto/wishlist.dto";
 
 @EntityRepository(Wishlist)
 export class WishlistsRepository extends Repository<Wishlist> {
-  async createWishList(user, lid): Promise<any> {
+  async createWishList(user: User, lid: number): Promise<any> {
     const existence: WishListDto = await this.createQueryBuilder("wishlist")
       .where("wishlist.userId = :userid", { userid: user.id })
       .andWhere("wishlist.lessonId = :lessonid", { lessonid: lid })
@@ -22,7 +23,7 @@ export class WishlistsRepository extends Repository<Wishlist> {
     }
   }
 
-  async deleteWishList(user, lid): Promise<void> {
+  async deleteWishList(user: User, lid: number): Promise<void> {
     const existence = await this.createQueryBuilder("wishlist")
       .where("wishlist.userId = :userid", { userid: user.id })
       .andWhere("wishlist.lessonId = :lessonid", { lessonid: lid })

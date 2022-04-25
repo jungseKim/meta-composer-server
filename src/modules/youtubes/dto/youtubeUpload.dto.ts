@@ -16,7 +16,7 @@ export class YoutubeUploadDto {
   @ApiProperty({
     example: "첫번째 첨부파일은 영상(.mp4), 두번째는 썸네일(.png)을 올려주세요",
     description:
-      "첫번째 첨부파일은 영상(.mp4), 두번째는 썸네일(.png)을 올려주세요",
+      "첫번째 첨부파일은 영상(.mp4), 두번째는 썸네일(.png)을 올려주세요  input 의 ID는 둘다 files로 해주세요.",
   })
   files: string;
 }

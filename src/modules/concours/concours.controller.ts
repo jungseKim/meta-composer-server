@@ -64,8 +64,8 @@ export class ConcoursController {
   @UseInterceptors(FileInterceptor("image", imageOption))
   @UseInterceptors(TransformResponseInterceptor)
   async createConcours(
-    @UploadedFile() image,
-    @Body() updateData,
+    @UploadedFile() image: any,
+    @Body() updateData: Concours,
   ): Promise<Concours> {
     console.log(image);
     return this.concoursService.createConcours(updateData, image);
@@ -95,8 +95,8 @@ export class ConcoursController {
   @UseInterceptors(TransformResponseInterceptor)
   async updateConcours(
     @Param("id") id: number,
-    @UploadedFile() image,
-    @Body() updateData,
+    @UploadedFile() image: any,
+    @Body() updateData: Concours,
   ) {
     return this.concoursService.updateConcours(id, updateData, image);
   }

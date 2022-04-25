@@ -7,13 +7,12 @@ import axios, { AxiosResponse } from "axios";
 import { TimeTable } from "src/entities/timeTable.entity";
 import { SearchHistoriesRepository } from "../search-histories/search-histories.repository";
 import { SearchHistory } from "src/entities/searchHistory.entiry";
+import { SearchHistoriesService } from "../search-histories/search-histories.service";
+import { User } from "src/entities/user.entity";
 @EntityRepository(Lesson)
 export class LessonsRepository extends Repository<Lesson> {
-  @InjectRepository(SearchHistory)
-  private readonly searchHistoriesRepository: Repository<SearchHistory>;
-
   // const teacherId = Repository<Teacher>.find(user.id);
-  async createLesson(updateData, user, image): Promise<any> {
+  async createLesson(updateData, user: User, image: any): Promise<any> {
     const checkTeacher = await getRepository(Teacher)
       .createQueryBuilder("teacher")
       .where("teacher.userId = :id", { id: user.id })
@@ -56,7 +55,11 @@ export class LessonsRepository extends Repository<Lesson> {
     // }
   }
 
-  async updateLessonById(id, updateData, user): Promise<any> {
+  async updateLessonById(
+    id: number,
+    updateData: Lesson,
+    user: User,
+  ): Promise<any> {
     this.createQueryBuilder()
       .update(Lesson)
       .set({
@@ -72,7 +75,12 @@ export class LessonsRepository extends Repository<Lesson> {
     return;
   }
 
-  async searchLesson(searchKeyword, user, page, perPage): Promise<Lesson[]> {
+  async searchLesson(
+    searchKeyword: string,
+    user: User,
+    page: number,
+    perPage: number,
+  ): Promise<Lesson[]> {
     const result = await this.createQueryBuilder("lesson")
 
       .where("lesson.introduce LIKE (:searchKeyword)", {
@@ -98,16 +106,16 @@ export class LessonsRepository extends Repository<Lesson> {
     });
     console.log(ArrayOFresult);
     ////////////////////
-    // this.searchHistoriesRepository.saveSearchHistory(user, 22, searchKeyword);
+
     //////////////this makes error
     return result;
     //엔티티, 모듈, tensorflow 에 보내기
   }
   async searchLessonbyType(
-    searchKeyword,
-    user,
-    page,
-    perPage,
+    searchKeyword: string,
+    user: User,
+    page: number,
+    perPage: number,
   ): Promise<Lesson[]> {
     const result = await this.createQueryBuilder("lesson")
       .where("lesson.type = :searchKeyword", {

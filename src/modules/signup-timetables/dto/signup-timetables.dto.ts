@@ -7,4 +7,5 @@ export class SignupTimetableDto extends PickType(Signuptimetable, [
   "time",
   "signupId",
   "Isparticipate",
+  "userId",
 ] as const) {}

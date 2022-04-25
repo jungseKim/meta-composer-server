@@ -3,7 +3,7 @@ import { EntityRepository, Repository } from "typeorm";
 
 @EntityRepository(Concours)
 export class ConcoursRepository extends Repository<Concours> {
-  async createConcours(updateData, image): Promise<Concours> {
+  async createConcours(updateData: Concours, image: any): Promise<Concours> {
     const concours = this.create({
       price: updateData.price,
       concoursSignupStartTime: updateData.concoursSignupStartTime,
@@ -20,7 +20,11 @@ export class ConcoursRepository extends Repository<Concours> {
     return concours;
   }
 
-  async updateConcours(id, updateData, image): Promise<void> {
+  async updateConcours(
+    id: number,
+    updateData: Concours,
+    image: any,
+  ): Promise<void> {
     this.createQueryBuilder()
       .update(Concours)
       .set({

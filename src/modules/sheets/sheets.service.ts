@@ -11,7 +11,7 @@ export class SheetsService {
     private sheetsRepository: SheetsRepository, //
   ) {}
 
-  async uploadSheets(user: User, sheet, updateData): Promise<Sheet> {
+  async uploadSheets(user: User, sheet: any, updateData): Promise<Sheet> {
     return this.sheetsRepository.uploadSheets(user, sheet, updateData);
   }
 }

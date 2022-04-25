@@ -49,7 +49,17 @@ export class SignupsController {
   @Delete("/lessons/:id")
   @ApiOperation({
     summary: "수강 등록 정보 삭제",
-    description: "수강 등록 정보 삭제. id 는 레슨의 id값",
+    description: `수강 등록 정보 삭제. id 는 레슨의 id값
+    {
+    "data" : {
+    "merchant_uid":"이건 결제시 자동 등록됨",
+    "startdate":"2022-02-01",
+    "howManyMonth":5,
+    "lessonTime":["14:00:00","15:00:00","16:00:00"],
+    "weekdays":["Sun","Mon"]}
+}
+    
+    `,
   })
   async signupCancel(
     @Param("id") id: number,

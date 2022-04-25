@@ -1,11 +1,12 @@
 import { Payment } from "src/entities/payment.entity";
 import { Signup } from "src/entities/signup.entity";
+import { User } from "src/entities/user.entity";
 
 import { EntityRepository, Repository } from "typeorm";
 
 @EntityRepository(Payment)
 export class PaymentsRepository extends Repository<Payment> {
-  async createPayment(updateData, user): Promise<Payment> {
+  async createPayment(updateData, user: User): Promise<Payment> {
     const payments = this.create({
       payment_number: updateData.merchant_uid,
       affiliation: updateData.card_name,
@@ -20,7 +21,7 @@ export class PaymentsRepository extends Repository<Payment> {
     return payments;
   }
 
-  async deletePayment(updateData, user): Promise<Payment> {
+  async deletePayment(updateData, user: User): Promise<Payment> {
     this.createQueryBuilder()
       .update(Payment)
       .set({

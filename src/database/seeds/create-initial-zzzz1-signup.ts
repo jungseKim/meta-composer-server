@@ -7,6 +7,8 @@ import { Signup } from "../../entities/signup.entity";
 
 export class CreateInitialSignupData implements Seeder {
   public async run(factory: Factory, connection: Connection): Promise<any> {
+    const daylist = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
     for (let count = 0; count <= 3; count++) {
       const allUsers = await connection
         .getRepository(User)
@@ -41,6 +43,8 @@ export class CreateInitialSignupData implements Seeder {
       //   randomHours[Math.floor(Math.random() * randomHours.length)];
       // const randomMin =
       //   randomMins[Math.floor(Math.random() * randomMins.length)];
+
+      const randomday = Math.floor(Math.random() * daylist.length);
       await connection
         .createQueryBuilder()
         .insert()
@@ -52,7 +56,7 @@ export class CreateInitialSignupData implements Seeder {
               allLessonIds[Math.floor(Math.random() * allLessonIds.length)],
             userId: allUsersIds[Math.floor(Math.random() * allUsersIds.length)],
             startdate: year + "-" + month + "-" + date,
-            weekdays: faker.date.weekday(),
+            weekdays: daylist[randomday],
             howManyMonth: 5,
             // lessonTime: randomHour + ":" + randomMin + ":" + randomMin,
             lessonTime: "14:30:00",

@@ -36,7 +36,7 @@ export class SheetsController {
   @UseInterceptors(FileInterceptor("sheet", sheetOption))
   @UseInterceptors(TransformResponseInterceptor)
   async uploadSheets(
-    @UploadedFile() sheet,
+    @UploadedFile() sheet: any,
     @UserDecorator() user: User,
     @Body() updateData,
   ): Promise<Sheet> {
