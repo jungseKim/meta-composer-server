@@ -14,13 +14,18 @@ export class SignupsService {
   ) {}
 
   async signup(id, updateData, user: User): Promise<Signup> {
-    const signup = await this.signupsRepository.signupTest(
-      id,
-      updateData,
-      user,
-    );
-    await this.tasksService.signupNotificationTest(signup);
-    // return this.signupsRepository.signup(id, updateData, user);
+    const signup = await this.signupsRepository.signup(id, updateData, user);
+    // await this.tasksService.signupNotificationTest(signup);
     return signup;
   }
+  // async signup(id: number, updateData, user: User): Promise<Signup> {
+  //   const signup = await this.signupsRepository.signupTest(
+  //     id,
+  //     updateData,
+  //     user,
+  //   );
+  //   await this.tasksService.signupNotificationTest(signup);
+  //   // return this.signupsRepository.signup(id, updateData, user);
+  //   return signup;
+  // }
 }

@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Signuptimetable } from "src/entities/signuptimetable.entity";
+import { User } from "src/entities/user.entity";
 import { SignuptimetablesRepository } from "./signup-timetables.repository";
 
 @Injectable()
@@ -13,7 +14,7 @@ export class SignupTimetablesService {
   async createTimeTable(updateData) {
     return this.signuptimetablesRepository.createTimeTable(updateData);
   }
-  async getMyTimeTable(user): Promise<Signuptimetable[]> {
+  async getMyTimeTable(user: User): Promise<Signuptimetable[]> {
     return this.signuptimetablesRepository.getMyTimeTable(user);
   }
 }

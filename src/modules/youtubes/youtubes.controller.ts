@@ -271,4 +271,85 @@ export class YoutubesController {
     console.log(resultArray);
     return resultArray;
   }
+
+  @Get("/top3comment")
+  @ApiOperation({
+    summary: "유튜브에서 채널 전체의 정보를 가져와서 댓글3위까지",
+    description: "유튜브에서 채널 전체의 정보를 가져와서 댓글3위까지",
+  })
+  @ApiResponse({
+    status: 200,
+    description: "유튜브에서 채널 전체의 정보를 가져와서 댓글3위까지 완료",
+    type: YoutubeUploadDto,
+  })
+  @UseInterceptors(TransformResponseInterceptor)
+  async getTop3commentFromVideo() {
+    const videoInfos = await axios
+      .get(
+        `https://www.googleapis.com/youtube/v3/search?order=date&part=snippet&contentDetails&topicDetails&invideoPromotion&channelId=${process.env.YOUTUBE_CHANNEL_ID}&maxResults=25&key=${process.env.YOUTUBE_API_KEY}`,
+      )
+      .then((res) => {
+        const videoInfo = res.data;
+
+        console.log(videoInfo);
+        return videoInfo;
+      });
+
+    const videoIds = [];
+    //videoId들의 배열
+    for (const videoInfo of videoInfos.items) {
+      if (videoInfo.id.kind == "youtube#video") {
+        videoIds.push(videoInfo.id.videoId);
+        // console.log(videoInfo.id.videoId);
+        // return this.getvideoInfo(videoInfo.id.videoId);
+      }
+    }
+
+    const viewCountandVideoIdArray = [];
+    for (const videoId in videoIds) {
+      // console.log(videoIds[videoId]);
+
+      const itemWithvideo = await axios
+        .get(
+          `https://www.googleapis.com/youtube/v3/videos?id=${videoIds[videoId]}&key=${process.env.YOUTUBE_API_KEY}&part=snippet,statistics&fields=items(id,snippet(channelId,title,categoryId),statistics)`,
+        )
+        .then((res) => {
+          const videoInfo = res;
+
+          // console.log(JSON.stringify(videoInfo));
+          // console.log(videoInfo.data.items[0].statistics.viewCount);
+          return [
+            videoInfo.data.items[0].statistics.commentCount,
+            videoInfo.data.items[0].id,
+          ];
+        });
+
+      viewCountandVideoIdArray.push(itemWithvideo);
+    }
+    console.log(viewCountandVideoIdArray);
+
+    const newArray = viewCountandVideoIdArray.sort(function (x, y) {
+      return y[0] - x[0];
+    });
+    console.log(newArray[0]);
+
+    const resultArray = [];
+    for (let i = 0; i < 3; i++) {
+      console.log(newArray[i][1]);
+
+      const result = await axios
+        .get(
+          `https://www.googleapis.com/youtube/v3/videos?id=${newArray[i][1]}&key=${process.env.YOUTUBE_API_KEY}&part=snippet,statistics&fields=items(id,snippet(channelId,title,categoryId),statistics)`,
+        )
+        .then((res) => {
+          const videoInfo = res.data;
+
+          // console.log(JSON.stringify(videoInfo));
+          return videoInfo;
+        });
+      resultArray.push(result);
+    }
+    console.log(resultArray);
+    return resultArray;
+  }
 }

@@ -71,7 +71,7 @@ export class TimeTablesRepository extends Repository<TimeTable> {
     //같은요일 같은시간 안들어가게.
   }
 
-  async updateTimetable(updateData, id) {
+  async updateTimetable(updateData, id: number) {
     //param id 로 가져와서
     //  axios.patch("http://localhost:4000/api/time-tables/" + id, {
     //    updateData,
@@ -92,7 +92,7 @@ export class TimeTablesRepository extends Repository<TimeTable> {
       .where("id = :id", { id: id })
       .execute();
 
-    return "Sadad";
+    return;
   }
 }
 

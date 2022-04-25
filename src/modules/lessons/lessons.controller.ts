@@ -50,6 +50,7 @@ export class LessonsController {
     return this.lessonsService.showAllLesson(page, perPage);
   }
 
+  @UseGuards(AuthGuard("jwt"))
   @Get("search")
   @ApiOperation({
     summary: "레슨 검색",
@@ -67,6 +68,7 @@ export class LessonsController {
     return this.lessonsService.searchLesson(searchKeyword, user, page, perPage);
   }
 
+  @UseGuards(AuthGuard("jwt"))
   @Get("type")
   @ApiOperation({
     summary: "레슨 타입으로 검색",
@@ -101,12 +103,7 @@ export class LessonsController {
     @UserDecorator() user: User,
     @Param("id", ParseIntPipe) id: number,
   ): Promise<Lesson> {
-    await axios.post("http://localhost:4000/api/viewcounts", {
-      user,
-      id,
-    });
-
-    return this.lessonsService.getLessonById(id);
+    return this.lessonsService.getLessonById(user, id);
   }
 
   @UseGuards(AuthGuard("jwt"))
@@ -140,8 +137,8 @@ export class LessonsController {
   @UseInterceptors(FileInterceptor("image", imageOption))
   @UseInterceptors(TransformResponseInterceptor)
   create(
-    @UploadedFile() image,
-    @Body() updateData,
+    @UploadedFile() image: any,
+    @Body() updateData: Lesson,
     @UserDecorator() user: User,
     @TeacherDecorator() isTeacher: boolean,
   ): Promise<Lesson> {
@@ -154,7 +151,7 @@ export class LessonsController {
   @ApiResponse({ status: 200, description: "레슨 삭제완료", type: Lesson })
   @UseInterceptors(TransformResponseInterceptor)
   deleteLessonById(
-    @Param("id") id,
+    @Param("id") id: number,
     @TeacherDecorator() isTeacher: boolean,
   ): Promise<void> {
     return this.lessonsService.deleteLessonById(id);
@@ -166,8 +163,8 @@ export class LessonsController {
   @ApiResponse({ status: 200, description: "레슨 수정완료", type: Lesson })
   @UseInterceptors(TransformResponseInterceptor)
   updateLessonById(
-    @Param("id") id,
-    @Body() updateData,
+    @Param("id") id: number,
+    @Body() updateData: Lesson,
     @UserDecorator() user: User,
     @TeacherDecorator() isTeacher: boolean,
   ): Promise<void> {

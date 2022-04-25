@@ -17,6 +17,7 @@ export class SignuptimetablesRepository extends Repository<Signuptimetable> {
       const timetable = this.create({
         signupId: updateData.signup.id,
         time: updateData.datesArray[date] + " " + updateData.time,
+        userId: updateData.userId,
       });
       console.log(updateData.datesArray[date]);
       console.log(timetable);
