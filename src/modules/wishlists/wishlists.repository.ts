@@ -24,16 +24,30 @@ export class WishlistsRepository extends Repository<Wishlist> {
   }
 
   async deleteWishList(user: User, lid: number): Promise<void> {
-    // const existence = await this.createQueryBuilder("wishlist")
-    //   .where("wishlist.userId = :userid", { userid: user.id })
-    //   .andWhere("wishlist.lessonId = :lessonid", { lessonid: lid })
-    //   .getOne();
-    // await this.lessonsRepository.delete(id);
-    // console.log(existence);
-    // if (existence) {
-    //   this.delete(existence);
-    //   console.log("completely deleted");
-    // } else console.log("you haven't written wishlist yet");
-    ////
+    const existence = await this.createQueryBuilder("wishlist")
+      .where("wishlist.userId = :userid", { userid: user.id })
+      .andWhere("wishlist.lessonId = :lessonid", { lessonid: lid })
+      .getOne();
+
+    if (existence) {
+      await this.delete(existence);
+      console.log("completely deleted");
+    } else console.log("you haven't written wishlist yet");
+  }
+
+  async getWishList(
+    user: User,
+    page: number,
+    perPage: number,
+  ): Promise<Wishlist[]> {
+    return await this.createQueryBuilder("wishlist")
+      .where("wishlist.userId = :userid", { userid: user.id })
+      .innerJoinAndSelect("wishlist.lesson", "lesson")
+      .leftJoinAndSelect("lesson.comments", "comment")
+      .leftJoinAndSelect("lesson.teacher", "teacher")
+      .leftJoinAndSelect("teacher.user", "user")
+      .take(perPage)
+      .skip(perPage * (page - 1))
+      .getMany();
   }
 }

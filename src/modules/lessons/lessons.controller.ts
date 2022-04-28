@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   Param,
@@ -11,6 +12,8 @@ import {
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  UsePipes,
+  ValidationPipe,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import {
@@ -31,7 +34,7 @@ import axios from "axios";
 import { query } from "express";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { imageOption } from "src/lib/imageOption";
-import { AppService } from "src/app.service";
+import { OrderValidationPipe } from "./pipe/orderPipe.pipe";
 
 @Controller("api/lessons")
 @ApiTags("레슨 API")
@@ -46,8 +49,10 @@ export class LessonsController {
   showAllLesson(
     @Query("page", ParseIntPipe) page: number,
     @Query("perPage", ParseIntPipe) perPage: number,
+    @Query("order", OrderValidationPipe) order: string[],
   ): Promise<Lesson[]> {
-    return this.lessonsService.showAllLesson(page, perPage);
+    console.log(order);
+    return this.lessonsService.showAllLesson(page, perPage, order);
   }
 
   @UseGuards(AuthGuard("jwt"))
@@ -64,8 +69,15 @@ export class LessonsController {
     @Query("searchKeyword") searchKeyword: string,
     @Query("page", ParseIntPipe) page: number,
     @Query("perPage", ParseIntPipe) perPage: number,
+    @Query("order", OrderValidationPipe) order: string[],
   ): Promise<Lesson[]> {
-    return this.lessonsService.searchLesson(searchKeyword, user, page, perPage);
+    return this.lessonsService.searchLesson(
+      searchKeyword,
+      user,
+      page,
+      perPage,
+      order,
+    );
   }
 
   @UseGuards(AuthGuard("jwt"))
@@ -82,12 +94,14 @@ export class LessonsController {
     @Query("searchKeyword") searchKeyword: string,
     @Query("page", ParseIntPipe) page: number,
     @Query("perPage", ParseIntPipe) perPage: number,
+    @Query("order", OrderValidationPipe) order: string[],
   ): Promise<Lesson[]> {
     return this.lessonsService.searchLessonbyType(
       searchKeyword,
       user,
       page,
       perPage,
+      order,
     );
   }
 

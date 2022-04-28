@@ -9,6 +9,7 @@ import { TransformResponseInterceptor } from "./common/interceptors/transformRes
 import session from "express-session";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { JwtGuard } from "./modules/auth/jwt.guard";
+import { ValidationPipe } from "@nestjs/common";
 dotenv.config({
   path: path.resolve(".env"),
 });
@@ -22,6 +23,13 @@ async function bootstrap() {
     exposedHeaders: ["Authorization"],
     // allowedHeaders: 'http://localhost:3000/*',
   });
+  // app.useGlobalPipes(
+  //   new ValidationPipe({
+  //     whitelist: true,
+  //     forbidNonWhitelisted: true,
+  //     transform: true,
+  //   }),
+  // );
 
   app.use(cookieParser());
 

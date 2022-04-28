@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import {
+  AfterLoad,
   BaseEntity,
   Column,
   CreateDateColumn,
@@ -186,6 +187,25 @@ export class Lesson extends BaseEntity {
     description: "확인해 주세요 확인해 주세요  ",
   })
   checkPlease: string;
+
+  rating: number;
+
+  count: number;
+  @AfterLoad()
+  commentCount() {
+    if (!this.comments) {
+      this.rating = 0;
+    } else {
+      const sum =
+        this.comments.length > 0
+          ? this.comments.reduce((sum, com) => {
+              return sum + com.rating;
+            }, 0)
+          : 0;
+      this.rating =
+        sum < 1 ? 0 : Math.round((sum / this.comments.length) * 10) / 10.0;
+    }
+  }
 }
 // number will be converted into integer, string into varchar, boolean into bool, etc. But you can use any column type your database supports by explicitly specifying a column type into the @Column decorator.  from typeorm.io
 
