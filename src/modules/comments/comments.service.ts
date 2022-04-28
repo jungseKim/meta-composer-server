@@ -11,8 +11,8 @@ export class CommentsService {
     private commentsRepository: CommentsRepository,
   ) {}
 
-  async getAllComments(): Promise<Comment[]> {
-    return this.commentsRepository.find();
+  async getAllComments(lessonId: number): Promise<Comment[]> {
+    return this.commentsRepository.find({ lessonId: lessonId });
   }
 
   async createComment(

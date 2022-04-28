@@ -33,7 +33,6 @@ export class WishlistsRepository extends Repository<Wishlist> {
       await this.delete(existence);
       console.log("completely deleted");
     } else console.log("you haven't written wishlist yet");
-    ////
   }
 
   async getWishList(

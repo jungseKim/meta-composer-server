@@ -3,7 +3,7 @@ import { Teacher } from "src/entities/teacher.entity";
 import { TimeTable } from "src/entities/timeTable.entity";
 
 export class TimeTableDto extends PickType(TimeTable, [
-  "IsEmpty",
+  "signupId",
   "day",
   "time",
   "lessonId",

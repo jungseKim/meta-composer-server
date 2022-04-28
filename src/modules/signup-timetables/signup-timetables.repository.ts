@@ -59,7 +59,7 @@ export class SignuptimetablesRepository extends Repository<Signuptimetable> {
     this.createQueryBuilder()
       .update(TimeTable)
       .set({
-        IsEmpty: false,
+        signupId: updateData.signup.id,
       })
       .where("time_table.day = :day", { day: day })
       .andWhere("time_table.time = :time", { time: updateData.time })

@@ -17,7 +17,9 @@ import { CustomNotification } from "./custom-notification.entity";
 
 import { Lesson } from "./lesson.entity";
 import { Payment } from "./payment.entity";
+import { SignupDayAndTime } from "./signupDayAndTime.entity";
 import { Signuptimetable } from "./signuptimetable.entity";
+import { TimeTable } from "./timeTable.entity";
 import { User } from "./user.entity";
 
 export enum weekDays {
@@ -84,19 +86,19 @@ export class Signup extends BaseEntity {
   })
   howManyMonth: number;
 
-  @Column({ type: "enum", enum: weekDays })
-  @ApiProperty({
-    example: weekDays.MON,
-    description: "사용자가 수강 신청한 요일",
-  })
-  weekdays: string;
+  // @Column({ type: "enum", enum: weekDays })
+  // @ApiProperty({
+  //   example: weekDays.MON,
+  //   description: "사용자가 수강 신청한 요일",
+  // })
+  // weekdays: string;
 
-  @Column({ type: "time" })
-  @ApiProperty({
-    example: "11:30:00",
-    description: "사용자가 수강 신청한 시간",
-  })
-  lessonTime: string;
+  // @Column({ type: "time" })
+  // @ApiProperty({
+  //   example: "11:30:00",
+  //   description: "사용자가 수강 신청한 시간",
+  // })
+  // lessonTime: string;
 
   @OneToMany(
     () => Signuptimetable,
@@ -110,6 +112,9 @@ export class Signup extends BaseEntity {
   @OneToOne(() => Payment, (payment) => payment.signup, {})
   payment: Payment;
 
+  @OneToOne(() => TimeTable, (timetable) => timetable.signup)
+  timetable: TimeTable;
+
   @OneToMany(() => Attendance, (attendance) => attendance.signup, {
     eager: true,
   })
@@ -117,6 +122,15 @@ export class Signup extends BaseEntity {
 
   // @Column({ type: 'date' })
   // date: string;
+
+  @OneToMany(
+    () => SignupDayAndTime,
+    (signupDayAndTimes) => signupDayAndTimes.signup,
+    {
+      eager: true,
+    },
+  )
+  signupDayAndTimes: SignupDayAndTime[];
 
   @CreateDateColumn()
   created_at: Date;

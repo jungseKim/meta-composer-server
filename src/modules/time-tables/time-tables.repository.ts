@@ -61,7 +61,6 @@ export class TimeTablesRepository extends Repository<TimeTable> {
             lessonId: updateData.lessonId,
             day: day,
             time: time,
-            IsEmpty: true,
           });
           await this.save(createdTimeTale);
         }

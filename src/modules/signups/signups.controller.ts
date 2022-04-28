@@ -35,13 +35,27 @@ export class SignupsController {
   @Post("/lessons/:id")
   @ApiOperation({
     summary: "수강 등록",
-    description: "수강등록을 한다. id 는 레슨의 id값",
+    description: `수강등록을 한다. id 는 레슨의 id값. merchant_uid 는 결제시 자동 등록됩니다.
+    테스트를 위해서는,
+    {
+    "data" : {
+    "merchant_uid":"test133332213",
+    "startdate":"2022-02-01",
+    "howManyMonth":5,
+    "lessonTime":["08:00:00"],
+    "weekdays":["Sat"]}
+} 와 같이 merchant_uid 를 임의로 보내도 됩니다.
+레슨타임과 요일은 배열로 보내주세요.
+(form 으로 ["Sat","Sun"] 배열을 전송하면 도착할때는 "["Sat","Sun"]" 이 되는데 백엔드에서 처리합니다.)
+    `,
   })
   async signup(
     @Param("id", ParseIntPipe) id: number,
     @Body("data") updateData,
     @UserDecorator() user: User,
-  ): Promise<Signup> {
+  ): Promise<any> {
+    console.log(updateData);
+    console.log("form data");
     return this.signupsService.signup(id, updateData, user);
   }
 

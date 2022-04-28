@@ -22,6 +22,7 @@ import { ConcoursSignup } from "../entities/concoursSignup.entity";
 import { Concours } from "../entities/concours.entity";
 import { ViewCount } from "../entities/viewCount.entity";
 import { SearchHistory } from "../entities/searchHistory.entiry";
+import { SignupDayAndTime } from "../entities/signupDayAndTime.entity";
 
 dotenv.config();
 
@@ -58,6 +59,8 @@ const ORMConfig: TypeOrmModuleOptions = {
     Concours,
     ViewCount,
     SearchHistory,
+    // CommentHistory,
+    SignupDayAndTime,
   ],
   timezone: "Z",
   synchronize: true, // false 기본값
