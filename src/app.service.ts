@@ -78,8 +78,8 @@ export class AppService {
         console.log("for loop 앞");
         for (let a = 0; a < concoursFinishTimeIds.length; a++) {
           const concoursFinishTimeId = Object.values(concoursFinishTimeIds[a]);
-          console.log("으아아1악");
-          console.log(concoursFinishTimeId + "으아악");
+          console.log("체크체크");
+          console.log(concoursFinishTimeId + "콩쿠르완료시간");
           const finishedConcoursMerchantUid = await createQueryBuilder()
             .select("concours_signup.merchant_uid")
             .from(ConcoursSignup, "concours_signup")

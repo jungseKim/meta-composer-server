@@ -10,6 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+// import { CommentHistory } from "./comment-history.entity";
 import { CustomNotification } from "./custom-notification.entity";
 import { Lesson } from "./lesson.entity";
 import { User } from "./user.entity";
@@ -41,6 +42,11 @@ export class Comment extends BaseEntity {
     onDelete: "CASCADE",
   })
   lesson: Lesson;
+
+  // @OneToOne(() => CommentHistory, (commentHistory) => commentHistory.comments, {
+  //   onDelete: "CASCADE",
+  // })
+  // commentHistory: CommentHistory;
 
   @Column()
   @ApiProperty({

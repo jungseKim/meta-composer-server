@@ -14,58 +14,59 @@ import { weekdays } from "moment";
 
 @EntityRepository(Signup)
 export class SignupsRepository extends Repository<Signup> {
-  async signupTest(id: number, data, user: User): Promise<Signup> {
-    const updateData = JSON.parse(data);
-    const startDate: string = updateData.startdate;
+  // async signupTest(id: number, data, user: User): Promise<Signup> {
+  //   const updateData = JSON.parse(data);
+  //   const startDate: string = updateData.startdate;
+  //   console.log(updateData.weekdays);
+  //   const signup = this.create({
+  //     merchant_uid: updateData.merchant_uid,
+  //     lessonId: +id,
+  //     userId: user.id,
+  //     startdate:
+  //       "2022-" +
+  //       new Date(startDate).getMonth() +
+  //       "-" +
+  //       new Date(startDate).getDay(),
+  //     howManyMonth: +updateData.howManyMonth,
+  //     lessonTime: updateData.lessonTime,
+  //     weekdays: updateData.weekdays,
+  //   }).save();
+
+  //   return signup;
+  // }
+
+  async signup(id: number, updateData, user: User): Promise<any> {
+    console.log(updateData);
+    console.log("회원가입 데이터 확인?");
     console.log(updateData.weekdays);
+    const existence = await this.createQueryBuilder("signup")
+      .where("signup.lessonId = :lessonid", { lessonid: +id })
+
+      .andWhere("signup.userId = :userid", { userid: +user.id })
+      // .andWhere("signup.weekdays = :weekdays", {
+      //   weekdays: updateData.weekdays[weekday],
+      // })
+      // .andWhere("signup.lessonTime = :lessonTime", {
+      //   lessonTime: updateData.lessonTime[lessonTimeP],
+      // })
+      .getOne();
     const signup = this.create({
       merchant_uid: updateData.merchant_uid,
       lessonId: +id,
       userId: user.id,
-      startdate:
-        "2022-" +
-        new Date(startDate).getMonth() +
-        "-" +
-        new Date(startDate).getDay(),
+      startdate: updateData.startdate,
       howManyMonth: +updateData.howManyMonth,
-      lessonTime: updateData.lessonTime,
-      weekdays: updateData.weekdays,
-    }).save();
-
-    return signup;
-  }
-
-  async signup(id: number, updateData, user: User): Promise<any> {
-    console.log(updateData.weekdays);
+      // lessonTime: updateData.lessonTime[lessonTimeP],
+      // weekdays: updateData.weekdays[weekday],
+    });
     for (const weekday in updateData.weekdays) {
       for (const lessonTimeP in updateData.lessonTime) {
         console.log(updateData.weekdays[weekday]);
         console.log(updateData);
         console.log(updateData.merchant_uid + "구매고유번호");
 
-        const signup = this.create({
-          merchant_uid: updateData.merchant_uid,
-          lessonId: +id,
-          userId: user.id,
-          startdate: updateData.startdate,
-          howManyMonth: +updateData.howManyMonth,
-          lessonTime: updateData.lessonTime[lessonTimeP],
-          weekdays: updateData.weekdays[weekday],
-        });
-
         console.log(signup);
-
-        const existence = await this.createQueryBuilder("signup")
-          .where("signup.lessonId = :lessonid", { lessonid: +id })
-
-          .andWhere("signup.userId = :userid", { userid: +user.id })
-          .andWhere("signup.weekdays = :weekdays", {
-            weekdays: updateData.weekdays[weekday],
-          })
-          .andWhere("signup.lessonTime = :lessonTime", {
-            lessonTime: updateData.lessonTime[lessonTimeP],
-          })
-          .getOne();
+        console.log("폼데이터");
 
         //1. 시작날, 요일, 몇달을 기반으로 날짜들 도출
         const startdate = updateData.startdate;
@@ -125,7 +126,7 @@ export class SignupsRepository extends Repository<Signup> {
         //    `;
         console.log(`'${startdate}'`);
         console.log(`'${endDateFinal}'`);
-        console.log("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+        console.log(" 확인");
 
         // const query2 = `SET @StartDateTime = '${startdate}'`;
 

@@ -3,11 +3,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { Lesson } from "./lesson.entity";
+import { Signup } from "./signup.entity";
 
 export enum Day {
   SUN = "Sun",
@@ -34,8 +37,15 @@ export class TimeTable extends BaseEntity {
   day: Day;
   //enum?
 
-  @Column({ default: true })
-  IsEmpty: boolean;
+  @OneToOne(() => Signup, (signup) => signup.timetable, { eager: true })
+  @JoinColumn()
+  signup: Promise<Signup>;
+
+  @Column({ default: null })
+  signupId: number;
+
+  // @Column({ default: true })
+  // IsEmpty: boolean;
 
   @Column({ type: "time" })
   time: string;

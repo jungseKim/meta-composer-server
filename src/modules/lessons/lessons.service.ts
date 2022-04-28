@@ -42,6 +42,7 @@ export class LessonsService {
       .where("lesson.id = :id", { id: id })
       .leftJoinAndSelect("lesson.timeTables", "timeTables")
       .leftJoinAndSelect("lesson.comments", "comments")
+
       .leftJoinAndSelect("lesson.chatRooms", "chatRooms")
       .leftJoinAndSelect("lesson.wishlists", "wishlists")
       .leftJoinAndSelect("lesson.sheets", "sheets")
@@ -54,6 +55,15 @@ export class LessonsService {
     //   user,
     //   id,
     // });
+
+    const ratingAVG = await this.lessonsRepository
+      .createQueryBuilder("comment")
+      // .select("SUM(comment.rating)", "sum")
+      .where("lessonId = :lessonId", { lessonId: id })
+
+      .getRawOne();
+
+    console.log(ratingAVG);
 
     this.viewcountsService.counting({ user, id });
     //join 댓글, 악보 등등

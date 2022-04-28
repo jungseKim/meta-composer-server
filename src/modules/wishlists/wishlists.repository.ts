@@ -24,15 +24,16 @@ export class WishlistsRepository extends Repository<Wishlist> {
   }
 
   async deleteWishList(user: User, lid: number): Promise<void> {
-    const existence = await this.createQueryBuilder("wishlist")
-      .where("wishlist.userId = :userid", { userid: user.id })
-      .andWhere("wishlist.lessonId = :lessonid", { lessonid: lid })
-      .getOne();
-
-    if (existence) {
-      this.delete(existence);
-      console.log("completely deleted");
-    } else console.log("you haven't written wishlist yet");
+    // const existence = await this.createQueryBuilder("wishlist")
+    //   .where("wishlist.userId = :userid", { userid: user.id })
+    //   .andWhere("wishlist.lessonId = :lessonid", { lessonid: lid })
+    //   .getOne();
+    // await this.lessonsRepository.delete(id);
+    // console.log(existence);
+    // if (existence) {
+    //   this.delete(existence);
+    //   console.log("completely deleted");
+    // } else console.log("you haven't written wishlist yet");
     ////
   }
 }

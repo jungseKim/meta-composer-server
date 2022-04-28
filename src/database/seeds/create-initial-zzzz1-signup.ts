@@ -56,10 +56,10 @@ export class CreateInitialSignupData implements Seeder {
               allLessonIds[Math.floor(Math.random() * allLessonIds.length)],
             userId: allUsersIds[Math.floor(Math.random() * allUsersIds.length)],
             startdate: year + "-" + month + "-" + date,
-            weekdays: daylist[randomday],
+            // weekdays: daylist[randomday],
             howManyMonth: 5,
             // lessonTime: randomHour + ":" + randomMin + ":" + randomMin,
-            lessonTime: "14:30:00",
+            // lessonTime: "14:30:00",
           },
         ])
         .execute();

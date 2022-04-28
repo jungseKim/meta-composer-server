@@ -24,15 +24,18 @@ export class CommentsController {
   constructor(private commentService: CommentsService) {}
 
   @Get(":id/comments")
-  @ApiOperation({ summary: "코멘트 조회", description: "전체 코멘트 조회" })
+  @ApiOperation({
+    summary: "해당레슨 코멘트 조회",
+    description: "해당레슨 코멘트 조회",
+  })
   @ApiResponse({
     status: 200,
-    description: "전체 코멘트 조회완료",
+    description: "해당레슨 코멘트 조회완료",
     type: Comment,
   })
   @UseInterceptors(TransformResponseInterceptor)
-  getAllComments(): Promise<Comment[]> {
-    return this.commentService.getAllComments();
+  getAllComments(@Param("id") lessonId: number): Promise<Comment[]> {
+    return this.commentService.getAllComments(lessonId);
   }
 
   @UseGuards(AuthGuard("jwt"))
