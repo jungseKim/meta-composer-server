@@ -30,9 +30,25 @@ export class WishlistsRepository extends Repository<Wishlist> {
       .getOne();
 
     if (existence) {
-      this.delete(existence);
+      await this.delete(existence);
       console.log("completely deleted");
     } else console.log("you haven't written wishlist yet");
     ////
+  }
+
+  async getWishList(
+    user: User,
+    page: number,
+    perPage: number,
+  ): Promise<Wishlist[]> {
+    return await this.createQueryBuilder("wishlist")
+      .where("wishlist.userId = :userid", { userid: user.id })
+      .innerJoinAndSelect("wishlist.lesson", "lesson")
+      .leftJoinAndSelect("lesson.comments", "comment")
+      .leftJoinAndSelect("lesson.teacher", "teacher")
+      .leftJoinAndSelect("teacher.user", "user")
+      .take(perPage)
+      .skip(perPage * (page - 1))
+      .getMany();
   }
 }

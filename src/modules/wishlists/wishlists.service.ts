@@ -17,4 +17,12 @@ export class WishlistsService {
   async deleteWishList(user: User, lid: number): Promise<void> {
     return this.wishlistsRepository.deleteWishList(user, lid);
   }
+
+  async getWishList(
+    user: User,
+    page: number,
+    perPage: number,
+  ): Promise<Wishlist[]> {
+    return await this.wishlistsRepository.getWishList(user, page, perPage);
+  }
 }

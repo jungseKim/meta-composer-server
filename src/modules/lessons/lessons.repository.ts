@@ -126,6 +126,8 @@ export class LessonsRepository extends Repository<Lesson> {
       .where("lesson.type = :searchKeyword", {
         searchKeyword: searchKeyword,
       })
+      .leftJoinAndSelect("lesson.teacher", "teacher")
+      .leftJoinAndSelect("teacher.user", "user")
       .leftJoinAndSelect("lesson.comments", "comment")
       .addSelect(order[0])
       .orderBy(order[1], "DESC")
