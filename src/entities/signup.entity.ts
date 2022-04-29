@@ -112,7 +112,7 @@ export class Signup extends BaseEntity {
   @OneToOne(() => Payment, (payment) => payment.signup, {})
   payment: Payment;
 
-  @OneToOne(() => TimeTable, (timetable) => timetable.signup)
+  @OneToMany(() => TimeTable, (timetable) => timetable.signup)
   timetable: TimeTable;
 
   @OneToMany(() => Attendance, (attendance) => attendance.signup, {

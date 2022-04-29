@@ -37,8 +37,7 @@ export class TimeTable extends BaseEntity {
   day: Day;
   //enum?
 
-  @OneToOne(() => Signup, (signup) => signup.timetable, { eager: true })
-  @JoinColumn()
+  @ManyToOne(() => Signup, (signup) => signup.timetable, { eager: true })
   signup: Promise<Signup>;
 
   @Column({ default: null })
