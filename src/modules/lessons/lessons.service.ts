@@ -84,14 +84,14 @@ export class LessonsService {
     //   id,
     // });
 
-    const ratingAVG = await this.lessonsRepository
-      .createQueryBuilder("comment")
-      // .select("SUM(comment.rating)", "sum")
-      .where("lessonId = :lessonId", { lessonId: id })
+    // const ratingAVG = await this.lessonsRepository
+    //   .createQueryBuilder("comment")
+    //   // .select("SUM(comment.rating)", "sum")
+    //   .where("comment.lessonId = :lessonId", { lessonId: id })
 
-      .getRawOne();
+    //   .getRawOne();
 
-    console.log(ratingAVG);
+    // console.log(ratingAVG);
 
     this.viewcountsService.counting({ user, id });
     //join 댓글, 악보 등등

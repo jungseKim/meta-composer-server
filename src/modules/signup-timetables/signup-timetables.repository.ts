@@ -71,62 +71,18 @@ export class SignuptimetablesRepository extends Repository<Signuptimetable> {
     //3.timetable 에 isempty false한다.
   }
 
-  async getMyTimeTable(user): Promise<Signuptimetable[]> {
-    const mySignups = await this.createQueryBuilder()
-      .select("signup")
-      .from(Signup, "signup")
-      .where("signup.userId = :userId", { userId: user.id })
-      .getMany();
+  // async getMyTimeTable(user): Promise<Signup[]> {
+  //   const mySignups = await this.createQueryBuilder("signup")
+  //     .leftJoinAndSelect("signup.signupDayAndTimes", "signupDayAndTimes")
+  //     .innerJoinAndSelect("signup.lesson", "signup")
+  //     .where("signup.userId = :userId", { userId: user.id })
+  //     .getMany();
 
-    // console.log(mySignups);
+  //   return mySignups;
+  // const result = this.createQueryBuilder("signuptimetable")
+  //
+  //   .where("signuptimetable.lessonId = :signupId", { signupId: id })
 
-    // signup의 id값들만 배열로 만듬
-    const mySignupIds = mySignups.map((x) => x.id);
-
-    console.log(mySignupIds);
-    console.log("내꺼 수강목록");
-    // 그 배열을 반복하여 where로 가져와서
-    //ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ
-
-    const mySignupIdArray = [];
-
-    for (const Id in mySignupIds) {
-      console.log(mySignupIds[Id]);
-      const result = await this.createQueryBuilder("signuptimetable")
-        .select("signuptimetable")
-        .where("signuptimetable.signupId = :signupId", {
-          signupId: mySignupIds[Id],
-        })
-        .getMany();
-
-      mySignupIdArray.push(result);
-
-      console.log("이게머노");
-      console.log(result);
-    }
-
-    // mySignupIds.forEach(async (x) => {
-    //   const result = await this.createQueryBuilder("signuptimetable")
-    //     .select("signuptimetable")
-    //     .where("signuptimetable.signupId = :signupId", { signupId: x })
-    //     .getOne();
-    //   console.log("이게머노");
-    //   console.log(result);
-    //   //1
-    //   // 다시 push 함
-    //   // mySignupIdArray.push(result);
-    //   //2
-    // });
-
-    console.log("끝났노");
-
-    // return json으로.
-    console.log(JSON.stringify(mySignupIdArray));
-    return mySignupIdArray;
-    // const result = this.createQueryBuilder("signuptimetable")
-    //
-    //   .where("signuptimetable.lessonId = :signupId", { signupId: id })
-
-    //   .execute();
-  }
+  //   .execute();
+  // }
 }

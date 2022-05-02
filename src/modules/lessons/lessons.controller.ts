@@ -55,7 +55,6 @@ export class LessonsController {
     return this.lessonsService.showAllLesson(page, perPage, order);
   }
 
-  @UseGuards(AuthGuard("jwt"))
   @Get("search")
   @ApiOperation({
     summary: "레슨 검색",
@@ -80,7 +79,6 @@ export class LessonsController {
     );
   }
 
-  @UseGuards(AuthGuard("jwt"))
   @Get("type")
   @ApiOperation({
     summary: "레슨 타입으로 검색",
