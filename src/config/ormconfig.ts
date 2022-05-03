@@ -62,8 +62,8 @@ const ORMConfig: TypeOrmModuleOptions = {
     // CommentHistory,
     SignupDayAndTime,
   ],
-  timezone: "Z",
-  synchronize: true, // false 기본값
+  // timezone: "Z",
+  synchronize: false, // false 기본값
   charset: "utf8mb4",
   autoLoadEntities: true,
   // logging: true,

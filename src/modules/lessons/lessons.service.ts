@@ -8,7 +8,7 @@ import { Repository } from "typeorm";
 import { SearchHistoriesService } from "../search-histories/search-histories.service";
 import { ViewcountsService } from "../viewcounts/viewcounts.service";
 import { LessonsRepository } from "./lessons.repository";
-
+import { Connection } from "typeorm";
 @Injectable()
 export class LessonsService {
   constructor(
@@ -42,34 +42,38 @@ export class LessonsService {
       .where("lesson.id = :id", { id: id })
       .leftJoinAndSelect("lesson.timeTables", "timeTables")
       .leftJoinAndSelect("lesson.comments", "comments")
-
       .leftJoinAndSelect("lesson.chatRooms", "chatRooms")
       .leftJoinAndSelect("lesson.wishlists", "wishlists")
       .leftJoinAndSelect("lesson.sheets", "sheets")
       .leftJoinAndSelect("lesson.teacher", "teacher")
       .leftJoinAndSelect("teacher.user", "user")
-      // .leftJoinAndSelect("lesson.sheets", "signups");
       .getOne();
+
+    // .leftJoinAndSelect("lesson.sheets", "signups");
 
     // await axios.post("http://localhost:4000/api/viewcounts", {
     //   user,
     //   id,
     // });
 
-    const ratingAVG = await this.lessonsRepository
-      .createQueryBuilder("comment")
-      // .select("SUM(comment.rating)", "sum")
-      .where("lessonId = :lessonId", { lessonId: id })
+    //-----------------------------------------------
+    // const ratingAVG = await this.lessonsRepository
+    //   .createQueryBuilder("comment")
+    //   .select("SUM(comment.rating)", "sum")
+    //   .where("comment.lessonId = :lessonId", { lessonId: id })
+    //   .getRawOne();
 
-      .getRawOne();
+    // console.log(ratingAVG);
+    //-----------------------------------------------
 
-    console.log(ratingAVG);
-
-    this.viewcountsService.counting({ user, id });
+    if (user) {
+      this.viewcountsService.counting({ user, id });
+    }
     //join 댓글, 악보 등등
     if (!lesson) {
       throw new NotFoundException(`can't find lesson id ${id}`);
     }
+
     return lesson;
   }
 

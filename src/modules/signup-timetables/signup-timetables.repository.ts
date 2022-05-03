@@ -19,6 +19,7 @@ export class SignuptimetablesRepository extends Repository<Signuptimetable> {
         time: updateData.datesArray[date] + " " + updateData.time,
         userId: updateData.userId,
       });
+      console.log(updateData.time + " 시간입니다");
       console.log(updateData.datesArray[date]);
       console.log(timetable);
       delay(0.00000001);
