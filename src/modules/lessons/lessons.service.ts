@@ -93,7 +93,9 @@ export class LessonsService {
 
     // console.log(ratingAVG);
 
-    this.viewcountsService.counting({ user, id });
+    if (user) {
+      await this.viewcountsService.counting({ user, id });
+    }
     //join 댓글, 악보 등등
     if (!lesson) {
       throw new NotFoundException(`can't find lesson id ${id}`);

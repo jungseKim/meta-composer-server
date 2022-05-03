@@ -35,6 +35,7 @@ import { query } from "express";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { imageOption } from "src/lib/imageOption";
 import { OrderValidationPipe } from "./pipe/orderPipe.pipe";
+import { JwtGuard } from "../auth/jwt.guard";
 
 @Controller("api/lessons")
 @ApiTags("레슨 API")
@@ -103,7 +104,6 @@ export class LessonsController {
     );
   }
 
-  @UseGuards(AuthGuard("jwt"))
   @Get("/:id")
   @ApiOperation({
     summary: "특정 레슨 조회",
@@ -115,6 +115,7 @@ export class LessonsController {
     @UserDecorator() user: User,
     @Param("id", ParseIntPipe) id: number,
   ): Promise<Lesson> {
+    console.log(user);
     return this.lessonsService.getLessonById(user, id);
   }
 
