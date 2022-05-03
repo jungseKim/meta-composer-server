@@ -36,6 +36,8 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { imageOption } from "src/lib/imageOption";
 import { OrderValidationPipe } from "./pipe/orderPipe.pipe";
 
+import { OptionalJwtAuthGuard } from "../auth/optionalJwt.guard";
+
 @Controller("api/lessons")
 @ApiTags("레슨 API")
 export class LessonsController {
@@ -55,7 +57,9 @@ export class LessonsController {
     return this.lessonsService.showAllLesson(page, perPage, order);
   }
 
-  @Get("search")
+
+  @UseGuards(OptionalJwtAuthGuard)
+ @Get("search")
   @ApiOperation({
     summary: "레슨 검색",
     description:
@@ -79,6 +83,8 @@ export class LessonsController {
     );
   }
 
+
+  @UseGuards(OptionalJwtAuthGuard)
   @Get("type")
   @ApiOperation({
     summary: "레슨 타입으로 검색",
@@ -103,7 +109,7 @@ export class LessonsController {
     );
   }
 
-  @UseGuards(AuthGuard("jwt"))
+  @UseGuards(OptionalJwtAuthGuard)
   @Get("/:id")
   @ApiOperation({
     summary: "특정 레슨 조회",
@@ -115,6 +121,7 @@ export class LessonsController {
     @UserDecorator() user: User,
     @Param("id", ParseIntPipe) id: number,
   ): Promise<Lesson> {
+    console.log(user);
     return this.lessonsService.getLessonById(user, id);
   }
 

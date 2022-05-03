@@ -31,7 +31,7 @@ export class PaymentsController {
     description: "결제내역을 조회완료",
     type: Payment,
   })
-  getMyAllPayments(
+  async getMyAllPayments(
     @Body() updateData,
     @UserDecorator() user: User,
   ): Promise<Payment[]> {
@@ -44,7 +44,7 @@ export class PaymentsController {
     summary: "사용금지",
     description: "결제내역 생성시 쓰는api 사용금지",
   })
-  createPayment(@Body() updateData, @UserDecorator() user: User) {
+  async createPayment(@Body() updateData, @UserDecorator() user: User) {
     return this.paymentsService.createPayment(updateData, user);
   }
 
@@ -58,7 +58,7 @@ export class PaymentsController {
     status: 200,
     description: "결제취소완료",
   })
-  deletePayment(@Body() updateData, @UserDecorator() user: User) {
+  async deletePayment(@Body() updateData, @UserDecorator() user: User) {
     axios
       .post("https://api.iamport.kr/users/getToken", {
         imp_key: process.env.IAMPORT_API_KEY + "",
