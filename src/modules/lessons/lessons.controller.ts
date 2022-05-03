@@ -37,6 +37,8 @@ import { imageOption } from "src/lib/imageOption";
 import { OrderValidationPipe } from "./pipe/orderPipe.pipe";
 import { JwtGuard } from "../auth/jwt.guard";
 
+import { OptionalJwtAuthGuard } from "../auth/optionalJwt.guard";
+
 @Controller("api/lessons")
 @ApiTags("레슨 API")
 export class LessonsController {
@@ -56,6 +58,7 @@ export class LessonsController {
     return this.lessonsService.showAllLesson(page, perPage, order);
   }
 
+  @UseGuards(OptionalJwtAuthGuard)
   @Get("search")
   @ApiOperation({
     summary: "레슨 검색",
@@ -80,6 +83,7 @@ export class LessonsController {
     );
   }
 
+  @UseGuards(OptionalJwtAuthGuard)
   @Get("type")
   @ApiOperation({
     summary: "레슨 타입으로 검색",
@@ -104,6 +108,7 @@ export class LessonsController {
     );
   }
 
+  @UseGuards(OptionalJwtAuthGuard)
   @Get("/:id")
   @ApiOperation({
     summary: "특정 레슨 조회",

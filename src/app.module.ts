@@ -74,6 +74,7 @@ import { SearchHistoriesModule } from "./modules/search-histories/search-histori
     YoutubesModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, "..", "public"),
+      serveRoot: "/",
     }),
     TimeTablesModule,
     SignupTimetablesModule,
