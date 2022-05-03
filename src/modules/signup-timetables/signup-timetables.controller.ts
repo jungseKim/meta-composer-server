@@ -5,10 +5,13 @@ import {
   Get,
   Post,
   UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiTags } from "@nestjs/swagger";
+import { TransformResponseInterceptor } from "src/common/interceptors/transformResponse.interceptor";
 import { UserDecorator } from "src/decorators/user.decorator";
+import { Signup } from "src/entities/signup.entity";
 import { Signuptimetable } from "src/entities/signuptimetable.entity";
 import { User } from "src/entities/user.entity";
 import { SignupsRepository } from "../signups/signups.repository";
@@ -26,10 +29,9 @@ export class SignupTimetablesController {
   }
 
   @UseGuards(AuthGuard("jwt"))
+  @UseInterceptors(TransformResponseInterceptor)
   @Get()
-  async getMyTimeTable(
-    @UserDecorator() user: User,
-  ): Promise<Signuptimetable[]> {
+  async getMyTimeTable(@UserDecorator() user: User): Promise<Signup[]> {
     return this.signupTimetablesService.getMyTimeTable(user);
   }
 }
