@@ -8,11 +8,13 @@ import { SearchHistoriesModule } from "../search-histories/search-histories.modu
 import { SearchHistory } from "src/entities/searchHistory.entiry";
 import { ViewcountsService } from "../viewcounts/viewcounts.service";
 import { ViewcountsModule } from "../viewcounts/viewcounts.module";
+import { TimeTablesModule } from "../time-tables/time-tables.module";
 
 @Module({
   imports: [
     ViewcountsModule,
     TypeOrmModule.forFeature([LessonsRepository, SearchHistory]),
+    TimeTablesModule,
   ],
   providers: [LessonsService],
   controllers: [LessonsController],

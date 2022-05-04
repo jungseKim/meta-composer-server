@@ -8,5 +8,6 @@ import { TimeTablesService } from "./time-tables.service";
   imports: [TypeOrmModule.forFeature([TimeTablesRepository])],
   controllers: [TimeTablesController],
   providers: [TimeTablesService],
+  exports: [TimeTablesService],
 })
 export class TimeTablesModule {}

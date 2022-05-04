@@ -8,5 +8,6 @@ import { SignupTimetablesService } from "./signup-timetables.service";
   imports: [TypeOrmModule.forFeature([SignuptimetablesRepository])],
   controllers: [SignupTimetablesController],
   providers: [SignupTimetablesService],
+  exports: [SignupTimetablesService],
 })
 export class SignupTimetablesModule {}
