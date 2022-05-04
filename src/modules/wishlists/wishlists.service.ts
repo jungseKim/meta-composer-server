@@ -33,4 +33,12 @@ export class WishlistsService {
     } else console.log("you haven't written wishlist yet");
     throw new ForbiddenException();
   }
+
+  async getWishList(
+    user: User,
+    page: number,
+    perPage: number,
+  ): Promise<Wishlist[]> {
+    return await this.wishlistsRepository.getWishList(user, page, perPage);
+  }
 }

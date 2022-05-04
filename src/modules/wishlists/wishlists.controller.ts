@@ -1,8 +1,11 @@
 import {
   Controller,
   Delete,
+  Get,
   Param,
+  ParseIntPipe,
   Post,
+  Query,
   UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
@@ -52,5 +55,16 @@ export class WishlistsController {
   @UseInterceptors(TransformResponseInterceptor)
   deleteWishList(@UserDecorator() user: User, @Param("lid") lid: number) {
     return this.wishlistsService.deleteWishList(user, lid);
+  }
+
+  @UseGuards(AuthGuard("jwt"))
+  @Get()
+  @UseInterceptors(TransformResponseInterceptor)
+  async GetWishList(
+    @UserDecorator() user: User,
+    @Query("page", ParseIntPipe) page: number,
+    @Query("perPage", ParseIntPipe) perPage: number,
+  ): Promise<Wishlist[]> {
+    return await this.wishlistsService.getWishList(user, page, perPage);
   }
 }

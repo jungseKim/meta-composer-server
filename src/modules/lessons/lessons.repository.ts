@@ -40,6 +40,7 @@ export class LessonsRepository extends Repository<Lesson> {
     user: User,
     page: number,
     perPage: number,
+    order: string[],
   ): Promise<Lesson[]> {
     const result = await this.createQueryBuilder("lesson")
 
@@ -54,7 +55,10 @@ export class LessonsRepository extends Repository<Lesson> {
       })
       .leftJoinAndSelect("lesson.teacher", "teacher")
       .leftJoinAndSelect("teacher.user", "user")
-      .orderBy("lesson.id", "DESC")
+      .leftJoinAndSelect("lesson.comments", "comment")
+      .addSelect(order[0])
+      .orderBy(order[1], "DESC")
+      .groupBy("lesson.id")
       .take(perPage)
       .skip(perPage * (page - 1))
       .getMany();
@@ -76,12 +80,18 @@ export class LessonsRepository extends Repository<Lesson> {
     user: User,
     page: number,
     perPage: number,
+    order: string[],
   ): Promise<Lesson[]> {
     const result = await this.createQueryBuilder("lesson")
       .where("lesson.type = :searchKeyword", {
         searchKeyword: searchKeyword,
       })
-      .orderBy("lesson.id", "DESC")
+      .leftJoinAndSelect("lesson.teacher", "teacher")
+      .leftJoinAndSelect("teacher.user", "user")
+      .leftJoinAndSelect("lesson.comments", "comment")
+      .addSelect(order[0])
+      .orderBy(order[1], "DESC")
+      .groupBy("lesson.id")
       .take(perPage)
       .skip(perPage * (page - 1))
       .getMany();
