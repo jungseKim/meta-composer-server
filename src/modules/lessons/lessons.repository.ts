@@ -12,48 +12,8 @@ import { User } from "src/entities/user.entity";
 @EntityRepository(Lesson)
 export class LessonsRepository extends Repository<Lesson> {
   // const teacherId = Repository<Teacher>.find(user.id);
-  async createLesson(updateData, user: User, image: any): Promise<any> {
-    const checkTeacher = await getRepository(Teacher)
-      .createQueryBuilder("teacher")
-      .where("teacher.userId = :id", { id: user.id })
-      .getOne();
 
-    updateData.time = JSON.parse(
-      "[" + updateData.time.replace(/'/g, '"') + "]",
-    );
-    console.log(updateData.day);
-    updateData.day = JSON.parse("[" + updateData.day.replace(/'/g, '"') + "]");
-
-    console.log(updateData.day);
-
-    console.log(updateData.time);
-
-    const lesson = this.create({
-      introduce: updateData.introduce,
-
-      imageURL: image.filename,
-      length: updateData.length,
-      price: +updateData.price,
-      name: updateData.name,
-      type: updateData.type,
-      teacherId: checkTeacher.id,
-      checkPlease: updateData.checkPlease,
-      weLearnThis: updateData.weLearnThis,
-      difficulty: updateData.difficulty,
-    });
-
-    await this.save(lesson);
-
-    axios.post("http://localhost:4000/api/time-tables", {
-      updateData,
-      lessonId: lesson.id,
-    });
-    return lesson;
-    // }
-    // else{
-    //   return "you are not teacher"
-    // }
-  }
+  // async createLesson(updateData, user: User, image: any): Promise<any> {}
 
   async updateLessonById(
     id: number,

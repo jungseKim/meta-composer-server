@@ -7,12 +7,15 @@ import { SignupsService } from "./signups.service";
 import { SignupDayAndTimesModule } from "../signup-day-and-times/signup-day-and-times.module";
 import { Repository } from "typeorm";
 import { Signup } from "src/entities/signup.entity";
+import { TimeTablesModule } from "../time-tables/time-tables.module";
+import { SignupTimetablesModule } from "../signup-timetables/signup-timetables.module";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([SignupsRepository]),
     TasksModule,
     SignupDayAndTimesModule,
+    SignupTimetablesModule,
   ],
   providers: [SignupsService],
   controllers: [SignupsController],

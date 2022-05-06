@@ -10,11 +10,15 @@ import { Lesson } from "src/entities/lesson.entity";
 import { SearchHistory } from "src/entities/searchHistory.entiry";
 import { User } from "src/entities/user.entity";
 import { ViewCount } from "src/entities/viewCount.entity";
-import { Repository } from "typeorm";
+import { getRepository, Repository } from "typeorm";
 import { SearchHistoriesService } from "../search-histories/search-histories.service";
 import { ViewcountsService } from "../viewcounts/viewcounts.service";
 import { LessonsRepository } from "./lessons.repository";
 import { Connection } from "typeorm";
+import axios, { AxiosResponse } from "axios";
+import { Teacher } from "src/entities/teacher.entity";
+import { TimeTablesService } from "../time-tables/time-tables.service";
+
 @Injectable()
 export class LessonsService {
   constructor(
@@ -22,9 +26,15 @@ export class LessonsService {
     private lessonsRepository: LessonsRepository,
     @InjectRepository(SearchHistory)
     private searchHistoriesRepository: Repository<SearchHistory>,
+
+
+   
+    private timetablesService: TimeTablesService, //
+
     // @InjectRepository(Comment)
     // private commentsRepository: Repository<Comment>,
     private viewcountsService: ViewcountsService, //
+
   ) {}
 
   async showAllLesson(
@@ -61,7 +71,49 @@ export class LessonsService {
   }
 
   async createLesson(updateData, user: User, image: any): Promise<Lesson> {
-    return this.lessonsRepository.createLesson(updateData, user, image);
+    const checkTeacher = await getRepository(Teacher)
+      .createQueryBuilder("teacher")
+      .where("teacher.userId = :id", { id: user.id })
+      .getOne();
+
+    updateData.time = JSON.parse(
+      "[" + updateData.time.replace(/'/g, '"') + "]",
+    );
+    console.log(updateData.day);
+    updateData.day = JSON.parse("[" + updateData.day.replace(/'/g, '"') + "]");
+
+    console.log(updateData.day);
+
+    console.log(updateData.time);
+
+    const lesson = this.lessonsRepository.create({
+      introduce: updateData.introduce,
+
+      imageURL: image.filename,
+      length: updateData.length,
+      price: +updateData.price,
+      name: updateData.name,
+      type: updateData.type,
+      teacherId: checkTeacher.id,
+      checkPlease: updateData.checkPlease,
+      weLearnThis: updateData.weLearnThis,
+      difficulty: updateData.difficulty,
+    });
+
+    await this.lessonsRepository.save(lesson);
+
+    this.timetablesService.createTimeTable({
+      updateData,
+      lessonId: lesson.id,
+    });
+
+    return lesson;
+    // }
+    // else{
+    //   return "you are not teacher"
+    // }
+
+    // return this.lessonsRepository.createLesson(updateData, user, image);
   }
 
   async getLessonById(user: User, id: number): Promise<any> {
