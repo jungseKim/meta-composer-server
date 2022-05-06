@@ -25,6 +25,7 @@ export class SignupTimetablesService {
       .innerJoinAndSelect("signup.lesson", "lesson")
       .leftJoinAndSelect("lesson.teacher", "teacher")
       .leftJoinAndSelect("teacher.user", "user")
+      .orderBy("signuptimetables.time", "ASC")
       .where("signup.userId = :userId", { userId: user.id })
       .getMany();
 
