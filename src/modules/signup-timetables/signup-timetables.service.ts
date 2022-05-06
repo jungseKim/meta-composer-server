@@ -23,6 +23,8 @@ export class SignupTimetablesService {
       .createQueryBuilder("signup")
       .leftJoinAndSelect("signup.signuptimetables", "signuptimetables")
       .innerJoinAndSelect("signup.lesson", "lesson")
+      .leftJoinAndSelect("lesson.teacher", "teacher")
+      .leftJoinAndSelect("teacher.user", "user")
       .where("signup.userId = :userId", { userId: user.id })
       .getMany();
 
