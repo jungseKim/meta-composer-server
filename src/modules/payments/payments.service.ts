@@ -15,6 +15,10 @@ export class PaymentsService {
 
     return this.paymentsRepository
       .createQueryBuilder("payment")
+      .innerJoinAndSelect("payment.signup", "signup")
+      .innerJoinAndSelect("signup.lesson", "lesson")
+      .leftJoinAndSelect("signup.timetable", "timetable")
+      .leftJoinAndSelect("signup.signuptimetables", "signuptimetables")
       .where("payment.userId = :id", { id: user.id })
       .getMany();
 

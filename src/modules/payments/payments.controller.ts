@@ -6,6 +6,7 @@ import {
   Header,
   Post,
   UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
@@ -15,12 +16,14 @@ import { User } from "src/entities/user.entity";
 import { PaymentsService } from "./payments.service";
 import axios, { AxiosResponse } from "axios";
 import { delay } from "rxjs";
+import { TransformResponseInterceptor } from "src/common/interceptors/transformResponse.interceptor";
 @Controller("api/payments")
 @ApiTags("결제내역 API")
 export class PaymentsController {
   constructor(private paymentsService: PaymentsService) {}
 
   @UseGuards(AuthGuard("jwt"))
+  @UseInterceptors(TransformResponseInterceptor)
   @Get()
   @ApiOperation({
     summary: "나의결제내역 조회 payment적용 X",
