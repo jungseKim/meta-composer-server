@@ -10,6 +10,7 @@ import {
   Post,
   Req,
   UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
@@ -23,6 +24,7 @@ import { SignupsService } from "./signups.service";
 import axios, { AxiosResponse } from "axios";
 import { Lesson } from "src/entities/lesson.entity";
 import { Connection } from "typeorm";
+import { TransformResponseInterceptor } from "src/common/interceptors/transformResponse.interceptor";
 @Controller("api/signups")
 @ApiTags("수강 등록 API")
 export class SignupsController {
@@ -49,6 +51,7 @@ export class SignupsController {
 (form 으로 ["Sat","Sun"] 배열을 전송하면 도착할때는 "["Sat","Sun"]" 이 되는데 백엔드에서 처리합니다.)
     `,
   })
+  @UseInterceptors(TransformResponseInterceptor)
   async signup(
     @Param("id", ParseIntPipe) id: number,
     @Body("data") updateData,

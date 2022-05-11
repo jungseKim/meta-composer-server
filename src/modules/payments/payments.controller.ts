@@ -47,7 +47,7 @@ export class PaymentsController {
     summary: "사용금지",
     description: "결제내역 생성시 쓰는api 사용금지",
   })
-  async createPayment(@Body() updateData, @UserDecorator() user: User) {
+  async createPayment(@Body("data") updateData, @UserDecorator() user: User) {
     return this.paymentsService.createPayment(updateData, user);
   }
 
@@ -61,8 +61,10 @@ export class PaymentsController {
     status: 200,
     description: "결제취소완료",
   })
+  @UseInterceptors(TransformResponseInterceptor)
   async deletePayment(@Body() updateData, @UserDecorator() user: User) {
-    axios
+    console.log(updateData.merchant_uid);
+    await axios
       .post("https://api.iamport.kr/users/getToken", {
         imp_key: process.env.IAMPORT_API_KEY + "",
         imp_secret: process.env.IAMPORT_API_SECRET,

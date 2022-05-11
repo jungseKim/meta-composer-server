@@ -29,6 +29,11 @@ export class PaymentsService {
   }
 
   async deletePayment(updateData, user): Promise<Payment> {
-    return this.paymentsRepository.deletePayment(updateData, user);
+    const pay = await this.paymentsRepository.findOne({
+      payment_number: updateData.merchant_uid,
+    });
+    pay.refund = true;
+    return await pay.save();
+    // return this.paymentsRepository.deletePayment(updateData, user);
   }
 }
