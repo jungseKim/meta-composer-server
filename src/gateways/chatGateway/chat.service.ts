@@ -144,12 +144,15 @@ export class ChatService {
       .where("chatRoom.userId = :id", { id: user.id })
       .innerJoinAndSelect("chatRoom.lesson", "lesson")
       .innerJoinAndSelect("lesson.teacher", "teacher")
+      .innerJoinAndSelect("teacher.user", "user")
       // .leftJoinAndSelect("chatRoom.messages", "messages")
       // .leftJoinAndSelect(
       //   (subQuery) => {
-      //     return subQuery.select().from(Message, "message");
-      //     // .orderBy({ "message.created_at": "DESC" })
-      //     // .limit();
+      //     return subQuery
+      //       .select()
+      //       .from(Message, "message")
+      //       .orderBy({ "message.created_at": "DESC" })
+      //       .limit();
       //   },
       //   "message",
       //   "message.chatRoomId = chatRoom.id",
@@ -193,7 +196,7 @@ export class ChatService {
       return chatList;
     }
 
-    const chatList: ChatList = { lessonChat: null, userChatList };
+    const chatList: ChatList = { lessonChat: [], userChatList };
     return chatList;
   }
 

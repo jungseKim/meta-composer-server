@@ -25,8 +25,10 @@ export class SignupTimetablesService {
       .innerJoinAndSelect("signup.lesson", "lesson")
       .leftJoinAndSelect("lesson.teacher", "teacher")
       .leftJoinAndSelect("teacher.user", "user")
+      .leftJoinAndSelect("signup.payment", "payment")
       .orderBy("signuptimetables.time", "ASC")
       .where("signup.userId = :userId", { userId: user.id })
+      .andWhere("payment.refund = false")
       .getMany();
 
     // return this.signuptimetablesRepository.getMyTimeTable(user);
