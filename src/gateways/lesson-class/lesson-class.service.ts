@@ -19,27 +19,34 @@ import { User } from "src/entities/user.entity";
 
 import { UAParser } from "ua-parser-js";
 import { WsException } from "@nestjs/websockets";
+import * as jwt from "jsonwebtoken";
 @Injectable()
 export class LessonClassService {
   constructor(
     private redisCacheService: RedisCacheService,
     @InjectRepository(Signuptimetable)
     private signuptimetableRepository: Repository<Signuptimetable>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
   ) {}
 
   public async setInit(client: LessonSocket, lessonId: number) {
     // const authToken = client.handshake.auth.token?.split(" ")[1];
     const authToken = client.handshake.headers.authorization?.split(" ")[1];
-    const userId = await this.redisCacheService.getUser(authToken);
+    const jwtPayload: TokenPayload = <TokenPayload>(
+      jwt.verify(authToken, process.env.JWT_SECRET)
+    );
+
+    const user = await this.userRepository.findOne(jwtPayload["userId"]);
+    // const userId = await this.redisCacheService.getUser(authToken);
     // const agent = new UAParser(client.handshake.headers["user-agent"]);
     // const check = agent.getBrowser().name === "Oculus Browser" ? true : false;
-    if (!authToken || userId === null) {
-      client.disconnect();
-      return;
+    if (!authToken || user === null) {
+      return client.disconnect();
     }
 
     client.rooms.clear();
-    client.userId = userId;
+    client.userId = user.id;
 
     //원래 이걸로
     // return this.LessonConnection(client, lessonId);
@@ -82,8 +89,8 @@ export class LessonClassService {
     client.join(`lesson-${signupId}`);
     client.to(`lesson-${signupId}`).emit("sendOffer");
   }
-  public async TestLessonConnection(client: LessonSocket, signupId: number) {
-    client.join(`lesson-${signupId}`);
-    client.to(`lesson-${signupId}`).emit("sendOffer");
+  public async TestLessonConnection(client: LessonSocket, lessonId: number) {
+    client.join(`lesson-${lessonId}`);
+    client.to(`lesson-${lessonId}`).emit("sendOffer");
   }
 }
