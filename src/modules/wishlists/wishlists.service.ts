@@ -38,7 +38,13 @@ export class WishlistsService {
     user: User,
     page: number,
     perPage: number,
+    order: string[],
   ): Promise<Wishlist[]> {
-    return await this.wishlistsRepository.getWishList(user, page, perPage);
+    return await this.wishlistsRepository.getWishList(
+      user,
+      page,
+      perPage,
+      order,
+    );
   }
 }

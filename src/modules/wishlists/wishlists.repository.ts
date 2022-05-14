@@ -39,6 +39,7 @@ export class WishlistsRepository extends Repository<Wishlist> {
     user: User,
     page: number,
     perPage: number,
+    order: string[],
   ): Promise<Wishlist[]> {
     return await this.createQueryBuilder("wishlist")
       .where("wishlist.userId = :userid", { userid: user.id })
@@ -46,6 +47,9 @@ export class WishlistsRepository extends Repository<Wishlist> {
       .leftJoinAndSelect("lesson.comments", "comment")
       .leftJoinAndSelect("lesson.teacher", "teacher")
       .leftJoinAndSelect("teacher.user", "user")
+      .addSelect(order[0])
+      .orderBy(order[1], "DESC")
+      .groupBy("wishlist.id")
       .take(perPage)
       .skip(perPage * (page - 1))
       .getMany();

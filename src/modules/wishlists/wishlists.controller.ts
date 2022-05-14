@@ -10,11 +10,20 @@ import {
   UseInterceptors,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import {
+  ApiBody,
+  ApiOkResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from "@nestjs/swagger";
 import { TransformResponseInterceptor } from "src/common/interceptors/transformResponse.interceptor";
 import { UserDecorator } from "src/decorators/user.decorator";
 import { User } from "src/entities/user.entity";
 import { Wishlist } from "src/entities/wishlist.entity";
+import { OrderValidationPipe } from "../lessons/pipe/orderPipe.pipe";
+import { WishListResponseDto } from "./dto/wishlistResponse.dto";
 import { WishlistsService } from "./wishlists.service";
 
 @Controller("api/wishlists")
@@ -57,6 +66,29 @@ export class WishlistsController {
     return this.wishlistsService.deleteWishList(user, lid);
   }
 
+  @ApiQuery({
+    name: "perPage",
+    required: true,
+    description: "한번에 가져오는갯수",
+    example: 5,
+  })
+  @ApiQuery({
+    name: "page",
+    required: true,
+    description: "불러올 페이지",
+    example: 1,
+  })
+  @ApiQuery({
+    name: "order",
+    required: false,
+    description: "정렬하고 싶은 키워드 grade,price,created_at",
+    example: "grade" || "price" || "created_at",
+    type: String,
+  })
+  @ApiOkResponse({
+    status: 200,
+    type: WishListResponseDto,
+  })
   @UseGuards(AuthGuard("jwt"))
   @Get()
   @UseInterceptors(TransformResponseInterceptor)
@@ -64,7 +96,8 @@ export class WishlistsController {
     @UserDecorator() user: User,
     @Query("page", ParseIntPipe) page: number,
     @Query("perPage", ParseIntPipe) perPage: number,
+    @Query("order", OrderValidationPipe) order: string[],
   ): Promise<Wishlist[]> {
-    return await this.wishlistsService.getWishList(user, page, perPage);
+    return await this.wishlistsService.getWishList(user, page, perPage, order);
   }
 }
