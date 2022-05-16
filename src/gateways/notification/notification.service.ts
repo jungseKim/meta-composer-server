@@ -36,29 +36,12 @@ export class NotificationService {
     this.clients = {};
   }
 
-  public async auth(client: NotificationSocekt): Promise<ChatRoom[]> {
-    const authToken = client.handshake.auth.token?.split(" ")[1];
-    // const authToken = client.handshake.headers.authorization?.split(" ")[1];
-    if (!authToken) {
-      client.disconnect();
-      return;
-    }
-
-    const jwtPayload: TokenPayload = <TokenPayload>(
-      jwt.verify(authToken, process.env.JWT_SECRET)
-    );
-
-    const user = await this.userRepository.findOne(jwtPayload["userId"]);
-    if (!user) {
-      client.disconnect();
-      return;
-    }
-    this.clients[user.id] = client;
-    client.userId = user.id;
+  public async auth(client: NotificationSocekt) {
+    return (this.clients[client.user.id] = client);
   }
 
   public disconnection(client: NotificationSocekt) {
-    const userId = client.userId;
+    const userId = client.user.id;
     delete this.clients[userId];
     if (client.chatRoomId) {
       client.to(`chat-room-${client.chatRoomId}`).emit("chatLeave-event");
@@ -153,7 +136,7 @@ export class NotificationService {
   }
 
   public async chatRoomJoin(client: NotificationSocekt, roomId: number) {
-    const userId: number = client.userId;
+    const userId: number = client.user.id;
 
     const room = await this.chatRoomRepository.findOne(roomId);
     if (!room) throw new WsException("없는방입니다");

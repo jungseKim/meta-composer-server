@@ -2,6 +2,7 @@
 https://docs.nestjs.com/websockets/gateways#gateways
 */
 
+import { InjectRepository } from "@nestjs/typeorm";
 import {
   MessageBody,
   SubscribeMessage,
@@ -12,8 +13,11 @@ import {
   OnGatewayInit,
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
+import { User } from "src/entities/user.entity";
 import RtcData from "src/types/OfferPayload";
+import { Repository } from "typeorm";
 import { LessonSocket } from "../custom-sockets/my-socket";
+import { WSAuthMiddleware } from "../middleware/auth.middleware";
 import { LessonClassService } from "./lesson-class.service";
 
 @WebSocketGateway({
@@ -26,17 +30,26 @@ import { LessonClassService } from "./lesson-class.service";
   },
 })
 export class LessonClassGateway
-  implements OnGatewayConnection, OnGatewayDisconnect
+  implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit
 {
   @WebSocketServer()
   server: Server;
 
-  constructor(private lessonClassService: LessonClassService) {}
+  constructor(
+    private lessonClassService: LessonClassService,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+  ) {}
 
-  @SubscribeMessage("setInit")
-  firstConnection(client: LessonSocket, lessonId: number) {
-    return this.lessonClassService.setInit(client, lessonId);
+  afterInit(server: Server) {
+    const middle = WSAuthMiddleware(this.userRepository);
+    server.use(middle);
   }
+
+  // @SubscribeMessage("setInit")
+  // firstConnection(client: LessonSocket, lessonId: number) {
+  //   return this.lessonClassService.setInit(client, lessonId);
+  // }
 
   @SubscribeMessage("retry")
   retryConnection(client: LessonSocket, lessonId: number) {
@@ -50,7 +63,9 @@ export class LessonClassGateway
     });
   }
 
-  handleConnection(client: LessonSocket) {}
+  handleConnection(client: LessonSocket) {
+    // return this.lessonClassService.TestLessonConnection(client)
+  }
 
   handleDisconnect(client: LessonSocket) {
     console.log("User disconnected");
