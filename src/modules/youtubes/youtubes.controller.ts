@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   ParseIntPipe,
   Post,
   Query,
@@ -26,16 +27,18 @@ import { youtubeInfo } from "youtube-info";
 import { response } from "express";
 import { fstat, unlinkSync } from "fs";
 import { TransformResponseInterceptor } from "src/common/interceptors/transformResponse.interceptor";
-import { createQueryBuilder } from "typeorm";
+import { createQueryBuilder, getRepository, Repository } from "typeorm";
 import { ConcoursSignup } from "src/entities/concoursSignup.entity";
 import { AuthGuard } from "@nestjs/passport";
 import { UserDecorator } from "src/decorators/user.decorator";
 import { User } from "src/entities/user.entity";
+import { Concours } from "src/entities/concours.entity";
 
+//
 @Controller("api/youtubes")
 @ApiTags("유튜브 API")
 export class YoutubesController {
-  // constructor() {}
+  constructor() {}
   @UseGuards(AuthGuard("jwt"))
   @Post()
   @ApiOperation({
@@ -55,6 +58,15 @@ export class YoutubesController {
     @Query("id", ParseIntPipe) id: number,
     @UserDecorator() user: User,
   ): Promise<any> {
+    const concours = await getRepository(Concours)
+      .createQueryBuilder("concours")
+      .where("concours.id = :id", {
+        id: id,
+      })
+      .getOne();
+
+    console.log(concours.title + " :콩쿠르명");
+
     const videoTitle = updateData.videoTitle;
     const videoDescription = updateData.description;
     const generatedFiles = [];
@@ -88,6 +100,7 @@ export class YoutubesController {
       language: "korean",
       tags: ["cat"],
       channelName: process.env.YOUTUBE_CHANNEL_NAME,
+      playlist: concours.title,
 
       onSuccess: onVideoUploadSuccess,
 
@@ -123,13 +136,11 @@ export class YoutubesController {
   @Get("/one")
   @ApiOperation({
     summary: "유튜브에서 하나의 영상의 정보만 가져옴",
-    description:
-      "JSON데이터,  youtubeVideoId 를 보내주세요 (유투브 영상 ID값 )",
+    description: `JSON데이터,  youtubeVideoId 를 보내주세요 (유투브 영상 ID값 ) , 예시 =>  { "youtubeVideoId" : "0B_dNvTGkQs"} `,
   })
   @ApiResponse({
     status: 200,
     description: "유튜브에서 하나의 영상의 정보만 가져오기 완료",
-    type: YoutubeUploadDto,
   })
   @UseInterceptors(TransformResponseInterceptor)
   getvideoInfo(@Body() updateData) {
@@ -138,7 +149,8 @@ export class YoutubesController {
 
     return axios
       .get(
-        `https://www.googleapis.com/youtube/v3/videos?id=${updateData.youtubeVideoId}&key=${process.env.YOUTUBE_API_KEY}&part=snippet,statistics&fields=items(id,snippet(channelId,title,categoryId),statistics)`,
+        `https://www.googleapis.com/youtube/v3/videos?id=${updateData.youtubeVideoId}&key=${process.env.YOUTUBE_API_KEY}&part=snippet,statistics`,
+        //&fields=items(id,snippet(channelId,title,categoryId),statistics)
       )
       .then((res) => {
         const videoInfo = res.data;
@@ -193,13 +205,14 @@ export class YoutubesController {
 
   @Get("/top3view")
   @ApiOperation({
-    summary: "유튜브에서 채널 전체의 정보를 가져와서 조회수3위까지",
-    description: "유튜브에서 채널 전체의 정보를 가져와서 조회수3위까지",
+    summary:
+      "유튜브에서 채널 전체의 정보를 가져와서 조회수3위까지  (명예의전당, 전체채널)",
+    description:
+      "유튜브에서 채널 전체의 정보를 가져와서 조회수3위까지  (명예의전당, 전체채널)",
   })
   @ApiResponse({
     status: 200,
     description: "유튜브에서 채널 전체의 정보를 가져와서 조회수3위까지 완료",
-    type: YoutubeUploadDto,
   })
   @UseInterceptors(TransformResponseInterceptor)
   async getTop3viewsFromVideo() {
@@ -252,13 +265,16 @@ export class YoutubesController {
     });
     console.log(newArray[0]);
 
+    console.log(newArray);
+    console.log("ㅡㅡㅡㅡㅡㅡㅡ");
     const resultArray = [];
     for (let i = 0; i < 3; i++) {
       console.log(newArray[i][1]);
 
       const result = await axios
         .get(
-          `https://www.googleapis.com/youtube/v3/videos?id=${newArray[i][1]}&key=${process.env.YOUTUBE_API_KEY}&part=snippet,statistics&fields=items(id,snippet(channelId,title,categoryId),statistics)`,
+          `https://www.googleapis.com/youtube/v3/videos?id=${newArray[i][1]}&key=${process.env.YOUTUBE_API_KEY}&part=snippet,statistics`,
+          //&fields=items(id,snippet(channelId,title,categoryId),statistics)
         )
         .then((res) => {
           const videoInfo = res.data;
@@ -274,13 +290,14 @@ export class YoutubesController {
 
   @Get("/top3comment")
   @ApiOperation({
-    summary: "유튜브에서 채널 전체의 정보를 가져와서 댓글3위까지",
-    description: "유튜브에서 채널 전체의 정보를 가져와서 댓글3위까지",
+    summary:
+      "유튜브에서 채널 전체의 정보를 가져와서 댓글3위까지 (명예의전당, 전체채널)",
+    description:
+      "유튜브에서 채널 전체의 정보를 가져와서 댓글3위까지  (명예의전당, 전체채널)",
   })
   @ApiResponse({
     status: 200,
     description: "유튜브에서 채널 전체의 정보를 가져와서 댓글3위까지 완료",
-    type: YoutubeUploadDto,
   })
   @UseInterceptors(TransformResponseInterceptor)
   async getTop3commentFromVideo() {
@@ -339,7 +356,8 @@ export class YoutubesController {
 
       const result = await axios
         .get(
-          `https://www.googleapis.com/youtube/v3/videos?id=${newArray[i][1]}&key=${process.env.YOUTUBE_API_KEY}&part=snippet,statistics&fields=items(id,snippet(channelId,title,categoryId),statistics)`,
+          `https://www.googleapis.com/youtube/v3/videos?id=${newArray[i][1]}&key=${process.env.YOUTUBE_API_KEY}&part=snippet,statistics`,
+          //&fields=items(id,snippet(channelId,title,categoryId),statistics)
         )
         .then((res) => {
           const videoInfo = res.data;
@@ -351,5 +369,337 @@ export class YoutubesController {
     }
     console.log(resultArray);
     return resultArray;
+  }
+
+  @Get("/playlist3topcomment/:id")
+  @ApiOperation({
+    summary: "콩쿠르 id를 지정하여 top3 의 댓글수 랭킹",
+    description:
+      "playlist3topcomment  콩쿠르 id를 지정하여 top3 의 댓글수 랭킹. 단 영상이 3개미만일경우 3개 미만으로 나옵니다.  Params 로 검색할 콩쿠르의 id값 지정해 주세요",
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      "playlist3topcomment  콩쿠르 id를 지정하여 top3 의 댓글수 랭킹. 단 영상이 3개미만일경우 3개 미만으로 나옵니다",
+  })
+  @UseInterceptors(TransformResponseInterceptor)
+  async getPlaylist3comment(@Param("id", ParseIntPipe) id: number) {
+    const videoInfos = await axios
+      .get(
+        `https://www.googleapis.com/youtube/v3/playlists?part=snippet,contentDetails&topicDetails&invideoPromotion&channelId=${process.env.YOUTUBE_CHANNEL_ID}&maxResults=50&key=${process.env.YOUTUBE_API_KEY}`,
+      )
+      .then((res) => {
+        const videoInfo = res.data;
+
+        // console.log(videoInfo);
+        return videoInfo;
+      });
+
+    // console.log(videoInfos.items);
+
+    const channelId_list = [];
+    for (const item in videoInfos.items) {
+      channelId_list.push(videoInfos.items[item].id);
+    }
+
+    const channelId_list_reverse = channelId_list.reverse();
+    // console.log(channelId_list_reverse);
+
+    // const playlist_items = [];
+    // for (const item in channelId_list) {
+    // }
+
+    const playlist_title_list = [];
+    for (const item in videoInfos.items) {
+      playlist_title_list.push(videoInfos.items[item].snippet.title);
+    }
+
+    const playlist_title_list_reverse = playlist_title_list.reverse();
+    // console.log(playlist_title_list_reverse);
+    const concours = await getRepository(Concours)
+      .createQueryBuilder("concours")
+      .where("concours.id = :id", {
+        id: id,
+      })
+      .getOneOrFail();
+
+    if (concours) {
+      const concours_name = concours.title;
+      // console.log(concours_name);
+
+      const index_num = playlist_title_list_reverse.indexOf(concours_name);
+      // console.log(index_num);
+      const selected_playlist_id = channelId_list[index_num];
+      // console.log(selected_playlist_id);
+
+      const selected_playlist_videolist = await axios
+        .get(
+          `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&maxResults=25&playlistId=${selected_playlist_id}&key=${process.env.YOUTUBE_API_KEY}`,
+        )
+        .then((res) => {
+          const videoInfos = res.data;
+
+          // console.log(videoInfos);
+          return videoInfos;
+        });
+
+      const selected_playlist_videolist_id_list = [];
+
+      for (const selected_playlist_videolist_id in selected_playlist_videolist) {
+        selected_playlist_videolist_id_list.push(
+          selected_playlist_videolist[selected_playlist_videolist_id],
+        );
+      }
+      console.log(selected_playlist_videolist_id_list[2]);
+      console.log("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+
+      const selected_playlist_videolist_id_list_video = [];
+
+      for (const selected_playlist_videolist_id_video in selected_playlist_videolist_id_list[2]) {
+        selected_playlist_videolist_id_list_video.push(
+          selected_playlist_videolist_id_list[2][
+            selected_playlist_videolist_id_video
+          ].snippet.resourceId.videoId,
+        );
+      }
+      const viewCountandVideoIdArray = [];
+      for (const videoId in selected_playlist_videolist_id_list_video) {
+        // console.log(videoIds[videoId]);
+
+        const itemWithvideo = await axios
+          .get(
+            `https://www.googleapis.com/youtube/v3/videos?id=${selected_playlist_videolist_id_list_video[videoId]}&key=${process.env.YOUTUBE_API_KEY}&part=snippet,statistics&fields=items(id,snippet(channelId,title,categoryId),statistics)`,
+          )
+          .then((res) => {
+            const videoInfo = res;
+
+            // console.log(JSON.stringify(videoInfo));
+            // console.log(videoInfo.data.items[0].statistics.viewCount);
+            return [
+              videoInfo.data.items[0].statistics.commentCount,
+              videoInfo.data.items[0].id,
+            ];
+          });
+
+        viewCountandVideoIdArray.push(itemWithvideo);
+      }
+      console.log(viewCountandVideoIdArray);
+
+      const newArray = viewCountandVideoIdArray.sort(function (x, y) {
+        return y[0] - x[0];
+      });
+
+      console.log(newArray);
+      const resultArray = [];
+      if (newArray.length >= 3) {
+        for (let i = 0; i < 3; i++) {
+          console.log(newArray[i][1]);
+
+          const result = await axios
+            .get(
+              `https://www.googleapis.com/youtube/v3/videos?id=${newArray[i][1]}&key=${process.env.YOUTUBE_API_KEY}&part=snippet,statistics`,
+              //&fields=items(id,snippet(channelId,title,categoryId),statistics)
+            )
+            .then((res) => {
+              const videoInfo = res.data;
+
+              // console.log(JSON.stringify(videoInfo));
+              return videoInfo;
+            });
+          resultArray.push(result);
+        }
+        console.log(resultArray);
+        return resultArray;
+      } else if (newArray.length < 3) {
+        for (let i = 0; i < newArray.length; i++) {
+          console.log(newArray[i][1]);
+
+          const result = await axios
+            .get(
+              `https://www.googleapis.com/youtube/v3/videos?id=${newArray[i][1]}&key=${process.env.YOUTUBE_API_KEY}&part=snippet,statistics`,
+              //&fields=items(id,snippet(channelId,title,categoryId),statistics)
+            )
+            .then((res) => {
+              const videoInfo = res.data;
+
+              // console.log(JSON.stringify(videoInfo));
+              return videoInfo;
+            });
+          resultArray.push(result);
+        }
+        console.log(resultArray);
+        return resultArray;
+      }
+    } else {
+      return "아직 업로드된 영상이 없습니다.";
+    }
+
+    return videoInfos;
+  }
+
+  @Get("/playlist3topview/:id")
+  @ApiOperation({
+    summary: "콩쿠르 id를 지정하여 top3 의 조회수 랭킹",
+    description:
+      "playlist3topview  콩쿠르 id를 지정하여 top3 의 조회수 랭킹. 단 영상이 3개미만일경우 3개 미만으로 나옵니다.  Params 로 검색할 콩쿠르의 id값 지정해 주세요",
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      "playlist3topview  콩쿠르 id를 지정하여 top3 의 조회수 랭킹. 단 영상이 3개미만일경우 3개 미만으로 나옵니다",
+  })
+  @UseInterceptors(TransformResponseInterceptor)
+  async getPlaylist3view(@Param("id", ParseIntPipe) id: number) {
+    const videoInfos = await axios
+      .get(
+        `https://www.googleapis.com/youtube/v3/playlists?part=snippet,contentDetails&topicDetails&invideoPromotion&channelId=${process.env.YOUTUBE_CHANNEL_ID}&maxResults=50&key=${process.env.YOUTUBE_API_KEY}`,
+      )
+      .then((res) => {
+        const videoInfo = res.data;
+
+        // console.log(videoInfo);
+        return videoInfo;
+      });
+
+    // console.log(videoInfos.items);
+
+    const channelId_list = [];
+    for (const item in videoInfos.items) {
+      channelId_list.push(videoInfos.items[item].id);
+    }
+
+    const channelId_list_reverse = channelId_list.reverse();
+    // console.log(channelId_list_reverse);
+
+    // const playlist_items = [];
+    // for (const item in channelId_list) {
+    // }
+
+    const playlist_title_list = [];
+    for (const item in videoInfos.items) {
+      playlist_title_list.push(videoInfos.items[item].snippet.title);
+    }
+
+    const playlist_title_list_reverse = playlist_title_list.reverse();
+    // console.log(playlist_title_list_reverse);
+    const concours = await getRepository(Concours)
+      .createQueryBuilder("concours")
+      .where("concours.id = :id", {
+        id: id,
+      })
+      .getOneOrFail();
+
+    if (concours) {
+      const concours_name = concours.title;
+      // console.log(concours_name);
+
+      const index_num = playlist_title_list_reverse.indexOf(concours_name);
+      // console.log(index_num);
+      const selected_playlist_id = channelId_list[index_num];
+      // console.log(selected_playlist_id);
+
+      const selected_playlist_videolist = await axios
+        .get(
+          `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&maxResults=25&playlistId=${selected_playlist_id}&key=${process.env.YOUTUBE_API_KEY}`,
+        )
+        .then((res) => {
+          const videoInfos = res.data;
+
+          // console.log(videoInfos);
+          return videoInfos;
+        });
+
+      const selected_playlist_videolist_id_list = [];
+
+      for (const selected_playlist_videolist_id in selected_playlist_videolist) {
+        selected_playlist_videolist_id_list.push(
+          selected_playlist_videolist[selected_playlist_videolist_id],
+        );
+      }
+      console.log(selected_playlist_videolist_id_list[2]);
+      console.log("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+
+      const selected_playlist_videolist_id_list_video = [];
+
+      for (const selected_playlist_videolist_id_video in selected_playlist_videolist_id_list[2]) {
+        selected_playlist_videolist_id_list_video.push(
+          selected_playlist_videolist_id_list[2][
+            selected_playlist_videolist_id_video
+          ].snippet.resourceId.videoId,
+        );
+      }
+      const viewCountandVideoIdArray = [];
+      for (const videoId in selected_playlist_videolist_id_list_video) {
+        // console.log(videoIds[videoId]);
+
+        const itemWithvideo = await axios
+          .get(
+            `https://www.googleapis.com/youtube/v3/videos?id=${selected_playlist_videolist_id_list_video[videoId]}&key=${process.env.YOUTUBE_API_KEY}&part=snippet,statistics&fields=items(id,snippet(channelId,title,categoryId),statistics)`,
+          )
+          .then((res) => {
+            const videoInfo = res;
+
+            // console.log(JSON.stringify(videoInfo));
+            // console.log(videoInfo.data.items[0].statistics.viewCount);
+            return [
+              videoInfo.data.items[0].statistics.viewCount,
+              videoInfo.data.items[0].id,
+            ];
+          });
+
+        viewCountandVideoIdArray.push(itemWithvideo);
+      }
+      console.log(viewCountandVideoIdArray);
+
+      const newArray = viewCountandVideoIdArray.sort(function (x, y) {
+        return y[0] - x[0];
+      });
+
+      console.log(newArray);
+      const resultArray = [];
+      if (newArray.length >= 3) {
+        for (let i = 0; i < 3; i++) {
+          console.log(newArray[i][1]);
+
+          const result = await axios
+            .get(
+              `https://www.googleapis.com/youtube/v3/videos?id=${newArray[i][1]}&key=${process.env.YOUTUBE_API_KEY}&part=snippet,statistics`,
+              //&fields=items(id,snippet(channelId,title,categoryId),statistics)
+            )
+            .then((res) => {
+              const videoInfo = res.data;
+
+              // console.log(JSON.stringify(videoInfo));
+              return videoInfo;
+            });
+          resultArray.push(result);
+        }
+        console.log(resultArray);
+        return resultArray;
+      } else if (newArray.length < 3) {
+        for (let i = 0; i < newArray.length; i++) {
+          console.log(newArray[i][1]);
+
+          const result = await axios
+            .get(
+              `https://www.googleapis.com/youtube/v3/videos?id=${newArray[i][1]}&key=${process.env.YOUTUBE_API_KEY}&part=snippet,statistics`,
+              //&fields=items(id,snippet(channelId,title,categoryId),statistics)
+            )
+            .then((res) => {
+              const videoInfo = res.data;
+
+              // console.log(JSON.stringify(videoInfo));
+              return videoInfo;
+            });
+          resultArray.push(result);
+        }
+        console.log(resultArray);
+        return resultArray;
+      }
+    } else {
+      return "아직 업로드된 영상이 없습니다.";
+    }
+
+    return videoInfos;
   }
 }
