@@ -6,6 +6,6 @@ import { Signuptimetable } from "src/entities/signuptimetable.entity";
 export class SignupTimetableDto extends PickType(Signuptimetable, [
   "time",
   "signupId",
-  "Isparticipate",
+  // "Isparticipate",
   "userId",
 ] as const) {}

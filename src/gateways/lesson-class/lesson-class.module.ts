@@ -8,7 +8,7 @@ import { RedisCacheModule } from "src/cache/rediscache.module";
 import { LessonClassGateway } from "./lesson-class.gateway";
 import { LessonClassService } from "./lesson-class.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { Attendance } from "src/entities/attendance.entity";
+// import { Attendance } from "src/entities/attendance.entity";
 import { Signuptimetable } from "src/entities/signuptimetable.entity";
 import { User } from "src/entities/user.entity";
 

@@ -131,4 +131,16 @@ export class SignupsController {
     }
     console.log("결제진행가능");
   }
+
+  @UseGuards(AuthGuard("jwt"))
+  @Post("mine")
+  @ApiOperation({
+    summary: "나의 수강목록",
+    description: "나의 수강목록",
+  })
+  async myLessonList(@UserDecorator() user: User) {
+    return this.signupsService.myLessonList(user);
+  }
+
+  //나의 수강등록 목록
 }

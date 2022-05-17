@@ -19,5 +19,6 @@ import { SignupTimetablesModule } from "../signup-timetables/signup-timetables.m
   ],
   providers: [SignupsService],
   controllers: [SignupsController],
+  exports: [SignupsService],
 })
 export class SignupsModule {} //asd

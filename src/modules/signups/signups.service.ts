@@ -223,4 +223,23 @@ export class SignupsService {
   //   // return this.signupsRepository.signup(id, updateData, user);
   //   return signup;
   // }
+
+  async myLessonList(user: User) {
+    const result = await this.signupsRepository
+      .createQueryBuilder("signup")
+      .where("signup.userId = :userId", {
+        userId: user.id,
+      })
+      .leftJoinAndSelect("signup.lesson", "lesson")
+      .getMany();
+    const typesList = [];
+
+    for (const types in result) {
+      // console.log(mySearchHistory[types].lesson.type);
+      typesList.push((await result[types].lesson).type);
+    }
+    // console.log(typesList);
+
+    return typesList;
+  }
 }

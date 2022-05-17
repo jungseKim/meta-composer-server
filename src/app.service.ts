@@ -21,6 +21,7 @@ import { Payment } from "./entities/payment.entity";
 import { readFile } from "fs";
 import { ViewCount } from "./entities/viewCount.entity";
 import { Wishlist } from "./entities/wishlist.entity";
+import { Lesson } from "./entities/lesson.entity";
 @Injectable()
 export class AppService {
   constructor() {}
@@ -321,4 +322,20 @@ export class AppService {
   //   const ranResult = model.predict(xxxy);
   //   console.log(ranResult.toString());
   // }
+
+  async py_recommend(data): Promise<any> {
+    // console.log(await data);
+    // const recommend_lesson = await getRepository(Lesson)
+    //   .createQueryBuilder("lesson")
+    //   .orderBy("lesson.id", "DESC")
+    //   .take(5)
+    //   .getMany();
+    // console.log(recommend_lesson);
+    // res.send(recommend_lesson);
+    // console.log(data);
+    // console.log(data);
+    // console.log(Object.values(data));
+    // console.log(data.toString());
+    // return data.toString();
+  }
 }

@@ -21,4 +21,12 @@ export class SearchHistoriesService {
       searchKeyword,
     );
   }
+
+  async mySearchHistory(user: User): Promise<any> {
+    return this.searchHistoriesRepository.mySearchHistory(user);
+  }
 }
+
+//1. 내가참가한 콩쿨목록
+//2. 콩쿨 영상데이터가져오는데, 어떤콩쿨에인지??
+//3.

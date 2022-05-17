@@ -1,7 +1,7 @@
 import { Lesson } from "./../../entities/lesson.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Socket } from "socket.io";
-import { Attendance } from "./../../entities/attendance.entity";
+// import { Attendance } from "./../../entities/attendance.entity";
 import { Signup } from "./../../entities/signup.entity";
 import { RedisCacheService } from "./../../cache/rediscache.service";
 /*
