@@ -37,13 +37,3 @@ export const WSAuthMiddleware = (
     }
   };
 };
-
-export const WSAuthMiddleware2 = (
-  userRepository: Repository<User>,
-): SocketMiddleware => {
-  return async (socket: LessonSocket, next) => {
-    try {
-      const { lessonId } = socket.handshake.query;
-    } catch (error) {}
-  };
-};

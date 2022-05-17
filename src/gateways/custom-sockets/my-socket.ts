@@ -9,7 +9,7 @@ export class ChatSocekt extends Socket {
   chatRoomId: number;
 }
 export class LessonSocket extends AuthenticatedSocket {
-  userId: number;
+  lessonId: number;
 }
 
 export class NotificationSocekt extends AuthenticatedSocket {

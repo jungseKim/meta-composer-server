@@ -48,7 +48,7 @@ export class TasksService {
       this.logger.warn(`time  for job ${current} to run!`);
 
       await this.notificationService.pushStarClass(signup);
-      await this.lessonClassService.clasStart(signup, currentTime.id);
+      await this.lessonClassService.clasStart(signup, signup.lessonId);
 
       if (current !== last) {
         this.signupNotification(signup, current + 1, last);

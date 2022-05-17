@@ -18,6 +18,7 @@ import RtcData from "src/types/OfferPayload";
 import { Repository } from "typeorm";
 import { LessonSocket } from "../custom-sockets/my-socket";
 import { WSAuthMiddleware } from "../middleware/auth.middleware";
+import { WSLessonMiddleware } from "../middleware/lesson.middleware";
 import { LessonClassService } from "./lesson-class.service";
 
 @WebSocketGateway({
@@ -43,17 +44,13 @@ export class LessonClassGateway
 
   afterInit(server: Server) {
     const middle = WSAuthMiddleware(this.userRepository);
+    const lessonMiddle = WSLessonMiddleware();
     server.use(middle);
+    server.use(lessonMiddle);
   }
-
-  // @SubscribeMessage("setInit")
-  // firstConnection(client: LessonSocket, lessonId: number) {
-  //   return this.lessonClassService.setInit(client, lessonId);
-  // }
-
   @SubscribeMessage("retry")
   retryConnection(client: LessonSocket, lessonId: number) {
-    return this.lessonClassService.LessonConnection(client, lessonId);
+    return this.lessonClassService.LessonConnection(client);
   }
 
   @SubscribeMessage("getOffer")
@@ -64,7 +61,7 @@ export class LessonClassGateway
   }
 
   handleConnection(client: LessonSocket) {
-    // return this.lessonClassService.TestLessonConnection(client)
+    return this.lessonClassService.LessonConnection(client);
   }
 
   handleDisconnect(client: LessonSocket) {
