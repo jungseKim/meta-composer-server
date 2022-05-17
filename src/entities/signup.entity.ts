@@ -11,7 +11,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Attendance } from "./attendance.entity";
+// import { Attendance } from "./attendance.entity";
 
 import { CustomNotification } from "./custom-notification.entity";
 
@@ -115,10 +115,10 @@ export class Signup extends BaseEntity {
   @OneToMany(() => TimeTable, (timetable) => timetable.signup)
   timetable: TimeTable;
 
-  @OneToMany(() => Attendance, (attendance) => attendance.signup, {
-    eager: true,
-  })
-  attendances: Attendance[];
+  // @OneToMany(() => Attendance, (attendance) => attendance.signup, {
+  //   eager: true,
+  // })
+  // attendances: Attendance[];
 
   // @Column({ type: 'date' })
   // date: string;

@@ -19,7 +19,7 @@ import { Comment } from "./comment.entity";
 import { ChatRoom } from "./chatRoom.entity";
 import { Wishlist } from "./wishlist.entity";
 import { Signup } from "./signup.entity";
-import { Attendance } from "./attendance.entity";
+// import { Attendance } from "./attendance.entity";
 import { Sheet } from "./sheet.entity";
 import { Assignment } from "./assignment.entity";
 import { ConcoursSignup } from "./concoursSignup.entity";
@@ -28,6 +28,7 @@ import { Message } from "./message.entity";
 import { ApiProperty } from "@nestjs/swagger";
 import { Payment } from "./payment.entity";
 import { SearchHistory } from "./searchHistory.entiry";
+import { Signuptimetable } from "./signuptimetable.entity";
 
 export enum ProviderType {
   FACEBOOK = "Facebook",
@@ -133,10 +134,16 @@ export class User extends BaseEntity {
     eager: true,
   })
   signups: Signup[];
-  @OneToMany((type) => Attendance, (attendance) => attendance.user, {
-    eager: true,
-  })
-  attendances: Attendance[];
+
+  @OneToMany(
+    (type) => Signuptimetable,
+    (signuptimetable) => signuptimetable.user,
+    {
+      eager: true,
+    },
+  )
+  signuptimetable: Signuptimetable[];
+
   @OneToMany((type) => Sheet, (sheet) => sheet.user, { eager: true })
   sheets: Sheet[];
 
