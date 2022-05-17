@@ -31,13 +31,13 @@ export class Signuptimetable extends BaseEntity {
   })
   time: string;
 
-  @ManyToOne(() => User, (user) => user.attendances, { nullable: true })
+  @ManyToOne(() => User, (user) => user.signuptimetable, { nullable: true })
   user: User;
 
   @Column({ nullable: true })
   userId: number;
 
-  @ManyToOne(() => Teacher, (teacher) => teacher.attendances, {
+  @ManyToOne(() => Teacher, (teacher) => teacher.signuptimetable, {
     nullable: true,
   })
   teacher: Teacher;
@@ -51,6 +51,6 @@ export class Signuptimetable extends BaseEntity {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @Column({ default: false })
-  Isparticipate: boolean;
+  // @Column({ default: false })
+  // Isparticipate: boolean;
 }

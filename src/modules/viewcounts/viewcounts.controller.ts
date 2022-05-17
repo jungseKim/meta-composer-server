@@ -20,7 +20,14 @@ export class ViewcountsController {
   constructor(private viewcountsService: ViewcountsService) {}
 
   @Post()
-  counting(@Body() updateData): Promise<ViewCount> {
+  async counting(@Body() updateData): Promise<ViewCount> {
     return this.viewcountsService.counting(updateData);
+  }
+
+  @UseGuards(AuthGuard("jwt"))
+  @Post("users")
+  @UseInterceptors(TransformResponseInterceptor)
+  async myViewHistory(@UserDecorator() user: User): Promise<any> {
+    return this.viewcountsService.myViewHistory(user);
   }
 }

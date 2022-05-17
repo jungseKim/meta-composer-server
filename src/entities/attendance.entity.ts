@@ -1,44 +1,44 @@
-import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from "typeorm";
-import { Signup } from "./signup.entity";
-import { Teacher } from "./teacher.entity";
-import { User } from "./user.entity";
+// import {
+//   BaseEntity,
+//   Column,
+//   CreateDateColumn,
+//   Entity,
+//   ManyToOne,
+//   PrimaryGeneratedColumn,
+//   UpdateDateColumn,
+// } from "typeorm";
+// import { Signup } from "./signup.entity";
+// import { Teacher } from "./teacher.entity";
+// import { User } from "./user.entity";
 
-@Entity()
-export class Attendance extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+// @Entity()
+// export class Attendance extends BaseEntity {
+//   @PrimaryGeneratedColumn()
+//   id: number;
 
-  @ManyToOne(() => User, (user) => user.attendances, { nullable: true })
-  user: User;
+//   @ManyToOne(() => User, (user) => user.attendances, { nullable: true })
+//   user: User;
 
-  @Column({ nullable: true })
-  userId: number;
+//   @Column({ nullable: true })
+//   userId: number;
 
-  @ManyToOne(() => Teacher, (teacher) => teacher.attendances, {
-    nullable: true,
-  })
-  teacher: Teacher;
+//   @ManyToOne(() => Teacher, (teacher) => teacher.attendances, {
+//     nullable: true,
+//   })
+//   teacher: Teacher;
 
-  @Column({ nullable: true })
-  teacherId: number;
+//   @Column({ nullable: true })
+//   teacherId: number;
 
-  @ManyToOne(() => Signup, (signup) => signup.attendances)
-  signup: Signup;
+//   @ManyToOne(() => Signup, (signup) => signup.attendances)
+//   signup: Signup;
 
-  @Column({ type: "date" })
-  date: number;
+//   @Column({ type: "date" })
+//   date: number;
 
-  @CreateDateColumn()
-  created_at: Date;
+//   @CreateDateColumn()
+//   created_at: Date;
 
-  @UpdateDateColumn()
-  updated_at: Date;
-}
+//   @UpdateDateColumn()
+//   updated_at: Date;
+// }

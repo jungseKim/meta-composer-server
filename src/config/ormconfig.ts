@@ -7,7 +7,7 @@ import { Lesson } from "../entities/lesson.entity";
 import { TimeTable } from "../entities/timeTable.entity";
 import { Part } from "../entities/part.entity";
 import { Assignment } from "../entities/assignment.entity";
-import { Attendance } from "../entities/attendance.entity";
+// import { Attendance } from "../entities/attendance.entity";
 import { ChatRoom } from "../entities/chatRoom.entity";
 import { Message } from "../entities/message.entity";
 import { Payment } from "../entities/payment.entity";
@@ -41,7 +41,7 @@ const ORMConfig: TypeOrmModuleOptions = {
     Part,
     Comment,
     Assignment,
-    Attendance,
+    // Attendance,
     ChatRoom,
     Message,
     Part,

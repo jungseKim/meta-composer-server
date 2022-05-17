@@ -10,10 +10,11 @@ import {
   Unique,
 } from "typeorm";
 import { Lesson } from "./lesson.entity";
-import { Attendance } from "./attendance.entity";
+// import { Attendance } from "./attendance.entity";
 import { ApiProperty } from "@nestjs/swagger";
 import { isString } from "util";
 import { isStringObject } from "util/types";
+import { Signuptimetable } from "./signuptimetable.entity";
 
 @Entity()
 @Unique(["id"])
@@ -47,8 +48,11 @@ export class Teacher extends BaseEntity {
     onDelete: "CASCADE",
   })
   lessons: Promise<Lesson[]>;
-  @OneToMany((type) => Attendance, (attendance) => attendance.teacher)
-  attendances: Attendance[];
+  @OneToMany(
+    (type) => Signuptimetable,
+    (signuptimetable) => signuptimetable.teacher,
+  )
+  signuptimetable: Signuptimetable[];
 
   @Column()
   @ApiProperty({
