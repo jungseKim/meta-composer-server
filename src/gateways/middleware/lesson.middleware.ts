@@ -12,6 +12,7 @@ export const WSLessonMiddleware = (): SocketMiddleware => {
         });
       }
       socket.lessonId = parseInt(lessonId);
+      next();
     } catch (error) {
       next({
         name: "bad",
