@@ -25,12 +25,14 @@ import axios, { AxiosResponse } from "axios";
 import { Lesson } from "src/entities/lesson.entity";
 import { Connection } from "typeorm";
 import { TransformResponseInterceptor } from "src/common/interceptors/transformResponse.interceptor";
+import { NotificationService } from "src/gateways/notification/notification.service";
 @Controller("api/signups")
 @ApiTags("수강 등록 API")
 export class SignupsController {
   constructor(
     private signupsService: SignupsService,
     private signupsRepository: SignupsRepository, // private  http: HttpCode
+    private notificationService: NotificationService,
   ) {}
 
   @UseGuards(AuthGuard("jwt"))
@@ -59,7 +61,8 @@ export class SignupsController {
   ): Promise<any> {
     console.log(updateData);
     console.log("form data");
-    return this.signupsService.signup(id, updateData, user);
+    const signup = await this.signupsService.signup(id, updateData, user);
+    return this.notificationService.signupLesson(signup);
   }
 
   @UseGuards(AuthGuard("jwt"))

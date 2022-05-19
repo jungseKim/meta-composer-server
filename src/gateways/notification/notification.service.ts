@@ -19,6 +19,7 @@ import { CustomNotification } from "src/entities/custom-notification.entity";
 import { TasksService } from "src/modules/tasks/tasks.service";
 import { NotificationSocekt } from "../custom-sockets/my-socket";
 import { WsException } from "@nestjs/websockets";
+import { emit } from "process";
 @Injectable()
 export class NotificationService {
   clients: Record<number, Socket>;
@@ -122,6 +123,23 @@ export class NotificationService {
     user?.emit("notification", studentNotification);
     const teacher = this.clients[teacherUserId];
     teacher?.emit("notification", teacherNotification);
+  }
+
+  public async signupLesson(singup: Signup) {
+    const lesson = await singup.lesson;
+    const teacherUserId = await (await lesson.teacher).userId;
+
+    const signupNotification = await this.CustomnotificationRepository.create({
+      type: "signup",
+      typeId: singup.id,
+      userId: teacherUserId,
+      content: `${lesson.name} 에 수강을 하였습니다.`,
+      url: `/lessons/${lesson.id}`,
+    }).save();
+
+    const teacher = this.clients[teacherUserId];
+
+    teacher?.emit("notification", signupNotification);
   }
 
   public async deleteNotification(user: User, notiId: number) {

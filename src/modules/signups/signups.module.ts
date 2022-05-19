@@ -9,6 +9,7 @@ import { Repository } from "typeorm";
 import { Signup } from "src/entities/signup.entity";
 import { TimeTablesModule } from "../time-tables/time-tables.module";
 import { SignupTimetablesModule } from "../signup-timetables/signup-timetables.module";
+import { NotificationModule } from "src/gateways/notification/notification.module";
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { SignupTimetablesModule } from "../signup-timetables/signup-timetables.m
     TasksModule,
     SignupDayAndTimesModule,
     SignupTimetablesModule,
+    NotificationModule,
   ],
   providers: [SignupsService],
   controllers: [SignupsController],
