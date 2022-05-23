@@ -35,7 +35,7 @@ export class ConcoursRepository extends Repository<Concours> {
         finishTime: updateData.finishTime,
         title: updateData.title,
         contents: updateData.contents,
-        coverIMG_url: process.env.SERVER_ADDRESS + "/" + image.filename,
+        coverIMG_url: image.filename,
       })
       .where("id = :id", { id: id })
       .execute();

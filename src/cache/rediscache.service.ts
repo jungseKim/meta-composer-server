@@ -7,6 +7,8 @@ import { CACHE_MANAGER, Inject, Injectable } from "@nestjs/common";
 import { Cache } from "cache-manager";
 import { timingSafeEqual } from "crypto";
 import { LessonAttendanceDto } from "src/types/lesson-class";
+import { User } from "src/entities/user.entity";
+import { Lesson } from "src/entities/lesson.entity";
 
 @Injectable()
 export class RedisCacheService {
@@ -107,5 +109,24 @@ export class RedisCacheService {
   }
   public async removeLessonRoom(key: number) {
     await this.cache.del(`lesson-${key}`);
+  }
+
+  public async add_user_recommendation_data(
+    userId: string,
+    recommendation_data: Lesson[],
+    result_recommendation: string,
+  ) {
+    await this.cache.set(userId, [
+      { "recommended genre: ": result_recommendation },
+      recommendation_data,
+    ]);
+  }
+
+  public async get_user_recommendation_data(key: string) {
+    return await this.cache.get(key);
+  }
+
+  public async delete_user_recommendation_data(key: string) {
+    return await this.cache.del(key);
   }
 }
