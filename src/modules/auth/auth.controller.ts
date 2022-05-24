@@ -148,7 +148,7 @@ export class AuthController {
     @UserDecorator() user: User,
     @Res({ passthrough: true }) response: Response,
   ) {
-    console.log(user + "data from user decorator");
+    console.log(user + "data from user decorator1");
     return this.authService.getJwtRefreshToken(user.id);
   }
 

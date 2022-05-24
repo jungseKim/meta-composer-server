@@ -171,4 +171,11 @@ export class User extends BaseEntity {
     cascade: true,
   })
   searchHistories: SearchHistory[];
+
+  @Column({ default: false })
+  @ApiProperty({
+    example: false,
+    description: "관리자 유무",
+  })
+  is_admin: boolean;
 }

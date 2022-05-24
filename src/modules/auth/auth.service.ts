@@ -24,6 +24,7 @@ export class AuthService {
     });
     return token;
   }
+
   public async userProfileUpdate(user: User, image, data: ProfileDto) {
     user.username = data.username;
     user.self_introduce = data.self_introduce;
@@ -34,6 +35,7 @@ export class AuthService {
         user.profile_image = "https://jungse.shop" + image.filename;
       }
     }
+
     await user.save();
     return user;
   }
