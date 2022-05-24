@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
@@ -16,6 +17,7 @@ import { TransformResponseInterceptor } from "src/common/interceptors/transformR
 import { Concours } from "src/entities/concours.entity";
 import { imageOption } from "src/lib/imageOption";
 import { sheetOption } from "src/lib/sheetOption";
+import { OptionalAdminJwtAuthGuard } from "../auth/optionalAdminJWT.guard";
 import { ConcoursService } from "./concours.service";
 
 @Controller("api/concours")
@@ -53,6 +55,7 @@ export class ConcoursController {
     return this.concoursService.getConcoursById(id);
   }
 
+  @UseGuards(OptionalAdminJwtAuthGuard)
   @Post()
   @ApiOperation({
     summary: "콩쿠르 생성",
@@ -71,6 +74,7 @@ export class ConcoursController {
     return this.concoursService.createConcours(updateData, image);
   }
 
+  @UseGuards(OptionalAdminJwtAuthGuard)
   @Delete("/:id")
   @ApiOperation({ summary: "콩쿠르 삭제", description: "콩쿠르 삭제한다" })
   @ApiResponse({ status: 200, description: "콩쿠르 삭제완료", type: Concours })
@@ -79,6 +83,7 @@ export class ConcoursController {
     return this.concoursService.deleteConcours(id);
   }
 
+  @UseGuards(OptionalAdminJwtAuthGuard)
   @Put("/:id")
   @ApiOperation({
     summary: "콩쿠르 정보 수정",
@@ -87,7 +92,7 @@ export class ConcoursController {
   @ApiResponse({
     status: 200,
     description:
-      "콩쿠르 수정(form)price concoursSignupStartTime concoursSignupFinishTime startTime finishTime title contents (file )image  의 데이터를 보내주세요.",
+      "콩쿠르 수정 (form) price concoursSignupStartTime concoursSignupFinishTime startTime finishTime title contents (file ) image  의 데이터를 보내주세요.",
     type: Concours,
   })
   @ApiBody({ type: Concours })

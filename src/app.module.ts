@@ -38,11 +38,13 @@ import { SignupTimetablesModule } from "./modules/signup-timetables/signup-timet
 import { PartsModule } from "./modules/parts/parts.module";
 import { ViewcountsModule } from "./modules/viewcounts/viewcounts.module";
 import { SearchHistoriesModule } from "./modules/search-histories/search-histories.module";
+import { AdminModule } from "./modules/admin/admin.module";
 
 @Module({
   controllers: [AppController],
   providers: [AppService, WebRtcGateway],
   imports: [
+    AdminModule,
     LessonClassModule,
     ScheduleModule.forRoot(),
     TasksModule,
