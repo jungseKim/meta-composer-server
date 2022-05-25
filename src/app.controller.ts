@@ -47,7 +47,7 @@ export class AppController {
   ) {}
 
   @UseGuards(OptionalJwtAuthGuard)
-  @Post("py")
+  @Post("api/py")
   @ApiOperation({
     summary: "사용자에게 추천레슨 5개",
     description:
