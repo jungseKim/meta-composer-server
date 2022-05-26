@@ -220,12 +220,26 @@ export class AppController {
             .take(5)
             .getMany();
 
-          this.redisCacheService.add_user_recommendation_data(
-            user.id.toString(),
-            recommend_lesson,
-            result_recommendation,
-          );
+          if (result_recommendation) {
+            console.log("cache");
+            this.redisCacheService.add_user_recommendation_data(
+              user.id.toString(),
+              recommend_lesson,
+              result_recommendation,
+            );
+          } else if (!result_recommendation) {
+            const recommend_for_new_user = await getRepository(Lesson)
+              .createQueryBuilder("lesson")
+              .orderBy("RAND()")
+              .take(5)
+              .getMany();
 
+            res.send([
+              { "recommended genre: ": "이런 레슨은 어떠신가요?" },
+              recommend_for_new_user,
+            ]);
+            return;
+          }
           res.send([
             { "recommended genre: ": result_recommendation },
             recommend_lesson,
