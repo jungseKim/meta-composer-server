@@ -122,8 +122,9 @@ export class RedisCacheService {
     ]);
   }
 
-  public async get_user_recommendation_data(key: string) {
-    return await this.cache.get(key);
+  public async get_user_recommendation_data(key) {
+    const data = await this.cache.get(key);
+    return data;
   }
 
   public async delete_user_recommendation_data(key: string) {

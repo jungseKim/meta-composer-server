@@ -1,4 +1,5 @@
 import {
+  ConsoleLogger,
   Controller,
   Get,
   Param,
@@ -14,7 +15,6 @@ import { ApiOperation } from "@nestjs/swagger";
 import { UserDecorator } from "./decorators/user.decorator";
 import { User } from "./entities/user.entity";
 import { TasksService } from "./modules/tasks/tasks.service";
-
 import { Cron, Interval, Timeout } from "@nestjs/schedule";
 import { createQueryBuilder, getRepository } from "typeorm";
 import { Concours } from "./entities/concours.entity";
@@ -34,7 +34,6 @@ import { max } from "rxjs";
 import { Lesson } from "./entities/lesson.entity";
 import { OptionalJwtAuthGuard } from "./modules/auth/optionalJwt.guard";
 import { RedisCacheService } from "./cache/rediscache.service";
-
 @Controller()
 export class AppController {
   constructor(
@@ -55,30 +54,45 @@ export class AppController {
   })
   @UseInterceptors(TransformResponseInterceptor)
   async testPy(@UserDecorator() user: User, @Res() res): Promise<any> {
-    if (user) {
+    console.log(user);
+    console.log("0");
+    if (user == null) {
+      const recommend_for_guest = await getRepository(Lesson)
+        .createQueryBuilder("lesson")
+        .orderBy("lesson.id", "DESC")
+        .take(5)
+        .getMany();
+      res.send([
+        {
+          "recommended genre: ":
+            "로그인하면 취향에 맞는 레슨을 추천해드립니다.",
+        },
+        recommend_for_guest,
+      ]);
+    }
+
+    if (user != null) {
+      console.log("1");
+
       const recommendation_data_from_redis =
-        await this.redisCacheService.get_user_recommendation_data(
-          user.id.toString(),
-        );
+        await this.redisCacheService.get_user_recommendation_data(user.id);
+      console.log(recommendation_data_from_redis);
 
       if (recommendation_data_from_redis) {
         res.send(recommendation_data_from_redis);
       } else if (!recommendation_data_from_redis) {
+        console.log("3");
         const mySearchHistoryLog =
           await this.searchHistoriesService.mySearchHistory(user);
         const myViewHistoryLog = await this.viewcountsService.myViewHistory(
           user,
         );
         const mySignList = await this.signupsService.myLessonList(user);
-
         // const typeList = ["Sonata", "Etudes", "Waltzes", "Nocturnes", "Marches"];
-
         // console.log("검색내역" + mySearchHistoryLog);
-
         const mySearchHistoryLog_Sonata = await mySearchHistoryLog.filter(
           (element) => "Sonata" === element,
         ).length;
-
         const mySearchHistoryLog_Etudes = await mySearchHistoryLog.filter(
           (element) => "Etudes" === element,
         ).length;
@@ -91,21 +105,16 @@ export class AppController {
         const mySearchHistoryLog_Marches = await mySearchHistoryLog.filter(
           (element) => "Marches" === element,
         ).length;
-
         // console.log(mySearchHistoryLog_Sonata);
         // console.log(mySearchHistoryLog_Etudes);
         // console.log(mySearchHistoryLog_Waltzes);
         // console.log(mySearchHistoryLog_Nocturnes);
         // console.log(mySearchHistoryLog_Marches);
-
         //
-
         // console.log("조회내역" + myViewHistoryLog);
-
         const myViewHistoryLog_Sonata = await myViewHistoryLog.filter(
           (element) => "Sonata" === element,
         ).length;
-
         const myViewHistoryLog_Etudes = await myViewHistoryLog.filter(
           (element) => "Etudes" === element,
         ).length;
@@ -123,15 +132,11 @@ export class AppController {
         // console.log(myViewHistoryLog_Waltzes);
         // console.log(myViewHistoryLog_Nocturnes);
         // console.log(myViewHistoryLog_Marches);
-
         //
-
         // console.log("수강목록" + mySignList);
-
         const mySignList_Sonata = mySignList.filter(
           (element) => "Sonata" === element,
         ).length;
-
         const mySignList_Etudes = mySignList.filter(
           (element) => "Etudes" === element,
         ).length;
@@ -144,13 +149,11 @@ export class AppController {
         const mySignList_Marches = mySignList.filter(
           (element) => "Marches" === element,
         ).length;
-
         // console.log(mySignList_Sonata);
         // console.log(mySignList_Etudes);
         // console.log(mySignList_Waltzes);
         // console.log(mySignList_Nocturnes);
         // console.log(mySignList_Marches);
-
         //
         const user_Sonata =
           mySearchHistoryLog_Sonata +
@@ -172,78 +175,85 @@ export class AppController {
           mySearchHistoryLog_Marches +
           myViewHistoryLog_Marches +
           mySignList_Marches;
-
         console.log(user_Sonata + `  : ${user.username}  : user_Sonata`);
         console.log(user_Etudes + `  : ${user.username}  : user_Etudes`);
         console.log(user_Waltzes + `  : ${user.username}  : user_Waltzes`);
         console.log(user_Nocturnes + `  : ${user.username}  : user_Nocturnes`);
         console.log(user_Marches + `  : ${user.username}  : user_Marches`);
-
         console.log("hello py");
         // parameter 로 넣어줄것.
         // 1. 검색기록  - 완료
         // 2. 조회기록
         // 3. 수강등록내역
 
-        const pythonProcess = spawn("python", [
-          "test.py",
-          user.username,
-          user_Sonata,
-          user_Etudes,
-          user_Waltzes,
-          user_Nocturnes,
-          user_Marches,
-        ]);
-
-        pythonProcess.stdout.on("data", async (data) => {
-          console.log(".py check");
-          // console.log(`${data}`);
-
-          // const result = res.send(data);
-
-          const parsed_data = JSON.parse(data);
-          // console.log(parsed_data);
-          // console.log(Object.keys(parsed_data));
-          const recommend_keys = Object.keys(parsed_data);
-          const integer_keys = recommend_keys.map((x) => +x);
-          // console.log(integer_keys);
-          const max_recommend_point = Math.max(...integer_keys);
-          console.log(max_recommend_point + " : recommend_point");
-          const result_recommendation =
-            parsed_data[max_recommend_point.toString()];
-          // const result_recommendation = parsed_data["18.57679107165652"];
-          console.log((await result_recommendation) + " : 로 추천되었습니다");
-          const recommend_lesson = await getRepository(Lesson)
+        if (
+          user_Sonata == 0 &&
+          user_Etudes == 0 &&
+          user_Waltzes == 0 &&
+          user_Nocturnes == 0 &&
+          user_Marches == 0
+        ) {
+          const recommend_for_new_member = await getRepository(Lesson)
             .createQueryBuilder("lesson")
-            .where("type = :type", { type: result_recommendation })
-            .orderBy("lesson.id", "DESC")
+            .orderBy("RAND()")
             .take(5)
             .getMany();
-
-          this.redisCacheService.add_user_recommendation_data(
-            user.id.toString(),
-            recommend_lesson,
-            result_recommendation,
-          );
-
           res.send([
-            { "recommended genre: ": result_recommendation },
-            recommend_lesson,
+            { "recommended genre: ": "새로운 회원을 위한 추천입니다" },
+            recommend_for_new_member,
           ]);
-
-          // return this.appService.py_recommend(await result_recommendation);
-        });
-      } else if (!user) {
-        const recommend_for_guest = await getRepository(Lesson)
-          .createQueryBuilder("lesson")
-          .orderBy("lesson.id", "DESC")
-          .take(5)
-          .getMany();
-        res.send([
-          { "recommended genre: ": "로그인하면 추천해드립니다." },
-          recommend_for_guest,
-        ]);
+        } else if (
+          user_Sonata == 0 ||
+          user_Etudes == 0 ||
+          user_Waltzes == 0 ||
+          user_Nocturnes == 0 ||
+          user_Marches == 0
+        ) {
+          const pythonProcess = spawn("python", [
+            "test.py",
+            user.username,
+            user_Sonata,
+            user_Etudes,
+            user_Waltzes,
+            user_Nocturnes,
+            user_Marches,
+          ]);
+          pythonProcess.stdout.on("data", async (data) => {
+            console.log(".py check");
+            // console.log(`${data}`);
+            // const result = res.send(data);
+            const parsed_data = JSON.parse(data);
+            // console.log(parsed_data);
+            // console.log(Object.keys(parsed_data));
+            const recommend_keys = Object.keys(parsed_data);
+            const integer_keys = recommend_keys.map((x) => +x);
+            // console.log(integer_keys);
+            const max_recommend_point = Math.max(...integer_keys);
+            console.log(max_recommend_point + " : recommend_point");
+            const result_recommendation =
+              parsed_data[max_recommend_point.toString()];
+            // const result_recommendation = parsed_data["18.57679107165652"];
+            console.log((await result_recommendation) + " : 로 추천되었습니다");
+            const recommend_lesson = await getRepository(Lesson)
+              .createQueryBuilder("lesson")
+              .where("type = :type", { type: result_recommendation })
+              .orderBy("lesson.id", "DESC")
+              .take(5)
+              .getMany();
+            this.redisCacheService.add_user_recommendation_data(
+              user.id + "",
+              recommend_lesson,
+              result_recommendation,
+            );
+            res.send([
+              { "recommended genre: ": result_recommendation },
+              recommend_lesson,
+            ]);
+            // return this.appService.py_recommend(await result_recommendation);
+          });
+        }
       }
+      console.log("4");
     }
   }
 
@@ -260,7 +270,6 @@ export class AppController {
   async handleCron() {
     return this.appService.handleCorn();
   }
-
   @Get("lessons")
   @ApiOperation({
     summary: "결제 예시",
@@ -271,18 +280,16 @@ export class AppController {
       root: "./src/",
     });
   }
-
   // @UseGuards(AuthGuard("jwt"))
   // @Get("tensorflow")
   // async tensorflow(@UserDecorator() user: User) {
   //   return this.appService.tensorflow(user);
   // }
-
-  // @Get("piano")
-  // //이미지테스트
-  // hi() {
-  //   axios.get("https://source.unsplash.com/featured/?piano").then((data) => {
-  //     console.log(data.request.res.req._redirectable._options.href);
-  //   });
-  // }
+  @Get("piano")
+  //이미지테스트
+  hi() {
+    axios.get("https://source.unsplash.com/featured/?piano").then((data) => {
+      console.log(data.request.res.req._redirectable._options.href);
+    });
+  }
 }
