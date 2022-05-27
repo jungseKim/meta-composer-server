@@ -21,6 +21,7 @@ async function bootstrap() {
     origin: true,
     credentials: true,
     exposedHeaders: ["Authorization"],
+
     // allowedHeaders: 'http://localhost:3000/*',
   });
   // app.useGlobalPipes(
